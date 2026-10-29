@@ -11,6 +11,7 @@ import shutil
 import subprocess
 
 from pathlib import Path
+from typing import get_args
 
 import pytest
 
@@ -20,6 +21,7 @@ from doukimd.config import load_config
 from doukimd.errors import BuildError
 from doukimd.models import ThemeSettings
 from doukimd.runtime import typechecked
+from doukimd.theme import palette_colors
 
 
 @typechecked
@@ -85,6 +87,8 @@ def test_framework_none_and_color_defaults(project: Path, mode: str) -> None:
         'framework: false',
         'color_mode: blue',
         'color_mode: 1',
+        'palette: unknown',
+        'palette: 1',
     ],
 )
 @typechecked
@@ -156,4 +160,96 @@ def test_frontend_preferences() -> None:
         capture_output=True,
         text=True,
         timeout=15,
+    )
+
+
+@pytest.mark.parametrize(
+    'palette', ['terracotta', 'ocean', 'forest', 'violet', 'slate']
+)
+@pytest.mark.parametrize('mode', ['light', 'dark'])
+@typechecked
+def test_palette_output(project: Path, palette: str, mode: str) -> None:
+    """
+    title: Ship every preset offline with configuration and reader choices.
+    parameters:
+      project:
+        type: Path
+      palette:
+        type: str
+      mode:
+        type: str
+    """
+    path = project / 'doukimd.yaml'
+    path.write_text(
+        path.read_text() + f'theme:\n  palette: {palette}\n'
+        f'  color_mode: {mode}\n  framework: none\n',
+        encoding='utf-8',
+    )
+    result = compile_site(path)
+    html = result.files['index.html'].decode()
+    assert f'data-palette="{palette}"' in html
+    assert f'data-bs-theme="{mode}"' in html
+    assert 'aria-label="Color palette"' in html
+    for name in palette_colors():
+        assert f'<option value="{name}">' in html
+        assert f'[data-palette="{name}"]'.encode() in result.files['theme.css']
+    assert b'MIT License' in result.files['_doukimd/radix/LICENSE']
+    assert 'https://' not in html
+
+
+@typechecked
+def test_palette_contrast_and_configuration_match() -> None:
+    """
+    title: Keep all preset text readable across both color modes.
+    """
+    presets = palette_colors()
+    assert set(presets) == set(
+        get_args(ThemeSettings.model_fields['palette'].annotation)
+    )
+    assert ThemeSettings().palette == 'terracotta'
+    for name, modes in presets.items():
+        assert set(modes) == {'light', 'dark'}
+        for mode, colors in modes.items():
+            for foreground, background in [
+                ('text', 'bg'),
+                ('text', 'surface'),
+                ('muted', 'bg'),
+                ('muted', 'surface'),
+                ('accent', 'bg'),
+                ('accent', 'surface'),
+                ('active', 'accent-soft'),
+                ('text', 'code'),
+            ]:
+                first = relative_luminance(colors[foreground])
+                second = relative_luminance(colors[background])
+                contrast = (max(first, second) + 0.05) / (
+                    min(first, second) + 0.05
+                )
+                assert contrast >= 4.5, (
+                    name,
+                    mode,
+                    foreground,
+                    background,
+                    contrast,
+                )
+
+
+@typechecked
+def relative_luminance(color: str) -> float:
+    """
+    title: Compute WCAG sRGB relative luminance for a bundled hex color.
+    parameters:
+      color:
+        type: str
+    returns:
+      type: float
+    """
+    channels = [int(color[index : index + 2], 16) / 255 for index in (1, 3, 5)]
+    linear = [
+        value / 12.92 if value <= 0.04045 else ((value + 0.055) / 1.055) ** 2.4
+        for value in channels
+    ]
+    return sum(
+        value * weight
+        for value, weight in zip(linear, (0.2126, 0.7152, 0.0722))
     )

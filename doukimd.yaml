@@ -7,6 +7,7 @@ project:
 theme:
   framework: bootstrap
   color_mode: auto
+  palette: terracotta
 api:
   sources:
     - language: python

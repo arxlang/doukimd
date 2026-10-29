@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-color-mode="{{ theme.color_mode }}" data-bs-theme="{{ 'light' if theme.color_mode == 'auto' else theme.color_mode }}" data-preference-key="doukimd:{{ project.name }}:color-mode">
+<html lang="en" data-color-mode="{{ theme.color_mode }}" data-bs-theme="{{ 'light' if theme.color_mode == 'auto' else theme.color_mode }}" data-preference-key="doukimd:{{ project.name }}:color-mode" data-palette="{{ theme.palette }}" data-palettes="{{ palettes | join(',') }}">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -21,7 +21,15 @@
       </a>
       <div class="header-tools">
         <span class="header-caption">Documentation</span>
-        <div class="mode-picker" hidden>
+        <div class="palette-picker appearance-picker" hidden>
+          <label for="color-palette">Palette</label>
+          <select id="color-palette" class="form-select form-select-sm" aria-label="Color palette">
+            {% for palette in palettes %}
+            <option value="{{ palette }}">{{ palette | title }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="mode-picker appearance-picker" hidden>
           <label for="color-mode">Appearance</label>
           <select id="color-mode" class="form-select form-select-sm" aria-label="Color mode">
             <option value="auto">System</option>

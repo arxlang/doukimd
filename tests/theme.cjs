@@ -8,10 +8,15 @@ function browser(options = {}) {
   const dataset = {
     colorMode: options.mode || "auto",
     preferenceKey: "doukimd:example:color-mode",
+    palette: options.palette || "terracotta",
+    palettes: "terracotta,ocean,forest,violet,slate",
   };
   const media = new Map();
   const storage = new Map();
   if (options.stored !== undefined) storage.set(dataset.preferenceKey, options.stored);
+  if (options.storedPalette !== undefined) {
+    storage.set(dataset.preferenceKey + ":palette", options.storedPalette);
+  }
   const picker = { hidden: true };
   const events = {};
   const select = {
@@ -19,13 +24,22 @@ function browser(options = {}) {
     closest: () => picker,
     addEventListener: (name, fn) => { events[name] = fn; },
   };
+  const palettePicker = { hidden: true };
+  const paletteEvents = {};
+  const paletteSelect = {
+    value: "",
+    closest: () => palettePicker,
+    addEventListener: (name, fn) => { paletteEvents[name] = fn; },
+  };
   const navigation = { open: true };
   let ready;
   const context = {
     document: {
       documentElement: { dataset },
-      getElementById: (id) => options.noControls ? null
-        : (id === "color-mode" ? select : navigation),
+      getElementById: (id) => options.noControls ? null : ({
+        "color-mode": select, "color-palette": paletteSelect,
+        "docs-navigation": navigation,
+      }[id] || null),
       addEventListener: (name, fn) => { ready = fn; },
     },
     localStorage: {
@@ -52,8 +66,12 @@ function browser(options = {}) {
   vm.runInNewContext(source, context);
   ready();
   return {
-    dataset, storage, navigation, select, picker,
+    dataset, storage, navigation, select, picker, paletteSelect, palettePicker,
     choose: (mode) => { select.value = mode; events.change(); },
+    choosePalette: (name) => {
+      paletteSelect.value = name;
+      paletteEvents.change();
+    },
     system: (dark) => {
       const value = media.get("(prefers-color-scheme: dark)");
       value.matches = dark;
@@ -102,4 +120,31 @@ mobile.resize(false);
 assert.equal(mobile.navigation.open, true);
 mobile.resize(true);
 assert.equal(mobile.navigation.open, false);
-console.log("Appearance and mobile navigation checks passed");
+
+for (const name of ["terracotta", "ocean", "forest", "violet", "slate"]) {
+  const page = browser({ palette: name, dark: true });
+  assert.equal(page.dataset.palette, name);
+  assert.equal(page.paletteSelect.value, name);
+  assert.equal(page.palettePicker.hidden, false);
+  assert.equal(page.dataset.bsTheme, "dark");
+  page.choosePalette("ocean");
+  assert.equal(page.dataset.bsTheme, "dark");
+  page.choose("light");
+  assert.equal(page.dataset.palette, "ocean");
+  page.choosePalette("forest");
+  assert.equal(page.storage.get("doukimd:example:color-mode:palette"), "forest");
+  assert.equal(page.storage.get("doukimd:example:color-mode"), "light");
+  page.choose("auto");
+  page.system(false);
+  assert.equal(page.dataset.palette, "forest");
+}
+const reloaded = browser({ palette: "terracotta", storedPalette: "violet" });
+assert.equal(reloaded.dataset.palette, "violet");
+assert.equal(reloaded.paletteSelect.value, "violet");
+const invalidPalette = browser({ palette: "slate", storedPalette: "unknown" });
+assert.equal(invalidPalette.dataset.palette, "slate");
+invalidPalette.choosePalette("unknown");
+assert.equal(invalidPalette.dataset.palette, "slate");
+blocked.choosePalette("violet");
+assert.equal(blocked.dataset.palette, "violet");
+console.log("Appearance, palette, and mobile navigation checks passed");

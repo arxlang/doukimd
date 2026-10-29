@@ -1,14 +1,6 @@
 /* Shared palette also supports themes with framework: none. */
 :root, [data-bs-theme="light"] {
   color-scheme: light;
-  --dm-bg: #ffffff;
-  --dm-surface: #f6f7f9;
-  --dm-text: #243044;
-  --dm-muted: #667085;
-  --dm-border: #e4e7ec;
-  --dm-accent: #a6472b;
-  --dm-accent-soft: #fcf0eb;
-  --dm-code: #f5f7fa;
   --dm-module: #6941a5;
   --dm-module-bg: #f2ecfc;
   --dm-class: #2457a7;
@@ -20,14 +12,6 @@
 }
 [data-bs-theme="dark"] {
   color-scheme: dark;
-  --dm-bg: #171c26;
-  --dm-surface: #1d2430;
-  --dm-text: #e3e8f0;
-  --dm-muted: #a2aec0;
-  --dm-border: #323d4d;
-  --dm-accent: #f2ac92;
-  --dm-accent-soft: #352a29;
-  --dm-code: #202835;
   --dm-module: #cfb7fc;
   --dm-module-bg: #312847;
   --dm-class: #a7c9ff;
@@ -70,10 +54,11 @@ a:hover { text-decoration-thickness: 2px; }
 .brand-mark, .version, .header-tools { flex-shrink: 0; }
 .brand-mark { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: .55rem; background: var(--dm-accent); color: var(--dm-bg); font-size: 1rem; }
 .version { background: var(--dm-surface); border: 1px solid var(--dm-border); color: var(--dm-muted); padding: .3rem .5rem; font-size: .7rem; font-weight: 500; letter-spacing: 0; border-radius: 999px; }
-.header-tools, .mode-picker { display: flex; align-items: center; gap: .65rem; }
+.header-tools, .appearance-picker { display: flex; align-items: center; gap: .65rem; }
 .header-caption { font-size: .8rem; color: var(--dm-muted); margin-right: 1.2rem; }
-.mode-picker label { font-size: .75rem; color: var(--dm-muted); }
-.mode-picker select { width: 6.4rem; padding: .35rem .5rem; border: 1px solid var(--dm-border); border-radius: .4rem; color: var(--dm-text); background-color: var(--dm-surface); font: inherit; font-size: .8rem; }
+.appearance-picker label { font-size: .75rem; color: var(--dm-muted); }
+.appearance-picker select { width: 6.4rem; padding: .35rem .5rem; border: 1px solid var(--dm-border); border-radius: .4rem; color: var(--dm-text); background-color: var(--dm-surface); font: inherit; font-size: .8rem; }
+.palette-picker select { width: 7.2rem; }
 .layout { display: grid; grid-template-columns: 18rem minmax(0, 1fr) 13rem; max-width: 98rem; margin: auto; min-height: calc(100vh - 9rem); }
 nav { padding: 2rem 1rem 2rem 1.5rem; border-right: 1px solid var(--dm-border); font-size: .81rem; min-width: 0; }
 .navigation-panel { position: sticky; top: 6.6rem; }
@@ -85,7 +70,7 @@ nav li { margin: .12rem 0; }
 nav a { display: flex; align-items: center; gap: .4rem; padding: .35rem .5rem; border-radius: .35rem; color: var(--dm-text); text-decoration: none; min-width: 0; }
 nav li > a { margin-left: .85rem; }
 nav a:hover { color: var(--dm-accent); background: var(--dm-surface); }
-nav a[aria-current] { color: var(--dm-accent); background: var(--dm-accent-soft); font-weight: 650; box-shadow: inset 2px 0 var(--dm-accent); }
+nav a[aria-current] { color: var(--dm-active); background: var(--dm-accent-soft); font-weight: 650; box-shadow: inset 2px 0 var(--dm-accent); }
 .nav-label { flex: 1; overflow-wrap: anywhere; min-width: 0; }
 nav summary { display: flex; align-items: center; cursor: pointer; list-style: none; }
 nav summary::-webkit-details-marker { display: none; }
@@ -137,7 +122,7 @@ footer { border-top: 1px solid var(--dm-border); color: var(--dm-muted); padding
 }
 @media (max-width: 960px) {
   .site-header { padding: .8rem 1rem; }
-  .header-caption, .mode-picker label { display: none; }
+  .header-caption, .appearance-picker label { display: none; }
   .layout { display: block; }
   nav { padding: .65rem 1rem; border-right: 0; border-bottom: 1px solid var(--dm-border); background: var(--dm-surface); }
   nav .navigation-toggle { display: flex; font-size: .8rem; font-weight: 600; padding: .2rem 0; }
@@ -145,10 +130,15 @@ footer { border-top: 1px solid var(--dm-border); color: var(--dm-muted); padding
   .navigation-content { max-height: 65vh; padding: 1rem 0; }
   main { padding: 2rem 1.25rem 4rem; }
 }
+@media (max-width: 600px) {
+  html { scroll-padding-top: 9rem; }
+  .site-header { flex-wrap: wrap; }
+  .header-tools { width: 100%; display: grid; grid-template-columns: 1fr 1fr; }
+  .appearance-picker, .appearance-picker select { width: 100%; }
+}
 @media (max-width: 420px) {
   .site-brand { font-size: 1rem; gap: .45rem; }
   .version { font-size: .6rem; }
-  .mode-picker select { width: 5.5rem; }
   .brand-mark { width: 1.7rem; height: 1.7rem; }
 }
 @media print {
