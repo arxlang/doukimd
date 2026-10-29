@@ -27,7 +27,9 @@ groups:
     tasks:
       build:
         help: Build DoukiMD's documentation using DoukiMD
-        run: doukimd build
+        run: |
+          python scripts/generate_palette_preview.py
+          doukimd build
   package:
     tasks:
       build:

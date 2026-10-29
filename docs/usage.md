@@ -115,6 +115,13 @@ of Appearance; both choices persist per project when storage is available.
 Invalid saved values fall back to configuration. Without JavaScript, the
 configured palette still applies.
 
+[![Light and dark colors for all five presets][palette-chart]][palette-chart]
+
+[palette-chart]: assets/color-palettes.svg
+
+Select the chart to open it at full size. It shows all nine theme color roles
+in both modes, using the exact preset values.
+
 Terracotta keeps DoukiMD's original colors. The other four presets use
 [Radix Colors](https://www.radix-ui.com/colors) 3.0.0 scales under the MIT
 license, bundled with their attribution. They require no Radix components,
