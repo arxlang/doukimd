@@ -151,3 +151,34 @@ footer { border-top: 1px solid var(--dm-border); color: var(--dm-muted); padding
   main { padding: 0; }
   body { color: #000; background: #fff; }
 }
+
+/* Project menus share the checked route tree and require no framework JS. */
+.brand-logo { width: 2.4rem; height: 2.4rem; object-fit: contain; }
+.nav-group { display: flex; flex: 1; padding: .35rem .5rem; font-weight: 650; }
+.site-navbar { padding: 0; border: 0; flex: 1; }
+.site-navbar > details > ul { display: flex; flex-wrap: wrap; gap: .2rem; }
+.site-navbar li > a { margin-left: 0; }
+.site-navbar > details > ul > li { position: relative; }
+.site-navbar ul ul { position: absolute; top: 100%; left: 0; min-width: 13rem; max-height: 65vh; overflow: auto; margin: 0; padding: .5rem; border: 1px solid var(--dm-border); border-radius: .5rem; background: var(--dm-bg); box-shadow: 0 .5rem 1.5rem #0002; }
+.site-navbar ul ul ul { position: static; border: 0; border-left: 1px solid var(--dm-border); box-shadow: none; }
+.navbar-toggle { display: none; }
+.layout--no-sidebar { grid-template-columns: minmax(0, 1fr) 13rem; }
+.layout--no-toc { grid-template-columns: 18rem minmax(0, 1fr); }
+.layout--no-sidebar.layout--no-toc { grid-template-columns: minmax(0, 1fr); max-width: 76rem; }
+.page-layout-full .layout, .page-layout-landing .layout { max-width: none; }
+.page-layout-landing main { padding: clamp(2rem, 6vw, 6rem); }
+@media (max-width: 1200px) {
+  .site-header { flex-wrap: wrap; }
+  .site-navbar { order: 3; flex-basis: 100%; }
+  .layout--no-sidebar { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 960px) {
+  .navbar-toggle { display: flex; }
+  .site-navbar > details > ul { padding-top: .5rem; }
+  .site-navbar ul ul { position: static; }
+  .site-navbar { background: transparent; }
+  .layout--no-sidebar, .layout--no-toc { display: block; }
+}
+
+.site-navbar .nav-active > a,
+.site-navbar .nav-active > details > summary { color: var(--dm-accent); }

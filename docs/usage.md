@@ -10,7 +10,8 @@ See the runnable project under `examples/basic`.
 ## Markdown and metadata
 
 Pages under `docs/` become HTML at the same relative path. Optional YAML
-front matter accepts `title`, `render` (`markdown` or `jinja`), and `meta`.
+front matter accepts `title`, `render` (`markdown` or `jinja`), and `meta`,
+plus the page controls described below.
 Unknown keys, duplicate keys, invalid types, and malformed YAML are errors.
 
 Enable Jinja with `render: jinja`. Templates receive `site`, `project`,
@@ -24,7 +25,7 @@ still evaluated on templated pages: use Jinja raw blocks for literal examples.
 Docstring prose is parsed as Markdown and never evaluated as Jinja.
 
 The dialect includes CommonMark, tables, footnotes, API blocks, and API
-references. Raw HTML is disabled in content. Python code highlighting uses
+references. Raw HTML is disabled by default. Python code highlighting uses
 Pygments; unknown languages fall back to plain text.
 
 ## Configuration
@@ -132,14 +133,123 @@ references under **API Docs**, with nested modules, classes, and functions.
 The index lists root declarations; each reference page summarizes and links
 to its immediate children. Explicitly selected submodules remain visible
 even when their parent module is outside the configured collection.
-The bundled theme expands the active API branch and lists section anchors
+The default menu is automatic; explicit project menus can place or scope API
+entries as described below. The bundled theme expands the active API branch and lists section anchors
 under **On this page**. Disabling generated pages removes the API section.
+
+## Project navigation
+
+Without navigation settings, every authored page and the generated API tree
+appear in the sidebar. Explicit menus preserve your configured order:
+
+```yaml
+navigation:
+  navbar:
+    - title: Home
+      path: index.md
+    - title: Arx
+      path: arx/index.md
+    - title: Tools
+      children:
+        - title: Repository
+          url: https://github.com/arxlang/arx
+  default_sidebar: project
+  sidebars:
+    - id: project
+      title: ArxLang
+      items:
+        - title: Home
+          path: index.md
+        - title: API Docs
+          api: "*"
+    - id: arx
+      title: Arx
+      paths: [arx/, api/python/arx/]
+      items:
+        - title: Overview
+          path: arx/index.md
+        - title: Language
+          children:
+            - title: Getting started
+              path: arx/getting-started.md
+        - title: Python API
+          api: arx
+```
+
+`path` is relative to the documentation root and accepts Markdown or HTML
+page names, directory URLs, queries, and heading anchors. The engine checks
+these targets and computes links relative to each output page. `url` accepts
+HTTP, HTTPS, or mailto links. A `children` group needs no target; a page or
+external link may also have children.
+
+`api: "*"` inserts the complete generated API tree. `api: arx` selects only
+symbols from the source named `arx` in `api.sources`; no filesystem paths or
+handwritten API routes are needed in the menu. A single package links to its
+root page; multiple roots form a collapsible group. API generation must be
+enabled and the selected source must have generated pages.
+
+A sidebar's `paths` match output route prefixes ending in `/`, or exact HTML
+routes. The longest matching prefix wins; equally specific matches across
+sidebars are errors. Set `sidebar: arx` in front matter to select a menu
+explicitly, or `sidebar: false` to hide it. Otherwise the configured
+`default_sidebar` applies. With explicit sidebars and no default, unmatched
+pages have no sidebar. All configured menu targets are checked, including
+menus that are currently hidden. Index links for a product directory mark
+that product's navbar branch active on its descendants.
+
+## Page layouts and branding
+
+Front matter supports `layout: docs` (the default), `full` (unrestricted site
+width), or `landing` (full width without the sidebar, title banner, or TOC).
+Use boolean `toc`, `show_title`, and `sidebar` to control the standard layout.
+A page's first Markdown heading remains authored content; `show_title: false`
+hides only the theme banner.
+
+```yaml
+site:
+  title: ArxLang
+  description: Compiler ecosystem documentation
+  logo: images/arx-logo.png
+  logo_alt: ArxLang
+  favicon: favicon.ico
+assets: [assets/**, images/**, favicon.ico, styles.css]
+theme:
+  stylesheets: [styles.css]
+```
+
+Assets and stylesheet paths are relative to `docs_dir`. Patterns select files
+or directories recursively; nondefault patterns that match nothing are errors.
+Markdown and notebooks are document inputs and cannot be copied as assets.
+Asset paths cannot escape the documentation directory, and output collisions
+with pages, theme files, metadata, or differently cased filenames fail before
+publication. Logos, favicons, and extra stylesheets must be copied assets;
+the engine computes their URLs for nested pages. CSS is copied unchanged;
+use URLs relative to its output location. SCSS compilation is not included.
+An explicit `assets` list replaces the default, so keep `assets/**` when needed.
+
+For custom homepage markup, opt in with `html: true` in front matter. Combine
+it with `render: jinja` to use metadata in HTML or Markdown. This is trusted
+authored HTML, without sanitization; enable it only for content you control.
+Douki docstrings keep HTML escaped independently of the page setting.
+CommonMark requires blank lines around HTML wrappers to parse Markdown inside.
+HTML `id` anchors participate in link validation; duplicate ids fail. Local
+HTML `href`, `src`, and `poster` attributes are checked and Markdown page
+links rewritten, just like ordinary Markdown links. CSS URLs, `srcset`,
+inline scripts, and custom-template links are outside this validation.
+
+A page can choose `template: home.html` from `theme.directory`. To customize
+part of the bundled layout, that template can extend `page.html` and override
+Jinja blocks `head`, `header`, `page_heading`, `page_content`, or `footer`.
+For example, `{% extends "page.html" %}` followed by
+`{% block footer %}<footer>ArxLang</footer>{% endblock %}` changes the footer.
+Missing templates or template paths escaping their configured root fail.
 
 ## Links and output
 
 Relative Markdown links are rewritten to HTML and checked after all pages
 and heading anchors are known. Duplicate heading anchors get stable numeric
-suffixes. Local images and downloadable files must be under `docs/assets/`.
+suffixes. Local images and downloads must match the configured `assets`
+patterns (by default `docs/assets/**`).
 External and site-root links are not fetched or checked.
 
 Output includes HTML, CSS, `search.json`, `symbols.json`, and a versioned
@@ -202,20 +312,22 @@ including static and class methods. Labels use text as well as color.
 
 Set `theme.directory` to a local directory containing `page.html` to override
 the bundled HTML template. Themes receive the content context plus
-`content`, `navigation`, `table_of_contents`, and `stylesheet`.
+`content`, `navigation` (the selected sidebar), `navbar`, `sidebar_title`,
+`table_of_contents`, and `stylesheet`.
 Navigation entries expose `title`, relative `url`, `kind` (null for authored
 pages), `current` (exact route),
-`active` (current route or descendant), and recursive `children`.
+`active` (current route or descendant), and recursive `children`. Group-only
+entries have a null `url`; render their labels without an anchor.
 Table-of-contents entries expose `title`, anchor `url`, and `level` (`h2` or
 `h3`). Both structures are planned by the engine and can be styled by themes.
 HTML autoescaping is enabled;
 only the engine-rendered content should use Jinja's `safe` filter.
 
 Templates also receive `theme` settings, `palettes` (supported preset names),
-`home_url`, `theme_script`, and
+`home_url`, `theme_script`, `logo_url`, `favicon_url`, `extra_stylesheets`, and
 `framework_stylesheet` (null for `none`). Load the optional framework CSS
 before `stylesheet`. The `page` object includes its API `identifier` and
-`kind`, both null for authored pages. Symbol kinds are also in `symbols.json`.
+`kind`, both null for authored pages, as well as all front matter settings. Symbol kinds are also in `symbols.json`.
 
 Explicitly enabled `plugins` are loaded from the `doukimd.plugins` Python
 entry-point group. Each entry point exposes an object with a

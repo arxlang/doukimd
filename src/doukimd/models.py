@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Literal
 
 from public import public
-from pydantic import BaseModel, ConfigDict, Field, JsonValue
+from pydantic import BaseModel, ConfigDict, Field, JsonValue, model_validator
 from pydantic.dataclasses import dataclass
 
 from doukimd.runtime import typechecked
@@ -33,10 +33,22 @@ class SiteSettings(Settings):
         type: str
       base_url:
         type: str
+      description:
+        type: str
+      logo:
+        type: str | None
+      logo_alt:
+        type: str
+      favicon:
+        type: str | None
     """
 
     title: str
     base_url: str = ''
+    description: str = ''
+    logo: str | None = None
+    logo_alt: str = ''
+    favicon: str | None = None
 
 
 @public
@@ -95,6 +107,8 @@ class ThemeSettings(Settings):
     """
     title: Frontend framework, color preference, and local template overrides.
     attributes:
+      stylesheets:
+        type: list[str]
       directory:
         type: str | None
       framework:
@@ -105,12 +119,93 @@ class ThemeSettings(Settings):
         type: Literal[terracotta, ocean, forest, violet, slate]
     """
 
+    stylesheets: list[str] = Field(default_factory=list)
     directory: str | None = None
     framework: Literal['bootstrap', 'none'] = 'bootstrap'
     color_mode: Literal['auto', 'light', 'dark'] = 'auto'
     palette: Literal['terracotta', 'ocean', 'forest', 'violet', 'slate'] = (
         'terracotta'
     )
+
+
+@public
+class NavEntry(Settings):
+    """
+    title: A local page, external URL, nested group, or generated API tree.
+    attributes:
+      title:
+        type: str
+      path:
+        type: str | None
+      url:
+        type: str | None
+      api:
+        type: str | None
+      children:
+        type: list[NavEntry]
+    """
+
+    title: str = Field(min_length=1)
+    path: str | None = None
+    url: str | None = None
+    api: str | None = None
+    children: list[NavEntry] = Field(default_factory=list)
+
+    @model_validator(mode='after')
+    @typechecked
+    def validate_target(self) -> NavEntry:
+        """
+        title: Require one unambiguous navigation target or a nonempty group.
+        returns:
+          type: NavEntry
+        """
+        targets = sum(
+            value is not None for value in (self.path, self.url, self.api)
+        )
+        if targets > 1 or (targets == 0 and not self.children):
+            raise ValueError('Use one of path, url, api, or children')
+        if self.api is not None and self.children:
+            raise ValueError('API entries generate their own children')
+        return self
+
+
+@public
+class SidebarSettings(Settings):
+    """
+    title: A named menu selected by route prefixes or page front matter.
+    attributes:
+      id:
+        type: str
+      title:
+        type: str
+      paths:
+        type: list[str]
+      items:
+        type: list[NavEntry]
+    """
+
+    id: str = Field(min_length=1)
+    title: str
+    paths: list[str] = Field(default_factory=list)
+    items: list[NavEntry]
+
+
+@public
+class NavigationSettings(Settings):
+    """
+    title: Ordered navbar links and independently scoped documentation menus.
+    attributes:
+      navbar:
+        type: list[NavEntry]
+      sidebars:
+        type: list[SidebarSettings]
+      default_sidebar:
+        type: str | None
+    """
+
+    navbar: list[NavEntry] = Field(default_factory=list)
+    sidebars: list[SidebarSettings] = Field(default_factory=list)
+    default_sidebar: str | None = None
 
 
 @public
@@ -138,6 +233,10 @@ class Config(Settings):
         type: ThemeSettings
       plugins:
         type: list[str]
+      assets:
+        type: list[str]
+      navigation:
+        type: NavigationSettings
     """
 
     schema_version: Literal[1] = 1
@@ -150,6 +249,8 @@ class Config(Settings):
     api: ApiSettings = Field(default_factory=ApiSettings)
     theme: ThemeSettings = Field(default_factory=ThemeSettings)
     plugins: list[str] = Field(default_factory=list)
+    assets: list[str] = Field(default_factory=lambda: ['assets/**'])
+    navigation: NavigationSettings = Field(default_factory=NavigationSettings)
 
 
 @public
@@ -165,12 +266,30 @@ class PageSettings(Settings):
         type: dict[str, JsonValue]
       api_source:
         type: str | None
+      layout:
+        type: Literal[docs, full, landing]
+      sidebar:
+        type: str | bool
+      toc:
+        type: bool
+      show_title:
+        type: bool
+      html:
+        type: bool
+      template:
+        type: str
     """
 
     title: str | None = None
     render: Literal['markdown', 'jinja'] = 'markdown'
     meta: dict[str, JsonValue] = Field(default_factory=dict)
     api_source: str | None = None
+    layout: Literal['docs', 'full', 'landing'] = 'docs'
+    sidebar: str | bool = True
+    toc: bool = True
+    show_title: bool = True
+    html: bool = False
+    template: str = 'page.html'
 
 
 @public
@@ -297,7 +416,7 @@ class NavigationItem(Settings):
       title:
         type: str
       url:
-        type: str
+        type: str | None
       current:
         type: bool
       active:
@@ -309,7 +428,7 @@ class NavigationItem(Settings):
     """
 
     title: str
-    url: str
+    url: str | None
     current: bool
     active: bool
     children: list[NavigationItem] = Field(default_factory=list)
