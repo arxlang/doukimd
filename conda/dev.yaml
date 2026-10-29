@@ -1,0 +1,9 @@
+name: doukimd
+channels:
+  - nodefaults
+  - conda-forge
+dependencies:
+  - python>=3.10
+  - pip
+  - poetry
+  - nodejs # semantic-release

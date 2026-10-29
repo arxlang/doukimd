@@ -1,0 +1,11 @@
+schema_version: 1
+site:
+  title: DoukiMD
+project:
+  name: doukimd
+  version: "0.1.0"
+api:
+  sources:
+    - language: python
+      root: examples/basic/src
+      modules: [example]

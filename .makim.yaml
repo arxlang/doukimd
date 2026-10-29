@@ -1,0 +1,64 @@
+backend: bash
+groups:
+  tests:
+    tasks:
+      unit:
+        help: Run unit and integration tests with branch coverage
+        run: pytest --cov=doukimd --cov-report=term-missing
+      smoke:
+        help: Check the CLI and build the complete example project
+        run: |
+          doukimd --help
+          doukimd build --help
+          doukimd check --help
+          doukimd check --config examples/basic/doukimd.yaml
+          doukimd build --config examples/basic/doukimd.yaml
+      linter:
+        help: Run repository pre-commit checks
+        run: pre-commit run --all-files
+      ci:
+        help: Run the CI quality checks
+        hooks:
+          pre-run:
+            - task: tests.unit
+            - task: tests.smoke
+            - task: tests.linter
+  docs:
+    tasks:
+      build:
+        help: Build DoukiMD's documentation using DoukiMD
+        run: doukimd build
+  package:
+    tasks:
+      build:
+        help: Build source and wheel distributions
+        run: poetry build
+  all:
+    tasks:
+      ci:
+        help: Run tests, documentation, and packaging checks
+        hooks:
+          pre-run:
+            - task: tests.ci
+            - task: docs.build
+            - task: package.build
+  release:
+    vars:
+      app: |
+        npx --yes \
+        -p semantic-release \
+        -p "@semantic-release/commit-analyzer" \
+        -p "@semantic-release/release-notes-generator" \
+        -p "@semantic-release/changelog" \
+        -p "@semantic-release/exec" \
+        -p "@semantic-release/github" \
+        -p "@semantic-release/git" \
+        -p "@google/semantic-release-replace-plugin" \
+        semantic-release
+    tasks:
+      ci:
+        help: Publish a release from an explicitly dispatched workflow
+        run: ${{ vars.app }} --ci
+      dry:
+        help: Inspect the next semantic release
+        run: ${{ vars.app }} --dry-run
