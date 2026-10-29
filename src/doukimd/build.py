@@ -10,7 +10,7 @@ import shutil
 
 from pathlib import Path, PurePosixPath
 from tempfile import TemporaryDirectory
-from urllib.parse import unquote, urlsplit
+from urllib.parse import quote, unquote, urlsplit
 
 from jinja2 import (
     BaseLoader,
@@ -28,6 +28,7 @@ from pygments.lexers import TextLexer, get_lexer_by_name
 from pygments.util import ClassNotFound
 
 from doukimd.api import collect_api
+from doukimd.assets import asset_url, copy_assets
 from doukimd.config import load_config, load_data, project_path
 from doukimd.content import (
     ProjectLoader,
@@ -36,6 +37,7 @@ from doukimd.content import (
     plan_pages,
 )
 from doukimd.errors import BuildError
+from doukimd.html import process_html
 from doukimd.markdown import (
     assign_anchors,
     markdown_parser,
@@ -43,7 +45,11 @@ from doukimd.markdown import (
     resolve_references,
 )
 from doukimd.models import Config, Page, SiteBuild
-from doukimd.navigation import build_navigation
+from doukimd.navigation import (
+    build_navbar,
+    build_navigation,
+    sidebar_for_page,
+)
 from doukimd.plugins import plugin_context
 from doukimd.runtime import typechecked
 from doukimd.theme import palette_colors, theme_assets
@@ -132,33 +138,6 @@ def highlight_code(code: str, language: str, attrs: str) -> str:
 
 @private
 @typechecked
-def copy_assets(root: Path, config: Config) -> dict[str, bytes]:
-    """
-    title: Read only assets from the dedicated documentation assets directory.
-    parameters:
-      root:
-        type: Path
-      config:
-        type: Config
-    returns:
-      type: dict[str, bytes]
-    """
-    docs = project_path(root, config.docs_dir)
-    assets = docs / 'assets'
-    result: dict[str, bytes] = {}
-    if assets.exists():
-        for path in sorted(assets.rglob('*')):
-            if not path.resolve().is_relative_to(docs):
-                raise BuildError(
-                    'assets', 'Asset escapes docs directory', path
-                )
-            if path.is_file():
-                result[path.relative_to(docs).as_posix()] = path.read_bytes()
-    return result
-
-
-@private
-@typechecked
 def validate_links(
     tokens: list[Token],
     page: Page,
@@ -177,6 +156,55 @@ def validate_links(
       assets:
         type: dict[str, bytes]
     """
+
+    @typechecked
+    def resolve(value: str) -> str:
+        """
+        title: Validate and rewrite one Markdown or authored HTML URL.
+        parameters:
+          value:
+            type: str
+        returns:
+          type: str
+        """
+        try:
+            target = urlsplit(value)
+        except ValueError as error:
+            raise BuildError(
+                'references', f'Invalid URL: {value}', page.source
+            ) from error
+        if target.scheme or target.netloc or value.startswith('/'):
+            return value
+        path = unquote(target.path)
+        if path.endswith('.md'):
+            path = path[:-3] + '.html'
+        destination = path + 'index.html' if path.endswith('/') else path
+        route = (
+            posixpath.normpath(
+                posixpath.join(posixpath.dirname(page.route), destination)
+            )
+            if path
+            else page.route
+        )
+        if route not in pages and route not in assets:
+            raise BuildError(
+                'references', f'Unknown local target: {value}', page.source
+            )
+        if target.fragment and route in pages:
+            if unquote(target.fragment) not in pages[route].anchors:
+                raise BuildError(
+                    'references',
+                    f'Unknown heading anchor: {value}',
+                    page.source,
+                )
+        # Preserve URL escaping, including filenames with literal # and ?.
+        encoded = quote(path, safe="/:@!$&'()*+,;=-._~")
+        return (
+            encoded
+            + (f'?{target.query}' if target.query else '')
+            + (f'#{target.fragment}' if target.fragment else '')
+        )
+
     for token in tokens:
         for child in token.children or []:
             attribute = (
@@ -193,37 +221,29 @@ def validate_links(
                 continue
             if not isinstance(value, str):
                 raise BuildError('references', 'Link target must be text')
-            target = urlsplit(value)
-            if target.scheme or target.netloc or value.startswith('/'):
-                continue
-            path = unquote(target.path)
-            if path.endswith('.md'):
-                path = path[:-3] + '.html'
-            destination = path + 'index.html' if path.endswith('/') else path
-            route = (
-                posixpath.normpath(
-                    posixpath.join(posixpath.dirname(page.route), destination)
-                )
-                if path
-                else page.route
-            )
-            if route not in pages and route not in assets:
-                raise BuildError(
-                    'references', f'Unknown local target: {value}', page.source
-                )
-            if target.fragment and route in pages:
-                if unquote(target.fragment) not in pages[route].anchors:
-                    raise BuildError(
-                        'references',
-                        f'Unknown heading anchor: {value}',
-                        page.source,
-                    )
-            child.attrSet(
-                attribute,
-                path
-                + (f'?{target.query}' if target.query else '')
-                + (f'#{target.fragment}' if target.fragment else ''),
-            )
+            child.attrSet(attribute, resolve(value))
+    process_html(tokens, page, resolve)
+
+
+@private
+@typechecked
+def check_output_routes(routes: list[str]) -> None:
+    """
+    title: Reject case-insensitive file and directory collisions before output.
+    parameters:
+      routes:
+        type: list[str]
+    """
+    seen: set[str] = set()
+    for route in routes:
+        folded = route.casefold()
+        if folded in seen:
+            raise BuildError('planning', f'Output collides with {route}')
+        seen.add(folded)
+    for route in routes:
+        for parent in PurePosixPath(route.casefold()).parents:
+            if str(parent) in seen:
+                raise BuildError('planning', f'Output collides with {route}')
 
 
 @public
@@ -292,8 +312,10 @@ def compile_site(config_path: Path) -> SiteBuild:
     parser.options['highlight'] = highlight_code
     documents: dict[str, list[Token]] = {}
     for page in pages:
+        parser.options['html'] = page.settings.html
         text = expand_page(page, root, config, context)
         tokens = parse_document(parser, text, page, inventory)
+        process_html(tokens, page)
         assign_anchors(tokens, page)
         documents[page.route] = tokens
     assets = copy_assets(root, config)
@@ -313,14 +335,26 @@ def compile_site(config_path: Path) -> SiteBuild:
         undefined=StrictUndefined,
         autoescape=True,
     )
-    artifacts = dict(assets)
-    artifacts.update(theme_assets(config.theme))
+    bundled = theme_assets(config.theme)
+    check_output_routes(
+        [
+            *assets,
+            *bundled,
+            *by_route,
+            'search.json',
+            'symbols.json',
+            MANIFEST,
+        ]
+    )
+    artifacts = {**assets, **bundled}
     search: list[dict[str, str]] = []
     for page in pages:
         tokens = documents[page.route]
         content = parser.renderer.render(tokens, parser.options, {})
         relative = posixpath.dirname(page.route) or '.'
-        nav = build_navigation(pages, page, inventory)
+        nav = build_navigation(pages, page, inventory, config)
+        navbar = build_navbar(config, pages, page, inventory)
+        sidebar = sidebar_for_page(config, page)
         toc = [
             {
                 'title': ''.join(
@@ -335,12 +369,13 @@ def compile_site(config_path: Path) -> SiteBuild:
             if token.type == 'heading_open' and token.tag in {'h2', 'h3'}
         ]
         try:
-            html = environment.get_template('page.html').render(
+            project_path(root, page.settings.template)
+            html = environment.get_template(page.settings.template).render(
                 **context,
                 page={
+                    **page.settings.model_dump(),
                     'title': page.title,
                     'url': page.route,
-                    'meta': page.settings.meta,
                     'kind': (
                         inventory[page.symbol].kind if page.symbol else None
                     ),
@@ -348,7 +383,23 @@ def compile_site(config_path: Path) -> SiteBuild:
                 },
                 content=content,
                 navigation=nav,
-                table_of_contents=toc,
+                navbar=navbar,
+                sidebar_title=(
+                    sidebar.title
+                    if sidebar
+                    else f'Explore {config.project.name}'
+                ),
+                table_of_contents=(
+                    toc
+                    if page.settings.toc and page.settings.layout != 'landing'
+                    else []
+                ),
+                logo_url=asset_url(config.site.logo, page.route, assets),
+                favicon_url=asset_url(config.site.favicon, page.route, assets),
+                extra_stylesheets=[
+                    asset_url(value, page.route, assets)
+                    for value in config.theme.stylesheets
+                ],
                 stylesheet=posixpath.relpath('theme.css', relative),
                 theme_script=posixpath.relpath('theme.js', relative),
                 framework_stylesheet=(
@@ -367,8 +418,6 @@ def compile_site(config_path: Path) -> SiteBuild:
             )
         except TemplateError as error:
             raise BuildError('theme', str(error), page.source) from error
-        if page.route in artifacts:
-            raise BuildError('planning', f'Asset collides with {page.route}')
         artifacts[page.route] = html.encode('utf-8')
         search.append(
             {

@@ -13,3 +13,30 @@ api:
     - language: python
       root: src
       modules: [doukimd]
+navigation:
+  navbar:
+    - title: Guide
+      path: usage.md
+    - title: API Docs
+      api: "*"
+    - title: GitHub
+      url: https://github.com/arxlang/doukimd
+  default_sidebar: guide
+  sidebars:
+    - id: guide
+      title: DoukiMD
+      items:
+        - title: Overview
+          path: index.md
+        - title: Authoring and configuration
+          path: usage.md
+        - title: API Docs
+          api: "*"
+    - id: reference
+      title: API reference
+      paths: [api/]
+      items:
+        - title: Guide
+          path: usage.md
+        - title: API Docs
+          api: "*"

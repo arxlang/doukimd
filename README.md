@@ -24,6 +24,8 @@ Use `doukimd check` to validate without writing files.
 - Public re-exports, properties, data declarations, and callable variants.
 - Named API source folders with per-page and per-block selection.
 - Native API blocks, virtual API pages, and forward API references.
+- Ordered navbar menus and product sidebars with source-scoped API trees.
+- Page layouts, trusted HTML opt-in, local branding, and extra stylesheets.
 - Local link and heading validation, assets, code highlighting, and JSON
   symbol and search inventories.
 - A bundled theme, local Jinja theme overrides, and explicit context plugins.

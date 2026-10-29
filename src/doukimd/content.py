@@ -317,10 +317,9 @@ def expand_page(
         return environment.from_string(page.body).render(
             **context,
             page={
+                **page.settings.model_dump(),
                 'title': page.title,
                 'url': page.route,
-                'meta': page.settings.meta,
-                'api_source': page.settings.api_source,
             },
         )
     except TemplateError as error:

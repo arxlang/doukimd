@@ -316,7 +316,13 @@ def parse_document(
                 )
             for item in selected:
                 content = api_markdown(item, bool(token.meta['show_source']))
-                children = parser.parse(content)
+                # Authored HTML settings do not apply to docstrings.
+                authored_html = parser.options['html']
+                parser.options['html'] = False
+                try:
+                    children = parser.parse(content)
+                finally:
+                    parser.options['html'] = authored_html
                 if any(t.type == 'doukimd_api' for t in children):
                     raise BuildError(
                         'douki',
