@@ -179,7 +179,6 @@ def test_docstrings_cannot_expand_api_blocks(example: Path) -> None:
     [
         ('__all__ = ["add"]\n', None),
         ('from other import item\n__all__ = ["item"]\n', 're-export'),
-        ('VALUE = 1\n__all__ = ["VALUE"]\n', 'attributes'),
     ],
 )
 @typechecked

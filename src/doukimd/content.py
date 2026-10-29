@@ -4,9 +4,11 @@ title: Discover authored pages and expand their Markdown templates.
 
 from __future__ import annotations
 
+import hashlib
 import posixpath
 import re
 
+from collections import Counter
 from pathlib import Path
 from typing import Callable
 
@@ -143,12 +145,14 @@ def api_route(identifier: str) -> str:
       type: str
     """
     language, path = identifier.split(':', maxsplit=1)
-    return f'api/{language}/{path}.html'
+    return f'api/{language}/{path.replace(":", "/")}.html'
 
 
 @private
 @typechecked
-def api_summary(items: list[ApiSymbol], route: str) -> str:
+def api_summary(
+    items: list[ApiSymbol], route: str, routes: dict[str, str]
+) -> str:
     """
     title: Group links to immediate API children by declaration kind.
     parameters:
@@ -156,6 +160,8 @@ def api_summary(items: list[ApiSymbol], route: str) -> str:
         type: list[ApiSymbol]
       route:
         type: str
+      routes:
+        type: dict[str, str]
     returns:
       type: str
     """
@@ -164,6 +170,10 @@ def api_summary(items: list[ApiSymbol], route: str) -> str:
         ('class', 'Classes'),
         ('function', 'Functions'),
         ('method', 'Methods'),
+        ('property', 'Properties'),
+        ('attribute', 'Attributes'),
+        ('enum-member', 'Enum values'),
+        ('type-alias', 'Type aliases'),
     ]
     sections: list[str] = []
     for kind, title in groups:
@@ -176,13 +186,18 @@ def api_summary(items: list[ApiSymbol], route: str) -> str:
         sections.append(f'## {title}')
         for item in members:
             target = posixpath.relpath(
-                api_route(item.identifier), posixpath.dirname(route)
+                routes[item.identifier], posixpath.dirname(route)
             )
             summary = ' '.join(
                 str(item.documentation.get('title', '')).split()
             )
+            label = (
+                f'{item.source_name} / {item.name}'
+                if route == 'api/index.html' and item.source_name
+                else item.name
+            )
             sections.append(
-                f'- [{md_text(item.name)}]({target}) — {md_text(str(summary))}'
+                f'- [{md_text(label)}]({target}) — {md_text(str(summary))}'
             )
     return '\n\n'.join(sections)
 
@@ -206,6 +221,12 @@ def plan_pages(
     """
     routes: dict[str, str] = {}
     if config.api.generate_pages and inventory:
+        routes = {name: api_route(name) for name in inventory}
+        counts = Counter(route.casefold() for route in routes.values())
+        for name, route in list(routes.items()):
+            if counts[route.casefold()] > 1:
+                suffix = hashlib.sha256(name.encode('utf-8')).hexdigest()[:16]
+                routes[name] = route[:-5] + f'--{suffix}.html'
         roots = [
             item for item in inventory.values() if item.parent not in inventory
         ]
@@ -213,17 +234,20 @@ def plan_pages(
             Page(
                 'api/index.html',
                 'API Docs',
-                api_summary(roots, 'api/index.html'),
+                api_summary(roots, 'api/index.html', routes),
                 PageSettings(),
             )
         )
         for identifier, item in sorted(inventory.items()):
-            route = api_route(identifier)
-            routes[identifier] = route
+            route = routes[identifier]
             pages.append(
                 Page(
                     route,
-                    item.name,
+                    (
+                        f'{item.source_name} / {item.name}'
+                        if item.source_name and item.parent not in inventory
+                        else item.name
+                    ),
                     f'::: api {identifier}\n:::\n\n'
                     + api_summary(
                         [
@@ -232,6 +256,7 @@ def plan_pages(
                             if child.parent == identifier
                         ],
                         route,
+                        routes,
                     ),
                     PageSettings(),
                     symbol=identifier,
@@ -295,6 +320,7 @@ def expand_page(
                 'title': page.title,
                 'url': page.route,
                 'meta': page.settings.meta,
+                'api_source': page.settings.api_source,
             },
         )
     except TemplateError as error:

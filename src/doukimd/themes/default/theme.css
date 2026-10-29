@@ -96,6 +96,10 @@ nav .api-kind { font-size: .56rem; padding: .12rem .3rem; }
 .api-kind--class { color: var(--dm-class); background: var(--dm-class-bg); }
 .api-kind--function { color: var(--dm-function); background: var(--dm-function-bg); }
 .api-kind--method { color: var(--dm-method); background: var(--dm-method-bg); }
+.api-kind--property { color: var(--dm-function); background: var(--dm-function-bg); }
+.api-kind--type-alias { color: var(--dm-module); background: var(--dm-module-bg); }
+.api-kind--attribute { color: var(--dm-class); background: var(--dm-class-bg); }
+.api-kind--enum-member { color: var(--dm-method); background: var(--dm-method-bg); }
 code { font: .86em/1.7 ui-monospace, SFMono-Regular, Consolas, monospace; color: var(--dm-accent); }
 :not(pre) > code { background: var(--dm-surface); padding: .15rem .3rem; border-radius: .25rem; }
 pre { max-width: 100%; overflow: auto; border: 1px solid var(--dm-border); border-radius: .6rem; padding: 1.1rem 1.25rem; margin: 1.4rem 0; background: var(--dm-code); }

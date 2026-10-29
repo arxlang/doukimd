@@ -243,6 +243,17 @@ def compile_site(config_path: Path) -> SiteBuild:
     output_path(root, config)
     inventory = collect_api(root, config)
     pages = discover_pages(root, config)
+    source_names = {source.name for source in config.api.sources}
+    for page in pages:
+        if (
+            page.settings.api_source is not None
+            and page.settings.api_source not in source_names
+        ):
+            raise BuildError(
+                'api',
+                f'Unknown API source: {page.settings.api_source}',
+                page.source,
+            )
     routes = plan_pages(pages, inventory, config)
     if not pages:
         raise BuildError('planning', 'The site has no pages')
@@ -260,6 +271,17 @@ def compile_site(config_path: Path) -> SiteBuild:
                 'documentation': item.documentation,
                 'source': item.source,
                 'line': item.line,
+                'source_name': item.source_name,
+                'canonical': item.canonical,
+                'generated': item.generated,
+                'variants': [
+                    {
+                        'signature': variant.signature,
+                        'documentation': variant.documentation,
+                        'line': variant.line,
+                    }
+                    for variant in item.variants
+                ],
             }
             for name, item in inventory.items()
         },
@@ -370,6 +392,13 @@ def compile_site(config_path: Path) -> SiteBuild:
                     'signature': item.signature,
                     'source': item.source,
                     'line': item.line,
+                    'canonical': item.canonical,
+                    'source_name': item.source_name,
+                    'generated': item.generated,
+                    'variants': [
+                        {'signature': variant.signature, 'line': variant.line}
+                        for variant in item.variants
+                    ],
                 }
                 for name, item in sorted(inventory.items())
             },

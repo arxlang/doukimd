@@ -10,7 +10,7 @@ import re
 
 from html import escape
 from pathlib import Path
-from typing import Literal
+from typing import Literal, Mapping
 
 from markdown_it import MarkdownIt
 from markdown_it.rules_block import StateBlock
@@ -24,6 +24,7 @@ from doukimd.config import read_yaml
 from doukimd.content import md_text
 from doukimd.errors import BuildError
 from doukimd.models import ApiSymbol, Page, Settings
+from doukimd.references import resolve_symbol
 from doukimd.runtime import typechecked
 
 
@@ -36,10 +37,13 @@ class ApiOptions(Settings):
         type: Literal[none, public]
       show_source:
         type: bool
+      source:
+        type: str | None
     """
 
     members: Literal['none', 'public'] = 'none'
     show_source: bool = True
+    source: str | None = None
 
 
 @private
@@ -197,11 +201,36 @@ def api_markdown(item: ApiSymbol, show_source: bool) -> str:
         ),
     )
     parts = [f'## {md_text(item.name)}']
-    if item.signature:
+    if item.signature and not item.variants:
         parts.append(f'{fence}python\n{item.signature}\n{fence}')
+    if item.generated:
+        parts.append('Generated from the class declaration.')
+    for index, variant in enumerate(item.variants, start=1):
+        parts.append(f'### Variant {index}')
+        parts.append(f'{fence}python\n{variant.signature}\n{fence}')
+        parts.append(documentation_markdown(variant.documentation))
     if show_source:
         parts.append(f'Source: {md_text(item.source)}:{item.line or 1}')
-    for name, value in item.documentation.items():
+        if item.canonical and item.canonical != item.identifier:
+            parts.append(f'Declared as: {md_text(item.canonical)}')
+    if not item.variants:
+        parts.append(documentation_markdown(item.documentation))
+    return '\n\n'.join(parts)
+
+
+@private
+@typechecked
+def documentation_markdown(data: Mapping[str, object]) -> str:
+    """
+    title: Format validated fields for one declaration or variant.
+    parameters:
+      data:
+        type: Mapping[str, object]
+    returns:
+      type: str
+    """
+    parts: list[str] = []
+    for name, value in data.items():
         if name in {'title', 'summary'}:
             parts.append(describe(value))
         else:
@@ -273,9 +302,11 @@ def parse_document(
             if token.type != 'doukimd_api':
                 expanded.append(token)
                 continue
-            identifier = str(token.meta['identifier'])
-            if identifier not in inventory:
-                raise BuildError('api', f'Unknown API symbol: {identifier}')
+            identifier = resolve_symbol(
+                str(token.meta['identifier']),
+                token.meta.get('source') or page.settings.api_source,
+                inventory,
+            )
             selected = [inventory[identifier]]
             if token.meta['members'] == 'public':
                 selected.extend(
@@ -301,6 +332,10 @@ def parse_document(
                 if page.symbol == item.identifier:
                     children[0].tag = 'h1'
                     children[2].tag = 'h1'
+                for child in children:
+                    for inline in child.children or []:
+                        if inline.type == 'doukimd_ref':
+                            inline.meta['source'] = item.source_name
                 expanded.extend(children)
         return expanded
     except BuildError as error:
@@ -360,7 +395,18 @@ def resolve_references(
             if child.type != 'doukimd_ref':
                 children.append(child)
                 continue
-            identifier = str(child.meta['identifier'])
+            try:
+                identifier = resolve_symbol(
+                    str(child.meta['identifier']),
+                    child.meta.get('source') or page.settings.api_source,
+                    inventory,
+                )
+            except BuildError as error:
+                raise BuildError(
+                    'references',
+                    f'No generated API page: {error.message}',
+                    page.source,
+                ) from error
             if identifier not in routes:
                 raise BuildError(
                     'references',

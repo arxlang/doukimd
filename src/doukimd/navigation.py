@@ -44,38 +44,6 @@ def navigation_item(
     )
 
 
-@private
-@typechecked
-def symbol_navigation(
-    identifier: str,
-    current: Page,
-    symbols: dict[str, Page],
-    inventory: dict[str, ApiSymbol],
-) -> NavigationItem:
-    """
-    title: Preserve declaration parentage in the API navigation tree.
-    parameters:
-      identifier:
-        type: str
-      current:
-        type: Page
-      symbols:
-        type: dict[str, Page]
-      inventory:
-        type: dict[str, ApiSymbol]
-    returns:
-      type: NavigationItem
-    """
-    children = [
-        symbol_navigation(name, current, symbols, inventory)
-        for name in sorted(symbols)
-        if inventory[name].parent == identifier
-    ]
-    return navigation_item(symbols[identifier], current, children).model_copy(
-        update={'kind': inventory[identifier].kind}
-    )
-
-
 @public
 @typechecked
 def build_navigation(
@@ -94,6 +62,30 @@ def build_navigation(
       type: list[NavigationItem]
     """
     symbols = {page.symbol: page for page in pages if page.symbol is not None}
+    by_parent: dict[str | None, list[str]] = {}
+    for name in sorted(symbols):
+        parent = inventory[name].parent
+        by_parent.setdefault(parent if parent in symbols else None, []).append(
+            name
+        )
+
+    @typechecked
+    def symbol_navigation(name: str) -> NavigationItem:
+        """
+        title: Walk the indexed symbol tree.
+        parameters:
+          name:
+            type: str
+        returns:
+          type: NavigationItem
+        """
+        children = [
+            symbol_navigation(child) for child in by_parent.get(name, [])
+        ]
+        return navigation_item(symbols[name], current, children).model_copy(
+            update={'kind': inventory[name].kind}
+        )
+
     navigation: list[NavigationItem] = []
     for page in pages:
         if page.symbol is not None:
@@ -101,9 +93,7 @@ def build_navigation(
         children: list[NavigationItem] = []
         if page.route == 'api/index.html' and page.source is None:
             children = [
-                symbol_navigation(name, current, symbols, inventory)
-                for name in sorted(symbols)
-                if inventory[name].parent not in symbols
+                symbol_navigation(name) for name in by_parent.get(None, [])
             ]
         navigation.append(navigation_item(page, current, children))
     return navigation

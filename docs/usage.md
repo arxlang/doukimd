@@ -39,8 +39,75 @@ An API source has `language: python`, a project-relative `root`, and
 submodules, classes, and functions are collected statically. Included public
 declarations require valid Douki docstrings. Explicit Douki visibility and
 atpublic decorators control visibility; underscores do not imply privacy.
-Literal `__all__` limits module members. Explicit re-exports and exported
-standalone attributes are rejected in this version.
+Literal `__all__` selects exported declarations; package submodules are also
+collected. Without `__all__`, local declarations are included, while imports
+are followed only when explicitly exported. Unresolved or cyclic exports fail
+the build. Re-exports retain their public names and original declaration
+identity and location. Exported aliases must resolve within the selected
+source folder; runtime inspection and external dependency imports are disabled.
+
+Properties, enum values, fields, constants, and annotated type aliases have
+reference pages. Data declarations can rely on their source annotations and
+values without an invented docstring; class field descriptions are reused
+from Douki `attributes`. Handwritten modules, classes, and callables still
+require valid Douki documentation. Generated dataclass constructors are
+identified as generated and use their statically derived signatures.
+
+Plum dispatch families (including aliases and `Base.method.dispatch`
+registrations) retain every signature and its own docstring. Typing overloads
+retain their declared signatures and use implementation prose when a stub has
+no docstring. Unknown repeated-definition patterns fail instead of retaining
+only the last declaration. Inherited members are not expanded in this version.
+
+### Selecting source folders per page
+
+Name sources to isolate packages in a monorepo:
+
+```yaml
+api:
+  sources:
+    - name: arx
+      root: packages/arx/src
+    - name: irx
+      root: packages/irx/src
+```
+
+When `modules` is omitted, DoukiMD discovers top-level Python modules and
+regular packages in the folder. The folder can also be a package directory
+containing `__init__.py`. Set `modules: [irx.table_io]` to select a smaller
+surface from a source tree. Namespace packages remain unsupported.
+
+Select a default source for a Markdown page:
+
+```markdown
+---
+title: IRx reference
+api_source: irx
+---
+
+::: api irx.table_io
+members: public
+:::
+
+See {@api irx.table_io}.
+```
+
+An individual API block can override the page choice with `source: arx`.
+Fully qualified references such as `{@api python:arx:arx.get_version}` can
+link across sources. Ambiguous unscoped names and unknown source names fail
+the build. Folder paths are configured once; Markdown uses source names.
+Two folders may contain identically named Python packages without collisions.
+Duplicate source names are errors.
+
+Named sources use identities `python:<source>:<qualified-name>` and routes
+`api/python/<source>/<qualified-name>.html`. Unnamed sources retain the
+original `python:<qualified-name>` identities and routes. The symbol inventory
+includes `source_name`, original `canonical` identity, `generated`, and
+callable `variants` with signatures and declaration lines.
+When API names collide on a case-insensitive filesystem (such as a public
+`Compiler` class and a `compiler` module), their filenames receive stable
+identity-derived suffixes. API references and generated summaries use the
+planned routes automatically.
 
 ## API blocks and references
 
@@ -159,7 +226,7 @@ hooks, and invalid results fail the build. Plugins run trusted Python code.
 
 ## Initial boundaries
 
-Arx collection, inherited members, dynamic Python APIs, overload sets,
+Arx collection, inherited members, dynamic Python APIs,
 automatic repository source links, incremental builds, a preview server, and
 cross-project inventories are follow-up work. Arx configuration is rejected
 until an adapter can consume retained frontend docstrings.

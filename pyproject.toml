@@ -55,7 +55,7 @@ warn_unused_configs = true
 files = ["src/doukimd"]
 
 [[tool.mypy.overrides]]
-module = "doukimd.api"
+module = ["doukimd.api", "doukimd.collection"]
 disable_error_code = ["no-redef"]
 
 [tool.pytest.ini_options]
@@ -82,6 +82,7 @@ lines-between-types = 1
 
 [tool.ruff.lint.per-file-ignores]
 "src/doukimd/api.py" = ["F811"]
+"src/doukimd/collection.py" = ["F811"]
 
 [tool.ruff.format]
 quote-style = "single"
