@@ -1,0 +1,57 @@
+default_stages: [pre-commit]
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-json
+      - id: check-toml
+      - id: check-xml
+      - id: debug-statements
+      - id: check-builtin-literals
+      - id: check-case-conflict
+      - id: check-docstring-first
+      - id: detect-private-key
+  - repo: local
+    hooks:
+      - id: ruff-linter
+        name: ruff-linter
+        entry: ruff check
+        language: system
+        types: [python]
+      - id: ruff-format
+        name: ruff-format
+        entry: ruff format --check
+        language: system
+        types: [python]
+      - id: douki
+        name: douki
+        entry: douki check
+        language: system
+        types: [python]
+        exclude: ^tests/fixtures/
+      - id: mypy
+        name: mypy
+        entry: mypy
+        language: system
+        pass_filenames: false
+        types: [python]
+      - id: bandit
+        name: bandit
+        entry: bandit -q -r src -c pyproject.toml -iii -lll
+        language: system
+        pass_filenames: false
+        types: [python]
+      - id: vulture
+        name: vulture
+        entry: vulture
+        language: system
+        pass_filenames: false
+        types: [python]
+      - id: mccabe
+        name: mccabe
+        entry: python -m mccabe --min 20
+        language: system
+        files: ^src/
+        types: [python]

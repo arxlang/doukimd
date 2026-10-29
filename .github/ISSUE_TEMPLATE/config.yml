@@ -1,0 +1,15 @@
+# Ref: https://help.github.com/en/github/building-a-strong-community/configuring-issue-templates-for-your-repository#configuring-the-template-chooser
+blank_issues_enabled: true
+contact_links:
+  - name: 🙋  Usage Questions
+    url: https://github.com/osl-incubator/doukimd.git/discussions
+    about: |
+      Use Douki's GitHub Discussions to ask "How do I do X with Douki?".
+  - name: 📖  Tutorial
+    url: https://github.com/osl-incubator/doukimd.git
+    about: |
+      The Douki tutorial is continually updated and provides an in depth walkthrough
+      of how to use the latest release of Douki.
+  - name: 📝  Douki Code of Conduct
+    url: https://github.com/osl-incubator/doukimd.git/coc/CODE_OF_CONDUCT.md
+    about: Expectations for how people will interact with each other on Douki's GitHub.
