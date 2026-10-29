@@ -1,5 +1,7 @@
+
+        
 <!doctype html>
-<html lang="en" data-color-mode="auto" data-bs-theme="light" data-preference-key="doukimd:doukimd:color-mode">
+<html lang="en" data-color-mode="auto" data-bs-theme="light" data-preference-key="doukimd:doukimd:color-mode" data-palette="terracotta" data-palettes="terracotta,ocean,forest,violet,slate">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,59 +12,30 @@
     <link rel="stylesheet" href="_doukimd/bootstrap/bootstrap.min.css">
     
     <link rel="stylesheet" href="theme.css">
+    
+    
+    
+    
   </head>
-  <body>
+  <body class="page-layout-docs">
     <a class="skip-link" href="#content">Skip to content</a>
+    
     <header class="site-header">
       <a class="site-brand" href="index.html">
         <span class="brand-mark" aria-hidden="true">D</span>
         <span class="brand-name">DoukiMD</span>
         <span class="version badge rounded-pill">0.1.0</span>
       </a>
-      <div class="header-tools">
-        <span class="header-caption">Documentation</span>
-        <div class="mode-picker" hidden>
-          <label for="color-mode">Appearance</label>
-          <select id="color-mode" class="form-select form-select-sm" aria-label="Color mode">
-            <option value="auto">System</option>
-            <option value="light">Light</option>
-            <option value="dark">Dark</option>
-          </select>
-        </div>
-      </div>
-    </header>
-    <div class="layout">
-      <nav aria-label="Documentation">
-        
-        
-        <details class="navigation-panel" id="docs-navigation" open>
-          <summary class="navigation-toggle">Browse documentation</summary>
-          <div class="navigation-content">
-            <p class="sidebar-caption">Explore doukimd</p>
-            
+      
+      <nav class="site-navbar" aria-label="Primary">
+        <details class="navbar-panel" open>
+          <summary class="navbar-toggle">Menu</summary>
+          
         <ul>
           
-          <li>
+          <li class="nav-active">
             
-            <a href="changelog.html"><span class="nav-label">Release Notes</span></a>
-            
-          </li>
-          
-          <li>
-            
-            <a href="contributing.html"><span class="nav-label">Contributing</span></a>
-            
-          </li>
-          
-          <li>
-            
-            <a href="index.html"><span class="nav-label">DoukiMD</span></a>
-            
-          </li>
-          
-          <li>
-            
-            <a href="usage.html" aria-current="page"><span class="nav-label">Authoring and configuration</span></a>
+            <a href="usage.html" aria-current="page"><span class="nav-label">Guide</span></a>
             
           </li>
           
@@ -88,6 +61,12 @@
           
           <li>
             
+            <a href="api/python/doukimd.__version__.html"><span class="nav-label">__version__</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
             <details>
               <summary><a href="api/python/doukimd.api.html"><span class="nav-label">api</span><span class="api-kind api-kind--module">module</span></a></summary>
               
@@ -105,9 +84,28 @@
             
           </li>
           
+        </ul>
+        
+            </details>
+            
+          </li>
+          
           <li>
             
-            <a href="api/python/doukimd.api.visit.html"><span class="nav-label">visit</span><span class="api-kind api-kind--function">function</span></a>
+            <details>
+              <summary><a href="api/python/doukimd.assets.html"><span class="nav-label">assets</span><span class="api-kind api-kind--module">module</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.assets.asset_url.html"><span class="nav-label">asset_url</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.assets.copy_assets.html"><span class="nav-label">copy_assets</span><span class="api-kind api-kind--function">function</span></a>
             
           </li>
           
@@ -123,6 +121,12 @@
               <summary><a href="api/python/doukimd.build.html"><span class="nav-label">build</span><span class="api-kind api-kind--module">module</span></a></summary>
               
         <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.build.MANIFEST.html"><span class="nav-label">MANIFEST</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
           
           <li>
             
@@ -170,6 +174,12 @@
         </ul>
         
             </details>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.collection.html"><span class="nav-label">collection</span><span class="api-kind api-kind--module">module</span></a>
             
           </li>
           
@@ -273,6 +283,24 @@
             
           </li>
           
+          <li>
+            
+            <a href="api/python/doukimd.errors.BuildError.message.html"><span class="nav-label">message</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.errors.BuildError.phase.html"><span class="nav-label">phase</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.errors.BuildError.source.html"><span class="nav-label">source</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
         </ul>
         
             </details>
@@ -288,6 +316,25 @@
           <li>
             
             <a href="api/python/doukimd.get_version.html"><span class="nav-label">get_version</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.html.html"><span class="nav-label">html</span><span class="api-kind api-kind--module">module</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.html.process_html.html"><span class="nav-label">process_html</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
             
           </li>
           
@@ -337,73 +384,719 @@
           
           <li>
             
-            <a href="api/python/doukimd.models.ApiSettings.html"><span class="nav-label">ApiSettings</span><span class="api-kind api-kind--class">class</span></a>
+            <details>
+              <summary><a href="api/python/doukimd.models.ApiSettings.html"><span class="nav-label">ApiSettings</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ApiSettings.generate_pages.html"><span class="nav-label">generate_pages</span><span class="api-kind api-kind--attribute">attribute</span></a>
             
           </li>
           
           <li>
             
-            <a href="api/python/doukimd.models.ApiSymbol.html"><span class="nav-label">ApiSymbol</span><span class="api-kind api-kind--class">class</span></a>
+            <a href="api/python/doukimd.models.ApiSettings.sources.html"><span class="nav-label">sources</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
             
           </li>
           
           <li>
             
-            <a href="api/python/doukimd.models.Config.html"><span class="nav-label">Config</span><span class="api-kind api-kind--class">class</span></a>
+            <details>
+              <summary><a href="api/python/doukimd.models.ApiSymbol.html"><span class="nav-label">ApiSymbol</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ApiSymbol.canonical.html"><span class="nav-label">canonical</span><span class="api-kind api-kind--attribute">attribute</span></a>
             
           </li>
           
           <li>
             
-            <a href="api/python/doukimd.models.NavigationItem.html"><span class="nav-label">NavigationItem</span><span class="api-kind api-kind--class">class</span></a>
+            <a href="api/python/doukimd.models.ApiSymbol.documentation.html"><span class="nav-label">documentation</span><span class="api-kind api-kind--attribute">attribute</span></a>
             
           </li>
           
           <li>
             
-            <a href="api/python/doukimd.models.Page.html"><span class="nav-label">Page</span><span class="api-kind api-kind--class">class</span></a>
+            <a href="api/python/doukimd.models.ApiSymbol.generated.html"><span class="nav-label">generated</span><span class="api-kind api-kind--attribute">attribute</span></a>
             
           </li>
           
           <li>
             
-            <a href="api/python/doukimd.models.PageSettings.html"><span class="nav-label">PageSettings</span><span class="api-kind api-kind--class">class</span></a>
+            <a href="api/python/doukimd.models.ApiSymbol.identifier.html"><span class="nav-label">identifier</span><span class="api-kind api-kind--attribute">attribute</span></a>
             
           </li>
           
           <li>
             
-            <a href="api/python/doukimd.models.ProjectSettings.html"><span class="nav-label">ProjectSettings</span><span class="api-kind api-kind--class">class</span></a>
+            <a href="api/python/doukimd.models.ApiSymbol.kind.html"><span class="nav-label">kind</span><span class="api-kind api-kind--attribute">attribute</span></a>
             
           </li>
           
           <li>
             
-            <a href="api/python/doukimd.models.PythonSource.html"><span class="nav-label">PythonSource</span><span class="api-kind api-kind--class">class</span></a>
+            <a href="api/python/doukimd.models.ApiSymbol.line.html"><span class="nav-label">line</span><span class="api-kind api-kind--attribute">attribute</span></a>
             
           </li>
           
           <li>
             
-            <a href="api/python/doukimd.models.Settings.html"><span class="nav-label">Settings</span><span class="api-kind api-kind--class">class</span></a>
+            <a href="api/python/doukimd.models.ApiSymbol.name.html"><span class="nav-label">name</span><span class="api-kind api-kind--attribute">attribute</span></a>
             
           </li>
           
           <li>
             
-            <a href="api/python/doukimd.models.SiteBuild.html"><span class="nav-label">SiteBuild</span><span class="api-kind api-kind--class">class</span></a>
+            <a href="api/python/doukimd.models.ApiSymbol.parent.html"><span class="nav-label">parent</span><span class="api-kind api-kind--attribute">attribute</span></a>
             
           </li>
           
           <li>
             
-            <a href="api/python/doukimd.models.SiteSettings.html"><span class="nav-label">SiteSettings</span><span class="api-kind api-kind--class">class</span></a>
+            <a href="api/python/doukimd.models.ApiSymbol.signature.html"><span class="nav-label">signature</span><span class="api-kind api-kind--attribute">attribute</span></a>
             
           </li>
           
           <li>
             
-            <a href="api/python/doukimd.models.ThemeSettings.html"><span class="nav-label">ThemeSettings</span><span class="api-kind api-kind--class">class</span></a>
+            <a href="api/python/doukimd.models.ApiSymbol.source.html"><span class="nav-label">source</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ApiSymbol.source_name.html"><span class="nav-label">source_name</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ApiSymbol.variants.html"><span class="nav-label">variants</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.models.ApiVariant.html"><span class="nav-label">ApiVariant</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ApiVariant.documentation.html"><span class="nav-label">documentation</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ApiVariant.line.html"><span class="nav-label">line</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ApiVariant.signature.html"><span class="nav-label">signature</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.models.Config.html"><span class="nav-label">Config</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Config.api.html"><span class="nav-label">api</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Config.assets.html"><span class="nav-label">assets</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Config.data.html"><span class="nav-label">data</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Config.docs_dir.html"><span class="nav-label">docs_dir</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Config.includes_dir.html"><span class="nav-label">includes_dir</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Config.navigation.html"><span class="nav-label">navigation</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Config.output_dir.html"><span class="nav-label">output_dir</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Config.plugins.html"><span class="nav-label">plugins</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Config.project.html"><span class="nav-label">project</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Config.schema_version.html"><span class="nav-label">schema_version</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Config.site.html"><span class="nav-label">site</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Config.theme.html"><span class="nav-label">theme</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.models.NavEntry.html"><span class="nav-label">NavEntry</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.NavEntry.api.html"><span class="nav-label">api</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.NavEntry.children.html"><span class="nav-label">children</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.NavEntry.path.html"><span class="nav-label">path</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.NavEntry.title.html"><span class="nav-label">title</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.NavEntry.url.html"><span class="nav-label">url</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.NavEntry.validate_target.html"><span class="nav-label">validate_target</span><span class="api-kind api-kind--method">method</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.models.NavigationItem.html"><span class="nav-label">NavigationItem</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.NavigationItem.active.html"><span class="nav-label">active</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.NavigationItem.children.html"><span class="nav-label">children</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.NavigationItem.current.html"><span class="nav-label">current</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.NavigationItem.kind.html"><span class="nav-label">kind</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.NavigationItem.title.html"><span class="nav-label">title</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.NavigationItem.url.html"><span class="nav-label">url</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.models.NavigationSettings.html"><span class="nav-label">NavigationSettings</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.NavigationSettings.default_sidebar.html"><span class="nav-label">default_sidebar</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.NavigationSettings.navbar.html"><span class="nav-label">navbar</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.NavigationSettings.sidebars.html"><span class="nav-label">sidebars</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.models.Page.html"><span class="nav-label">Page</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Page.anchors.html"><span class="nav-label">anchors</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Page.body.html"><span class="nav-label">body</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Page.route.html"><span class="nav-label">route</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Page.settings.html"><span class="nav-label">settings</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Page.source.html"><span class="nav-label">source</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Page.symbol.html"><span class="nav-label">symbol</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Page.title.html"><span class="nav-label">title</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.models.PageSettings.html"><span class="nav-label">PageSettings</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.PageSettings.api_source.html"><span class="nav-label">api_source</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.PageSettings.html.html"><span class="nav-label">html</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.PageSettings.layout.html"><span class="nav-label">layout</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.PageSettings.meta.html"><span class="nav-label">meta</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.PageSettings.render.html"><span class="nav-label">render</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.PageSettings.show_title.html"><span class="nav-label">show_title</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.PageSettings.sidebar.html"><span class="nav-label">sidebar</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.PageSettings.template.html"><span class="nav-label">template</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.PageSettings.title.html"><span class="nav-label">title</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.PageSettings.toc.html"><span class="nav-label">toc</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.models.ProjectSettings.html"><span class="nav-label">ProjectSettings</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ProjectSettings.name.html"><span class="nav-label">name</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ProjectSettings.version.html"><span class="nav-label">version</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.models.PythonSource.html"><span class="nav-label">PythonSource</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.PythonSource.language.html"><span class="nav-label">language</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.PythonSource.modules.html"><span class="nav-label">modules</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.PythonSource.name.html"><span class="nav-label">name</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.PythonSource.root.html"><span class="nav-label">root</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.models.Settings.html"><span class="nav-label">Settings</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Settings.model_config.html"><span class="nav-label">model_config</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.models.SidebarSettings.html"><span class="nav-label">SidebarSettings</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.SidebarSettings.id.html"><span class="nav-label">id</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.SidebarSettings.items.html"><span class="nav-label">items</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.SidebarSettings.paths.html"><span class="nav-label">paths</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.SidebarSettings.title.html"><span class="nav-label">title</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.models.SiteBuild.html"><span class="nav-label">SiteBuild</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.SiteBuild.files.html"><span class="nav-label">files</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.SiteBuild.page_count.html"><span class="nav-label">page_count</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.models.SiteSettings.html"><span class="nav-label">SiteSettings</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.SiteSettings.base_url.html"><span class="nav-label">base_url</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.SiteSettings.description.html"><span class="nav-label">description</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.SiteSettings.favicon.html"><span class="nav-label">favicon</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.SiteSettings.logo.html"><span class="nav-label">logo</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.SiteSettings.logo_alt.html"><span class="nav-label">logo_alt</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.SiteSettings.title.html"><span class="nav-label">title</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.models.ThemeSettings.html"><span class="nav-label">ThemeSettings</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ThemeSettings.color_mode.html"><span class="nav-label">color_mode</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ThemeSettings.directory.html"><span class="nav-label">directory</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ThemeSettings.framework.html"><span class="nav-label">framework</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ThemeSettings.palette.html"><span class="nav-label">palette</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ThemeSettings.stylesheets.html"><span class="nav-label">stylesheets</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
             
           </li>
           
@@ -422,7 +1115,19 @@
           
           <li>
             
+            <a href="api/python/doukimd.navigation.build_navbar.html"><span class="nav-label">build_navbar</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+          <li>
+            
             <a href="api/python/doukimd.navigation.build_navigation.html"><span class="nav-label">build_navigation</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.navigation.sidebar_for_page.html"><span class="nav-label">sidebar_for_page</span><span class="api-kind api-kind--function">function</span></a>
             
           </li>
           
@@ -441,7 +1146,38 @@
           
           <li>
             
+            <a href="api/python/doukimd.plugins.hookimpl.html"><span class="nav-label">hookimpl</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.plugins.hookspec.html"><span class="nav-label">hookspec</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
             <a href="api/python/doukimd.plugins.plugin_context.html"><span class="nav-label">plugin_context</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.references.html"><span class="nav-label">references</span><span class="api-kind api-kind--module">module</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.references.resolve_symbol.html"><span class="nav-label">resolve_symbol</span><span class="api-kind api-kind--function">function</span></a>
             
           </li>
           
@@ -457,6 +1193,12 @@
               <summary><a href="api/python/doukimd.runtime.html"><span class="nav-label">runtime</span><span class="api-kind api-kind--module">module</span></a></summary>
               
         <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.runtime.T.html"><span class="nav-label">T</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
           
           <li>
             
@@ -476,6 +1218,1284 @@
               <summary><a href="api/python/doukimd.theme.html"><span class="nav-label">theme</span><span class="api-kind api-kind--module">module</span></a></summary>
               
         <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.theme.palette_colors.html"><span class="nav-label">palette_colors</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.theme.theme_assets.html"><span class="nav-label">theme_assets</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <a href="https://github.com/arxlang/doukimd"><span class="nav-label">GitHub</span></a>
+            
+          </li>
+          
+        </ul>
+        
+        </details>
+      </nav>
+      
+      <div class="header-tools">
+        <span class="header-caption">Documentation</span>
+        <div class="palette-picker appearance-picker" hidden>
+          <label for="color-palette">Palette</label>
+          <select id="color-palette" class="form-select form-select-sm" aria-label="Color palette">
+            
+            <option value="terracotta">Terracotta</option>
+            
+            <option value="ocean">Ocean</option>
+            
+            <option value="forest">Forest</option>
+            
+            <option value="violet">Violet</option>
+            
+            <option value="slate">Slate</option>
+            
+          </select>
+        </div>
+        <div class="mode-picker appearance-picker" hidden>
+          <label for="color-mode">Appearance</label>
+          <select id="color-mode" class="form-select form-select-sm" aria-label="Color mode">
+            <option value="auto">System</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </div>
+      </div>
+    </header>
+    
+    <div class="layout">
+      
+      <nav aria-label="Documentation">
+        <details class="navigation-panel" id="docs-navigation" open>
+          <summary class="navigation-toggle">Browse documentation</summary>
+          <div class="navigation-content">
+            <p class="sidebar-caption">DoukiMD</p>
+            
+        <ul>
+          
+          <li>
+            
+            <a href="index.html"><span class="nav-label">Overview</span></a>
+            
+          </li>
+          
+          <li class="nav-active">
+            
+            <a href="usage.html" aria-current="page"><span class="nav-label">Authoring and configuration</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/"><span class="nav-label">API Docs</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.html"><span class="nav-label">doukimd</span><span class="api-kind api-kind--module">module</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.__main__.html"><span class="nav-label">__main__</span><span class="api-kind api-kind--module">module</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.__version__.html"><span class="nav-label">__version__</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.api.html"><span class="nav-label">api</span><span class="api-kind api-kind--module">module</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.api.collect_api.html"><span class="nav-label">collect_api</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.api.signature.html"><span class="nav-label">signature</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.assets.html"><span class="nav-label">assets</span><span class="api-kind api-kind--module">module</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.assets.asset_url.html"><span class="nav-label">asset_url</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.assets.copy_assets.html"><span class="nav-label">copy_assets</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.build.html"><span class="nav-label">build</span><span class="api-kind api-kind--module">module</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.build.MANIFEST.html"><span class="nav-label">MANIFEST</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.build.build_site.html"><span class="nav-label">build_site</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.build.compile_site.html"><span class="nav-label">compile_site</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.cli.html"><span class="nav-label">cli</span><span class="api-kind api-kind--module">module</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.cli.build.html"><span class="nav-label">build</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.cli.check.html"><span class="nav-label">check</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.cli.main.html"><span class="nav-label">main</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.collection.html"><span class="nav-label">collection</span><span class="api-kind api-kind--module">module</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.config.html"><span class="nav-label">config</span><span class="api-kind api-kind--module">module</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.config.load_config.html"><span class="nav-label">load_config</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.config.load_data.html"><span class="nav-label">load_data</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.config.project_path.html"><span class="nav-label">project_path</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.config.read_yaml.html"><span class="nav-label">read_yaml</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.content.html"><span class="nav-label">content</span><span class="api-kind api-kind--module">module</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.content.api_route.html"><span class="nav-label">api_route</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.content.discover_pages.html"><span class="nav-label">discover_pages</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.content.expand_page.html"><span class="nav-label">expand_page</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.content.plan_pages.html"><span class="nav-label">plan_pages</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.content.split_front_matter.html"><span class="nav-label">split_front_matter</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.errors.html"><span class="nav-label">errors</span><span class="api-kind api-kind--module">module</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.errors.BuildError.html"><span class="nav-label">BuildError</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.errors.BuildError.__init__.html"><span class="nav-label">__init__</span><span class="api-kind api-kind--method">method</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.errors.BuildError.message.html"><span class="nav-label">message</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.errors.BuildError.phase.html"><span class="nav-label">phase</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.errors.BuildError.source.html"><span class="nav-label">source</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.get_version.html"><span class="nav-label">get_version</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.html.html"><span class="nav-label">html</span><span class="api-kind api-kind--module">module</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.html.process_html.html"><span class="nav-label">process_html</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.markdown.html"><span class="nav-label">markdown</span><span class="api-kind api-kind--module">module</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.markdown.assign_anchors.html"><span class="nav-label">assign_anchors</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.markdown.markdown_parser.html"><span class="nav-label">markdown_parser</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.markdown.parse_document.html"><span class="nav-label">parse_document</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.markdown.resolve_references.html"><span class="nav-label">resolve_references</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.models.html"><span class="nav-label">models</span><span class="api-kind api-kind--module">module</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.models.ApiSettings.html"><span class="nav-label">ApiSettings</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ApiSettings.generate_pages.html"><span class="nav-label">generate_pages</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ApiSettings.sources.html"><span class="nav-label">sources</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.models.ApiSymbol.html"><span class="nav-label">ApiSymbol</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ApiSymbol.canonical.html"><span class="nav-label">canonical</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ApiSymbol.documentation.html"><span class="nav-label">documentation</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ApiSymbol.generated.html"><span class="nav-label">generated</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ApiSymbol.identifier.html"><span class="nav-label">identifier</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ApiSymbol.kind.html"><span class="nav-label">kind</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ApiSymbol.line.html"><span class="nav-label">line</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ApiSymbol.name.html"><span class="nav-label">name</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ApiSymbol.parent.html"><span class="nav-label">parent</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ApiSymbol.signature.html"><span class="nav-label">signature</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ApiSymbol.source.html"><span class="nav-label">source</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ApiSymbol.source_name.html"><span class="nav-label">source_name</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ApiSymbol.variants.html"><span class="nav-label">variants</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.models.ApiVariant.html"><span class="nav-label">ApiVariant</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ApiVariant.documentation.html"><span class="nav-label">documentation</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ApiVariant.line.html"><span class="nav-label">line</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ApiVariant.signature.html"><span class="nav-label">signature</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.models.Config.html"><span class="nav-label">Config</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Config.api.html"><span class="nav-label">api</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Config.assets.html"><span class="nav-label">assets</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Config.data.html"><span class="nav-label">data</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Config.docs_dir.html"><span class="nav-label">docs_dir</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Config.includes_dir.html"><span class="nav-label">includes_dir</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Config.navigation.html"><span class="nav-label">navigation</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Config.output_dir.html"><span class="nav-label">output_dir</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Config.plugins.html"><span class="nav-label">plugins</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Config.project.html"><span class="nav-label">project</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Config.schema_version.html"><span class="nav-label">schema_version</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Config.site.html"><span class="nav-label">site</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Config.theme.html"><span class="nav-label">theme</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.models.NavEntry.html"><span class="nav-label">NavEntry</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.NavEntry.api.html"><span class="nav-label">api</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.NavEntry.children.html"><span class="nav-label">children</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.NavEntry.path.html"><span class="nav-label">path</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.NavEntry.title.html"><span class="nav-label">title</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.NavEntry.url.html"><span class="nav-label">url</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.NavEntry.validate_target.html"><span class="nav-label">validate_target</span><span class="api-kind api-kind--method">method</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.models.NavigationItem.html"><span class="nav-label">NavigationItem</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.NavigationItem.active.html"><span class="nav-label">active</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.NavigationItem.children.html"><span class="nav-label">children</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.NavigationItem.current.html"><span class="nav-label">current</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.NavigationItem.kind.html"><span class="nav-label">kind</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.NavigationItem.title.html"><span class="nav-label">title</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.NavigationItem.url.html"><span class="nav-label">url</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.models.NavigationSettings.html"><span class="nav-label">NavigationSettings</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.NavigationSettings.default_sidebar.html"><span class="nav-label">default_sidebar</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.NavigationSettings.navbar.html"><span class="nav-label">navbar</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.NavigationSettings.sidebars.html"><span class="nav-label">sidebars</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.models.Page.html"><span class="nav-label">Page</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Page.anchors.html"><span class="nav-label">anchors</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Page.body.html"><span class="nav-label">body</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Page.route.html"><span class="nav-label">route</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Page.settings.html"><span class="nav-label">settings</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Page.source.html"><span class="nav-label">source</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Page.symbol.html"><span class="nav-label">symbol</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Page.title.html"><span class="nav-label">title</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.models.PageSettings.html"><span class="nav-label">PageSettings</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.PageSettings.api_source.html"><span class="nav-label">api_source</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.PageSettings.html.html"><span class="nav-label">html</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.PageSettings.layout.html"><span class="nav-label">layout</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.PageSettings.meta.html"><span class="nav-label">meta</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.PageSettings.render.html"><span class="nav-label">render</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.PageSettings.show_title.html"><span class="nav-label">show_title</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.PageSettings.sidebar.html"><span class="nav-label">sidebar</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.PageSettings.template.html"><span class="nav-label">template</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.PageSettings.title.html"><span class="nav-label">title</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.PageSettings.toc.html"><span class="nav-label">toc</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.models.ProjectSettings.html"><span class="nav-label">ProjectSettings</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ProjectSettings.name.html"><span class="nav-label">name</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ProjectSettings.version.html"><span class="nav-label">version</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.models.PythonSource.html"><span class="nav-label">PythonSource</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.PythonSource.language.html"><span class="nav-label">language</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.PythonSource.modules.html"><span class="nav-label">modules</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.PythonSource.name.html"><span class="nav-label">name</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.PythonSource.root.html"><span class="nav-label">root</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.models.Settings.html"><span class="nav-label">Settings</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.Settings.model_config.html"><span class="nav-label">model_config</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.models.SidebarSettings.html"><span class="nav-label">SidebarSettings</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.SidebarSettings.id.html"><span class="nav-label">id</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.SidebarSettings.items.html"><span class="nav-label">items</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.SidebarSettings.paths.html"><span class="nav-label">paths</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.SidebarSettings.title.html"><span class="nav-label">title</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.models.SiteBuild.html"><span class="nav-label">SiteBuild</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.SiteBuild.files.html"><span class="nav-label">files</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.SiteBuild.page_count.html"><span class="nav-label">page_count</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.models.SiteSettings.html"><span class="nav-label">SiteSettings</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.SiteSettings.base_url.html"><span class="nav-label">base_url</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.SiteSettings.description.html"><span class="nav-label">description</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.SiteSettings.favicon.html"><span class="nav-label">favicon</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.SiteSettings.logo.html"><span class="nav-label">logo</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.SiteSettings.logo_alt.html"><span class="nav-label">logo_alt</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.SiteSettings.title.html"><span class="nav-label">title</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.models.ThemeSettings.html"><span class="nav-label">ThemeSettings</span><span class="api-kind api-kind--class">class</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ThemeSettings.color_mode.html"><span class="nav-label">color_mode</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ThemeSettings.directory.html"><span class="nav-label">directory</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ThemeSettings.framework.html"><span class="nav-label">framework</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ThemeSettings.palette.html"><span class="nav-label">palette</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.models.ThemeSettings.stylesheets.html"><span class="nav-label">stylesheets</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.navigation.html"><span class="nav-label">navigation</span><span class="api-kind api-kind--module">module</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.navigation.build_navbar.html"><span class="nav-label">build_navbar</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.navigation.build_navigation.html"><span class="nav-label">build_navigation</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.navigation.sidebar_for_page.html"><span class="nav-label">sidebar_for_page</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.plugins.html"><span class="nav-label">plugins</span><span class="api-kind api-kind--module">module</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.plugins.hookimpl.html"><span class="nav-label">hookimpl</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.plugins.hookspec.html"><span class="nav-label">hookspec</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.plugins.plugin_context.html"><span class="nav-label">plugin_context</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.references.html"><span class="nav-label">references</span><span class="api-kind api-kind--module">module</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.references.resolve_symbol.html"><span class="nav-label">resolve_symbol</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.runtime.html"><span class="nav-label">runtime</span><span class="api-kind api-kind--module">module</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.runtime.T.html"><span class="nav-label">T</span><span class="api-kind api-kind--attribute">attribute</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="api/python/doukimd.runtime.typechecked.html"><span class="nav-label">typechecked</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="api/python/doukimd.theme.html"><span class="nav-label">theme</span><span class="api-kind api-kind--module">module</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="api/python/doukimd.theme.palette_colors.html"><span class="nav-label">palette_colors</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
           
           <li>
             
@@ -506,13 +2526,18 @@
           </div>
         </details>
       </nav>
+      
       <main id="content">
+        
+        
         <div class="page-heading">
           <p class="eyebrow">Documentation</p>
           
           <h1>Authoring and configuration</h1>
           
         </div>
+        
+        
         <h1 id="authoring-and-configuration">Authoring and configuration</h1>
 <p>Run <code>doukimd build --config doukimd.yaml</code> or <code>doukimd check</code>. The latter
 compiles and validates without writing output. Paths are relative to the
@@ -521,7 +2546,8 @@ rejected.</p>
 <p>See the runnable project under <code>examples/basic</code>.</p>
 <h2 id="markdown-and-metadata">Markdown and metadata</h2>
 <p>Pages under <code>docs/</code> become HTML at the same relative path. Optional YAML
-front matter accepts <code>title</code>, <code>render</code> (<code>markdown</code> or <code>jinja</code>), and <code>meta</code>.
+front matter accepts <code>title</code>, <code>render</code> (<code>markdown</code> or <code>jinja</code>), and <code>meta</code>,
+plus the page controls described below.
 Unknown keys, duplicate keys, invalid types, and malformed YAML are errors.</p>
 <p>Enable Jinja with <code>render: jinja</code>. Templates receive <code>site</code>, <code>project</code>,
 <code>page</code>, <code>data</code>, <code>api</code>, <code>plugins</code>, and <code>build</code>. Project configuration and
@@ -532,7 +2558,7 @@ inserting a plain string into Markdown. Jinja syntax inside code fences is
 still evaluated on templated pages: use Jinja raw blocks for literal examples.
 Docstring prose is parsed as Markdown and never evaluated as Jinja.</p>
 <p>The dialect includes CommonMark, tables, footnotes, API blocks, and API
-references. Raw HTML is disabled in content. Python code highlighting uses
+references. Raw HTML is disabled by default. Python code highlighting uses
 Pygments; unknown languages fall back to plain text.</p>
 <h2 id="configuration">Configuration</h2>
 <p>Required settings are <code>site.title</code> and <code>project.name</code>. Defaults are
@@ -544,8 +2570,63 @@ Pygments; unknown languages fall back to plain text.</p>
 submodules, classes, and functions are collected statically. Included public
 declarations require valid Douki docstrings. Explicit Douki visibility and
 atpublic decorators control visibility; underscores do not imply privacy.
-Literal <code>__all__</code> limits module members. Explicit re-exports and exported
-standalone attributes are rejected in this version.</p>
+Literal <code>__all__</code> selects exported declarations; package submodules are also
+collected. Without <code>__all__</code>, local declarations are included, while imports
+are followed only when explicitly exported. Unresolved or cyclic exports fail
+the build. Re-exports retain their public names and original declaration
+identity and location. Exported aliases must resolve within the selected
+source folder; runtime inspection and external dependency imports are disabled.</p>
+<p>Properties, enum values, fields, constants, and annotated type aliases have
+reference pages. Data declarations can rely on their source annotations and
+values without an invented docstring; class field descriptions are reused
+from Douki <code>attributes</code>. Handwritten modules, classes, and callables still
+require valid Douki documentation. Generated dataclass constructors are
+identified as generated and use their statically derived signatures.</p>
+<p>Plum dispatch families (including aliases and <code>Base.method.dispatch</code>
+registrations) retain every signature and its own docstring. Typing overloads
+retain their declared signatures and use implementation prose when a stub has
+no docstring. Unknown repeated-definition patterns fail instead of retaining
+only the last declaration. Inherited members are not expanded in this version.</p>
+<h3 id="selecting-source-folders-per-page">Selecting source folders per page</h3>
+<p>Name sources to isolate packages in a monorepo:</p>
+<pre class="highlight"><code><span class="nt">api</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">sources</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">arx</span>
+<span class="w">      </span><span class="nt">root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">packages/arx/src</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">irx</span>
+<span class="w">      </span><span class="nt">root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">packages/irx/src</span>
+</code></pre>
+<p>When <code>modules</code> is omitted, DoukiMD discovers top-level Python modules and
+regular packages in the folder. The folder can also be a package directory
+containing <code>__init__.py</code>. Set <code>modules: [irx.table_io]</code> to select a smaller
+surface from a source tree. Namespace packages remain unsupported.</p>
+<p>Select a default source for a Markdown page:</p>
+<pre class="highlight"><code>---
+title: IRx reference
+<span class="gu">api_source: irx</span>
+<span class="gu">---</span>
+
+::: api irx.table_io
+members: public
+:::
+
+See {@api irx.table_io}.
+</code></pre>
+<p>An individual API block can override the page choice with <code>source: arx</code>.
+Fully qualified references such as <code>{@api python:arx:arx.get_version}</code> can
+link across sources. Ambiguous unscoped names and unknown source names fail
+the build. Folder paths are configured once; Markdown uses source names.
+Two folders may contain identically named Python packages without collisions.
+Duplicate source names are errors.</p>
+<p>Named sources use identities <code>python:&lt;source&gt;:&lt;qualified-name&gt;</code> and routes
+<code>api/python/&lt;source&gt;/&lt;qualified-name&gt;.html</code>. Unnamed sources retain the
+original <code>python:&lt;qualified-name&gt;</code> identities and routes. The symbol inventory
+includes <code>source_name</code>, original <code>canonical</code> identity, <code>generated</code>, and
+callable <code>variants</code> with signatures and declaration lines.
+When API names collide on a case-insensitive filesystem (such as a public
+<code>Compiler</code> class and a <code>compiler</code> module), their filenames receive stable
+identity-derived suffixes. API references and generated summaries use the
+planned routes automatically.</p>
 <h2 id="api-blocks-and-references">API blocks and references</h2>
 <pre class="highlight"><code>::: api python:example.add
 show_source: true
@@ -564,12 +2645,107 @@ references under <strong>API Docs</strong>, with nested modules, classes, and fu
 The index lists root declarations; each reference page summarizes and links
 to its immediate children. Explicitly selected submodules remain visible
 even when their parent module is outside the configured collection.
-The bundled theme expands the active API branch and lists section anchors
+The default menu is automatic; explicit project menus can place or scope API
+entries as described below. The bundled theme expands the active API branch and lists section anchors
 under <strong>On this page</strong>. Disabling generated pages removes the API section.</p>
+<h2 id="project-navigation">Project navigation</h2>
+<p>Without navigation settings, every authored page and the generated API tree
+appear in the sidebar. Explicit menus preserve your configured order:</p>
+<pre class="highlight"><code><span class="nt">navigation</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">navbar</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Home</span>
+<span class="w">      </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">index.md</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Arx</span>
+<span class="w">      </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">arx/index.md</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Tools</span>
+<span class="w">      </span><span class="nt">children</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Repository</span>
+<span class="w">          </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/arxlang/arx</span>
+<span class="w">  </span><span class="nt">default_sidebar</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">project</span>
+<span class="w">  </span><span class="nt">sidebars</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">project</span>
+<span class="w">      </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ArxLang</span>
+<span class="w">      </span><span class="nt">items</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Home</span>
+<span class="w">          </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">index.md</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">API Docs</span>
+<span class="w">          </span><span class="nt">api</span><span class="p">:</span><span class="w"> </span><span class="s">"*"</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">arx</span>
+<span class="w">      </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Arx</span>
+<span class="w">      </span><span class="nt">paths</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">arx/</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">api/python/arx/</span><span class="p p-Indicator">]</span>
+<span class="w">      </span><span class="nt">items</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Overview</span>
+<span class="w">          </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">arx/index.md</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Language</span>
+<span class="w">          </span><span class="nt">children</span><span class="p">:</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Getting started</span>
+<span class="w">              </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">arx/getting-started.md</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Python API</span>
+<span class="w">          </span><span class="nt">api</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">arx</span>
+</code></pre>
+<p><code>path</code> is relative to the documentation root and accepts Markdown or HTML
+page names, directory URLs, queries, and heading anchors. The engine checks
+these targets and computes links relative to each output page. <code>url</code> accepts
+HTTP, HTTPS, or mailto links. A <code>children</code> group needs no target; a page or
+external link may also have children.</p>
+<p><code>api: &quot;*&quot;</code> inserts the complete generated API tree. <code>api: arx</code> selects only
+symbols from the source named <code>arx</code> in <code>api.sources</code>; no filesystem paths or
+handwritten API routes are needed in the menu. A single package links to its
+root page; multiple roots form a collapsible group. API generation must be
+enabled and the selected source must have generated pages.</p>
+<p>A sidebar's <code>paths</code> match output route prefixes ending in <code>/</code>, or exact HTML
+routes. The longest matching prefix wins; equally specific matches across
+sidebars are errors. Set <code>sidebar: arx</code> in front matter to select a menu
+explicitly, or <code>sidebar: false</code> to hide it. Otherwise the configured
+<code>default_sidebar</code> applies. With explicit sidebars and no default, unmatched
+pages have no sidebar. All configured menu targets are checked, including
+menus that are currently hidden. Index links for a product directory mark
+that product's navbar branch active on its descendants.</p>
+<h2 id="page-layouts-and-branding">Page layouts and branding</h2>
+<p>Front matter supports <code>layout: docs</code> (the default), <code>full</code> (unrestricted site
+width), or <code>landing</code> (full width without the sidebar, title banner, or TOC).
+Use boolean <code>toc</code>, <code>show_title</code>, and <code>sidebar</code> to control the standard layout.
+A page's first Markdown heading remains authored content; <code>show_title: false</code>
+hides only the theme banner.</p>
+<pre class="highlight"><code><span class="nt">site</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ArxLang</span>
+<span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Compiler ecosystem documentation</span>
+<span class="w">  </span><span class="nt">logo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">images/arx-logo.png</span>
+<span class="w">  </span><span class="nt">logo_alt</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ArxLang</span>
+<span class="w">  </span><span class="nt">favicon</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">favicon.ico</span>
+<span class="nt">assets</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">assets/**</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">images/**</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">favicon.ico</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">styles.css</span><span class="p p-Indicator">]</span>
+<span class="nt">theme</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">stylesheets</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">styles.css</span><span class="p p-Indicator">]</span>
+</code></pre>
+<p>Assets and stylesheet paths are relative to <code>docs_dir</code>. Patterns select files
+or directories recursively; nondefault patterns that match nothing are errors.
+Markdown and notebooks are document inputs and cannot be copied as assets.
+Asset paths cannot escape the documentation directory, and output collisions
+with pages, theme files, metadata, or differently cased filenames fail before
+publication. Logos, favicons, and extra stylesheets must be copied assets;
+the engine computes their URLs for nested pages. CSS is copied unchanged;
+use URLs relative to its output location. SCSS compilation is not included.
+An explicit <code>assets</code> list replaces the default, so keep <code>assets/**</code> when needed.</p>
+<p>For custom homepage markup, opt in with <code>html: true</code> in front matter. Combine
+it with <code>render: jinja</code> to use metadata in HTML or Markdown. This is trusted
+authored HTML, without sanitization; enable it only for content you control.
+Douki docstrings keep HTML escaped independently of the page setting.
+CommonMark requires blank lines around HTML wrappers to parse Markdown inside.
+HTML <code>id</code> anchors participate in link validation; duplicate ids fail. Local
+HTML <code>href</code>, <code>src</code>, and <code>poster</code> attributes are checked and Markdown page
+links rewritten, just like ordinary Markdown links. CSS URLs, <code>srcset</code>,
+inline scripts, and custom-template links are outside this validation.</p>
+<p>A page can choose <code>template: home.html</code> from <code>theme.directory</code>. To customize
+part of the bundled layout, that template can extend <code>page.html</code> and override
+Jinja blocks <code>head</code>, <code>header</code>, <code>page_heading</code>, <code>page_content</code>, or <code>footer</code>.
+For example, <code>{% extends &quot;page.html&quot; %}</code> followed by
+<code>{% block footer %}&lt;footer&gt;ArxLang&lt;/footer&gt;{% endblock %}</code> changes the footer.
+Missing templates or template paths escaping their configured root fail.</p>
 <h2 id="links-and-output">Links and output</h2>
 <p>Relative Markdown links are rewritten to HTML and checked after all pages
 and heading anchors are known. Duplicate heading anchors get stable numeric
-suffixes. Local images and downloadable files must be under <code>docs/assets/</code>.
+suffixes. Local images and downloads must match the configured <code>assets</code>
+patterns (by default <code>docs/assets/**</code>).
 External and site-root links are not fetched or checked.</p>
 <p>Output includes HTML, CSS, <code>search.json</code>, <code>symbols.json</code>, and a versioned
 build manifest. Search data is emitted; the bundled theme does not yet include
@@ -584,6 +2760,7 @@ or configured data inputs.</p>
 <pre class="highlight"><code><span class="nt">theme</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">framework</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bootstrap</span>
 <span class="w">  </span><span class="nt">color_mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">auto</span>
+<span class="w">  </span><span class="nt">palette</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">terracotta</span>
 </code></pre>
 <p><code>framework</code> accepts <code>bootstrap</code> or <code>none</code>; the latter omits Bootstrap for
 custom themes. Bootstrap 5.3.8 CSS and its license are bundled locally.
@@ -595,23 +2772,41 @@ configured default and is saved per project when browser storage is available.
 System mode follows subsequent OS preference changes. Without JavaScript,
 the configured light/dark mode is used; <code>auto</code> falls back to light.
 Navigation stays usable without JavaScript, including on mobile.</p>
+<p><code>palette</code> accepts five presets: <code>terracotta</code> (the default), <code>ocean</code>, <code>forest</code>,
+<code>violet</code>, and <code>slate</code>. Each has light and dark colors and works with either
+framework setting. Readers can change Palette in the header independently
+of Appearance; both choices persist per project when storage is available.
+Invalid saved values fall back to configuration. Without JavaScript, the
+configured palette still applies.</p>
+<p><a href="assets/color-palettes.svg"><img src="assets/color-palettes.svg" alt="Light and dark colors for all five presets" /></a></p>
+<p>Select the chart to open it at full size. It shows all nine theme color roles
+in both modes, using the exact preset values.</p>
+<p>Terracotta keeps DoukiMD's original colors. The other four presets use
+<a href="https://www.radix-ui.com/colors">Radix Colors</a> 3.0.0 scales under the MIT
+license, bundled with their attribution. They require no Radix components,
+npm package, or network access. Body text, muted text, links, and active
+navigation colors are checked at 4.5:1 or better against their backgrounds.
+API-kind colors stay consistent across palettes.</p>
 <p>API labels identify modules, classes, functions, and methods in navigation
 and declaration headings. Method kinds are collected from class parentage,
 including static and class methods. Labels use text as well as color.</p>
 <p>Set <code>theme.directory</code> to a local directory containing <code>page.html</code> to override
 the bundled HTML template. Themes receive the content context plus
-<code>content</code>, <code>navigation</code>, <code>table_of_contents</code>, and <code>stylesheet</code>.
+<code>content</code>, <code>navigation</code> (the selected sidebar), <code>navbar</code>, <code>sidebar_title</code>,
+<code>table_of_contents</code>, and <code>stylesheet</code>.
 Navigation entries expose <code>title</code>, relative <code>url</code>, <code>kind</code> (null for authored
 pages), <code>current</code> (exact route),
-<code>active</code> (current route or descendant), and recursive <code>children</code>.
+<code>active</code> (current route or descendant), and recursive <code>children</code>. Group-only
+entries have a null <code>url</code>; render their labels without an anchor.
 Table-of-contents entries expose <code>title</code>, anchor <code>url</code>, and <code>level</code> (<code>h2</code> or
 <code>h3</code>). Both structures are planned by the engine and can be styled by themes.
 HTML autoescaping is enabled;
 only the engine-rendered content should use Jinja's <code>safe</code> filter.</p>
-<p>Templates also receive <code>theme</code> settings, <code>home_url</code>, <code>theme_script</code>, and
+<p>Templates also receive <code>theme</code> settings, <code>palettes</code> (supported preset names),
+<code>home_url</code>, <code>theme_script</code>, <code>logo_url</code>, <code>favicon_url</code>, <code>extra_stylesheets</code>, and
 <code>framework_stylesheet</code> (null for <code>none</code>). Load the optional framework CSS
 before <code>stylesheet</code>. The <code>page</code> object includes its API <code>identifier</code> and
-<code>kind</code>, both null for authored pages. Symbol kinds are also in <code>symbols.json</code>.</p>
+<code>kind</code>, both null for authored pages, as well as all front matter settings. Symbol kinds are also in <code>symbols.json</code>.</p>
 <p>Explicitly enabled <code>plugins</code> are loaded from the <code>doukimd.plugins</code> Python
 entry-point group. Each entry point exposes an object with a
 <code>@doukimd.plugins.hookimpl</code> method named <code>doukimd_context(config)</code> returning
@@ -619,7 +2814,7 @@ a JSON-compatible mapping. Its values appear under <code>plugins.&lt;plugin-name
 Configuration order defines invocation order. Missing plugins, unsupported
 hooks, and invalid results fail the build. Plugins run trusted Python code.</p>
 <h2 id="initial-boundaries">Initial boundaries</h2>
-<p>Arx collection, inherited members, dynamic Python APIs, overload sets,
+<p>Arx collection, inherited members, dynamic Python APIs,
 automatic repository source links, incremental builds, a preview server, and
 cross-project inventories are follow-up work. Arx configuration is rejected
 until an adapter can consume retained frontend docstrings.</p>
@@ -635,7 +2830,13 @@ until an adapter can consume retained frontend docstrings.</p>
             
             <li class="toc-h2"><a href="#configuration">Configuration</a></li>
             
+            <li class="toc-h3"><a href="#selecting-source-folders-per-page">Selecting source folders per page</a></li>
+            
             <li class="toc-h2"><a href="#api-blocks-and-references">API blocks and references</a></li>
+            
+            <li class="toc-h2"><a href="#project-navigation">Project navigation</a></li>
+            
+            <li class="toc-h2"><a href="#page-layouts-and-branding">Page layouts and branding</a></li>
             
             <li class="toc-h2"><a href="#links-and-output">Links and output</a></li>
             
