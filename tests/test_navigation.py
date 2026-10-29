@@ -103,7 +103,7 @@ def test_navigation_groups_symbols_and_uses_routes(example: Path) -> None:
     html = result.files[current.route].decode()
     nav = html.partition('<nav aria-label="Documentation">')[2]
     nav = nav.partition('</nav>')[0]
-    assert nav.count('API Docs</a>') == 1
+    assert nav.count('API Docs</span>') == 1
     assert nav.count(' aria-current="page"') == 1
     assert nav.count('<details open>') == 2
     assert re.search(r'href="example.add.html" aria-current="page"', nav)
@@ -152,7 +152,7 @@ def test_selected_submodule_is_an_api_root(example: Path) -> None:
     assert (
         'python/package.nested.html' in result.files['api/index.html'].decode()
     )
-    assert 'API Docs</a>' in result.files['index.html'].decode()
+    assert 'API Docs</span>' in result.files['index.html'].decode()
 
 
 @pytest.mark.parametrize('route', ['index.md', 'INDEX.md'])
@@ -190,4 +190,4 @@ def test_no_generated_api_menu_without_pages(example: Path) -> None:
     (example / 'docs/index.md').write_text('# Home', encoding='utf-8')
     result = compile_site(config)
     assert 'api/index.html' not in result.files
-    assert 'API Docs</a>' not in result.files['index.html'].decode()
+    assert 'API Docs</span>' not in result.files['index.html'].decode()

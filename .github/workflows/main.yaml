@@ -15,6 +15,18 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          package-manager-cache: false
+      - name: Check appearance and mobile navigation
+        run: node tests/theme.cjs src/doukimd/themes/default/theme.js
+
   tests:
     timeout-minutes: 20
     strategy:

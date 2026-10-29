@@ -181,7 +181,12 @@ def symbol(node: griffe.Object, root: Path) -> ApiSymbol:
     return ApiSymbol(
         identifier=f'python:{node.path}',
         name=node.name,
-        kind=node.kind.value,
+        kind=(
+            'method'
+            if isinstance(node, griffe.Function)
+            and isinstance(node.parent, griffe.Class)
+            else node.kind.value
+        ),
         signature=signature(node),
         source=source_path(node).relative_to(root).as_posix(),
         line=node.lineno,

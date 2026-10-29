@@ -10,6 +10,9 @@ poetry check --lock
 ```
 
 Update dependencies using `poetry lock`, never by editing the lockfile.
+Frontend preference checks use Node 24 without npm dependencies:
+`node tests/theme.cjs src/doukimd/themes/default/theme.js`.
+CI runs them separately; pytest also runs them when Node is installed.
 Douki docstrings must be synchronized and idempotent:
 
 ```console

@@ -8,6 +8,7 @@ import json
 import posixpath
 import re
 
+from html import escape
 from pathlib import Path
 from typing import Literal
 
@@ -195,10 +196,9 @@ def api_markdown(item: ApiSymbol, show_source: bool) -> str:
             default=0,
         ),
     )
-    parts = [
-        f'## {md_text(item.name)}',
-        f'{fence}python\n{item.signature}\n{fence}',
-    ]
+    parts = [f'## {md_text(item.name)}']
+    if item.signature:
+        parts.append(f'{fence}python\n{item.signature}\n{fence}')
     if show_source:
         parts.append(f'Source: {md_text(item.source)}:{item.line or 1}')
     for name, value in item.documentation.items():
@@ -291,6 +291,16 @@ def parse_document(
                         'douki',
                         'API directives cannot occur inside docstrings',
                     )
+                heading = children[1]
+                badge = Token('html_inline', '', 0)
+                kind = escape(item.kind)
+                badge.content = (
+                    f'<span class="api-kind api-kind--{kind}">{kind}</span> '
+                )
+                heading.children = [badge, *(heading.children or [])]
+                if page.symbol == item.identifier:
+                    children[0].tag = 'h1'
+                    children[2].tag = 'h1'
                 expanded.extend(children)
         return expanded
     except BuildError as error:

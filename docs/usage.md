@@ -86,15 +86,46 @@ or configured data inputs.
 
 ## Themes and plugins
 
+The bundled theme uses Bootstrap by default. Configure presentation under
+`theme`:
+
+```yaml
+theme:
+  framework: bootstrap
+  color_mode: auto
+```
+
+`framework` accepts `bootstrap` or `none`; the latter omits Bootstrap for
+custom themes. Bootstrap 5.3.8 CSS and its license are bundled locally.
+Builds and readers do not need a CDN, npm, or Bootstrap JavaScript.
+The built-in layout and appearance controls also work with `none`.
+
+`color_mode` accepts `auto` (the system preference), `light`, or `dark`.
+Readers can change Appearance in the header; their choice overrides the
+configured default and is saved per project when browser storage is available.
+System mode follows subsequent OS preference changes. Without JavaScript,
+the configured light/dark mode is used; `auto` falls back to light.
+Navigation stays usable without JavaScript, including on mobile.
+
+API labels identify modules, classes, functions, and methods in navigation
+and declaration headings. Method kinds are collected from class parentage,
+including static and class methods. Labels use text as well as color.
+
 Set `theme.directory` to a local directory containing `page.html` to override
 the bundled HTML template. Themes receive the content context plus
 `content`, `navigation`, `table_of_contents`, and `stylesheet`.
-Navigation entries expose `title`, relative `url`, `current` (exact route),
+Navigation entries expose `title`, relative `url`, `kind` (null for authored
+pages), `current` (exact route),
 `active` (current route or descendant), and recursive `children`.
 Table-of-contents entries expose `title`, anchor `url`, and `level` (`h2` or
 `h3`). Both structures are planned by the engine and can be styled by themes.
 HTML autoescaping is enabled;
 only the engine-rendered content should use Jinja's `safe` filter.
+
+Templates also receive `theme` settings, `home_url`, `theme_script`, and
+`framework_stylesheet` (null for `none`). Load the optional framework CSS
+before `stylesheet`. The `page` object includes its API `identifier` and
+`kind`, both null for authored pages. Symbol kinds are also in `symbols.json`.
 
 Explicitly enabled `plugins` are loaded from the `doukimd.plugins` Python
 entry-point group. Each entry point exposes an object with a

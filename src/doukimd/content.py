@@ -148,9 +148,7 @@ def api_route(identifier: str) -> str:
 
 @private
 @typechecked
-def api_summary(
-    items: list[ApiSymbol], route: str, parent_kind: str = ''
-) -> str:
+def api_summary(items: list[ApiSymbol], route: str) -> str:
     """
     title: Group links to immediate API children by declaration kind.
     parameters:
@@ -158,15 +156,14 @@ def api_summary(
         type: list[ApiSymbol]
       route:
         type: str
-      parent_kind:
-        type: str
     returns:
       type: str
     """
     groups = [
         ('module', 'Modules'),
         ('class', 'Classes'),
-        ('function', 'Methods' if parent_kind == 'class' else 'Functions'),
+        ('function', 'Functions'),
+        ('method', 'Methods'),
     ]
     sections: list[str] = []
     for kind, title in groups:
@@ -235,7 +232,6 @@ def plan_pages(
                             if child.parent == identifier
                         ],
                         route,
-                        item.kind,
                     ),
                     PageSettings(),
                     symbol=identifier,

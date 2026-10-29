@@ -4,6 +4,8 @@ repos:
     rev: v4.6.0
     hooks:
       - id: end-of-file-fixer
+        # Preserve the upstream distribution's integrity checksum.
+        exclude: ^src/doukimd/themes/vendor/bootstrap/bootstrap\.min\.css$
       - id: trailing-whitespace
       - id: check-json
       - id: check-toml

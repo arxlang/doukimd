@@ -71,7 +71,9 @@ def symbol_navigation(
         for name in sorted(symbols)
         if inventory[name].parent == identifier
     ]
-    return navigation_item(symbols[identifier], current, children)
+    return navigation_item(symbols[identifier], current, children).model_copy(
+        update={'kind': inventory[identifier].kind}
+    )
 
 
 @public

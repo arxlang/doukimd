@@ -90,13 +90,19 @@ class ApiSettings(Settings):
 @public
 class ThemeSettings(Settings):
     """
-    title: Optional local template overrides.
+    title: Frontend framework, color preference, and local template overrides.
     attributes:
       directory:
         type: str | None
+      framework:
+        type: Literal[bootstrap, none]
+      color_mode:
+        type: Literal[auto, light, dark]
     """
 
     directory: str | None = None
+    framework: Literal['bootstrap', 'none'] = 'bootstrap'
+    color_mode: Literal['auto', 'light', 'dark'] = 'auto'
 
 
 @public
@@ -255,6 +261,8 @@ class NavigationItem(Settings):
         type: bool
       children:
         type: list[NavigationItem]
+      kind:
+        type: str | None
     """
 
     title: str
@@ -262,3 +270,4 @@ class NavigationItem(Settings):
     current: bool
     active: bool
     children: list[NavigationItem] = Field(default_factory=list)
+    kind: str | None = None
