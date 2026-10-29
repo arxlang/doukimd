@@ -2,14 +2,14 @@
 blank_issues_enabled: true
 contact_links:
   - name: 🙋  Usage Questions
-    url: https://github.com/osl-incubator/doukimd.git/discussions
+    url: https://github.com/arxlang/doukimd/discussions
     about: |
-      Use Douki's GitHub Discussions to ask "How do I do X with Douki?".
+      Use DoukiMD's GitHub Discussions to ask "How do I do X with DoukiMD?".
   - name: 📖  Tutorial
-    url: https://github.com/osl-incubator/doukimd.git
+    url: https://github.com/arxlang/doukimd
     about: |
-      The Douki tutorial is continually updated and provides an in depth walkthrough
-      of how to use the latest release of Douki.
-  - name: 📝  Douki Code of Conduct
-    url: https://github.com/osl-incubator/doukimd.git/coc/CODE_OF_CONDUCT.md
-    about: Expectations for how people will interact with each other on Douki's GitHub.
+      The DoukiMD tutorial is continually updated and provides an in depth walkthrough
+      of how to use the latest release of DoukiMD.
+  - name: 📝  DoukiMD Code of Conduct
+    url: https://github.com/arxlang/doukimd/blob/main/CODE_OF_CONDUCT.md
+    about: Expectations for how people will interact with each other on DoukiMD's GitHub.

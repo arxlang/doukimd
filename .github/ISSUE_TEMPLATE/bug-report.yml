@@ -7,7 +7,7 @@ body:
   - type: markdown
     attributes:
       value: >
-        **Thank you for wanting to report a bug in Douki!**
+        **Thank you for wanting to report a bug in DoukiMD!**
 
 
         ⚠
@@ -15,14 +15,14 @@ body:
         GitHub][issue search].
 
 
-        [issue search]: https://github.com/osl-incubator/doukimd.git/issues?q=is%3Aopen+is%3Aissue+label%3Abug
+        [issue search]: https://github.com/arxlang/doukimd/issues?q=is%3Aopen+is%3Aissue+label%3Abug
 
   - type: textarea
     attributes:
       label: Summary
       description: Explain the problem briefly below.
       placeholder: >-
-        When I try to do X with {{ cookiecutter.project_name }} and the following workspace, Y breaks or
+        When I try to do X with DoukiMD and the following workspace, Y breaks or
         Z happens in an unexpected manner.
         Here are all the details I know about this problem.
     validations:
@@ -124,14 +124,14 @@ body:
 
   - type: textarea
     attributes:
-      # label: Douki version
+      # label: DoukiMD version
       # description: >-
-      # Paste verbatim output from `Douki --version` below, under the prompt line.
+      # Paste verbatim output from `doukimd --version` below, under the prompt line.
       # Don't wrap it with triple backticks &mdash; your whole input will be
       # turned into a code snippet automatically.
       render: console
       placeholder: |
-        python -m pip show Douki
+        python -m pip show DoukiMD
     validations:
       required: true
 
@@ -139,9 +139,9 @@ body:
     attributes:
       label: Code of Conduct
       description: |
-        Read the [`Douki` Code of Conduct][CoC] first.
+        Read the [`DoukiMD` Code of Conduct][CoC] first.
 
-        [CoC]: https://github.com/osl-incubator/doukimd.git/coc/CODE_OF_CONDUCT.md
+        [CoC]: https://github.com/arxlang/doukimd/blob/main/CODE_OF_CONDUCT.md
       options:
         - label: I agree to follow the Code of Conduct
           required: true
