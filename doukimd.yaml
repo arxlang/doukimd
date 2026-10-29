@@ -4,6 +4,9 @@ site:
 project:
   name: doukimd
   version: "0.1.0"
+theme:
+  framework: bootstrap
+  color_mode: auto
 api:
   sources:
     - language: python

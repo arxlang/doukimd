@@ -8,10 +8,8 @@ import json
 import posixpath
 import shutil
 
-from importlib.resources import files
 from pathlib import Path, PurePosixPath
 from tempfile import TemporaryDirectory
-from typing import Callable, cast
 from urllib.parse import unquote, urlsplit
 
 from jinja2 import (
@@ -48,6 +46,7 @@ from doukimd.models import Config, Page, SiteBuild
 from doukimd.navigation import build_navigation
 from doukimd.plugins import plugin_context
 from doukimd.runtime import typechecked
+from doukimd.theme import theme_assets
 
 MANIFEST = '.doukimd-manifest.json'
 
@@ -127,7 +126,8 @@ def highlight_code(code: str, language: str, attrs: str) -> str:
         lexer = get_lexer_by_name(language) if language else TextLexer()
     except ClassNotFound:
         lexer = TextLexer()
-    return highlight(code, lexer, HtmlFormatter())
+    content = highlight(code, lexer, HtmlFormatter(nowrap=True))
+    return f'<pre class="highlight"><code>{content}</code></pre>'
 
 
 @private
@@ -249,6 +249,7 @@ def compile_site(config_path: Path) -> SiteBuild:
     context: dict[str, object] = {
         'site': config.site.model_dump(),
         'project': config.project.model_dump(),
+        'theme': config.theme.model_dump(),
         'data': load_data(root, config),
         'api': {
             name: {
@@ -290,11 +291,7 @@ def compile_site(config_path: Path) -> SiteBuild:
         autoescape=True,
     )
     artifacts = dict(assets)
-    artifacts['theme.css'] = files('doukimd').joinpath(
-        'themes/default/theme.css'
-    ).read_bytes() + cast(
-        Callable[[str], str], HtmlFormatter().get_style_defs
-    )('.highlight').encode('utf-8')
+    artifacts.update(theme_assets(config.theme))
     search: list[dict[str, str]] = []
     for page in pages:
         tokens = documents[page.route]
@@ -321,11 +318,29 @@ def compile_site(config_path: Path) -> SiteBuild:
                     'title': page.title,
                     'url': page.route,
                     'meta': page.settings.meta,
+                    'kind': (
+                        inventory[page.symbol].kind if page.symbol else None
+                    ),
+                    'identifier': page.symbol,
                 },
                 content=content,
                 navigation=nav,
                 table_of_contents=toc,
                 stylesheet=posixpath.relpath('theme.css', relative),
+                theme_script=posixpath.relpath('theme.js', relative),
+                framework_stylesheet=(
+                    posixpath.relpath(
+                        '_doukimd/bootstrap/bootstrap.min.css', relative
+                    )
+                    if config.theme.framework == 'bootstrap'
+                    else None
+                ),
+                home_url=posixpath.relpath(
+                    'index.html'
+                    if 'index.html' in by_route
+                    else pages[0].route,
+                    relative,
+                ),
             )
         except TemplateError as error:
             raise BuildError('theme', str(error), page.source) from error
@@ -350,6 +365,7 @@ def compile_site(config_path: Path) -> SiteBuild:
             'symbols': {
                 name: {
                     'url': routes.get(name),
+                    'kind': item.kind,
                     'signature': item.signature,
                     'source': item.source,
                     'line': item.line,
