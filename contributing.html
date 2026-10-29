@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Contributing · DoukiMD</title>
+    <link rel="stylesheet" href="theme.css">
+  </head>
+  <body>
+    <header>DoukiMD <span>0.1.0</span></header>
+    <div class="layout">
+      <nav aria-label="Documentation">
+        
+        <a href="changelog.html">Release Notes</a>
+        
+        <a href="contributing.html" aria-current="page">Contributing</a>
+        
+        <a href="index.html">DoukiMD</a>
+        
+        <a href="usage.html">Authoring and configuration</a>
+        
+        <a href="api/python/example.html">example</a>
+        
+        <a href="api/python/example.add.html">add</a>
+        
+      </nav>
+      <main>
+        <h1>Contributing</h1>
+        <h1 id="contributing">Contributing</h1>
+<p>Use Python 3.10–3.14 and Poetry 2:</p>
+<pre><code class="language-console"><div class="highlight"><pre><span></span><span class="go">poetry install</span>
+<span class="go">poetry run pre-commit install</span>
+<span class="go">poetry run makim all.ci</span>
+<span class="go">poetry check --lock</span>
+</pre></div>
+</code></pre>
+<p>Update dependencies using <code>poetry lock</code>, never by editing the lockfile.
+Douki docstrings must be synchronized and idempotent:</p>
+<pre><code class="language-console"><div class="highlight"><pre><span></span><span class="go">poetry run douki sync src tests examples/basic/src</span>
+<span class="go">poetry run douki check src tests examples/basic/src</span>
+</pre></div>
+</code></pre>
+<p>The Makim groups, hooks, and release configuration are adapted from
+<a href="https://github.com/arxlang/douki">Douki</a>, commit
+<code>f77adee49546d4ea8e95ced671d470379c5bd741</code>.
+The BSD license and upstream attribution are retained. Documentation is built
+with DoukiMD. Publication is never triggered by pull requests.</p>
+<h2 id="publish-the-documentation">Publish the documentation</h2>
+<p>After merging documentation changes, run the <strong>Documentation</strong> workflow
+manually from upstream <code>main</code>. It builds the site and publishes the
+<code>documentation</code> artifact to the <code>gh-pages</code> branch. Push and pull-request
+runs only build and validate the documentation.</p>
+<p>After the first manual run creates <code>gh-pages</code>, configure <strong>Settings → Pages</strong>
+to <strong>Deploy from a branch</strong>, selecting <code>gh-pages</code> and <strong>/ (root)</strong>.
+The publishing action adds <code>.nojekyll</code> for the generated static site.</p>
+
+      </main>
+    </div>
+    <footer>Built with DoukiMD</footer>
+  </body>
+</html>

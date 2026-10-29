@@ -1,0 +1,1 @@
+{"schema_version": 1, "symbols": {"python:example": {"line": null, "signature": "example", "source": "examples/basic/src/example.py", "url": "api/python/example.html"}, "python:example.add": {"line": 9, "signature": "add(left: int, right: int = 0) -> int", "source": "examples/basic/src/example.py", "url": "api/python/example.add.html"}}}

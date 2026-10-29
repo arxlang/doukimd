@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Authoring and configuration · DoukiMD</title>
+    <link rel="stylesheet" href="theme.css">
+  </head>
+  <body>
+    <header>DoukiMD <span>0.1.0</span></header>
+    <div class="layout">
+      <nav aria-label="Documentation">
+        
+        <a href="changelog.html">Release Notes</a>
+        
+        <a href="contributing.html">Contributing</a>
+        
+        <a href="index.html">DoukiMD</a>
+        
+        <a href="usage.html" aria-current="page">Authoring and configuration</a>
+        
+        <a href="api/python/example.html">example</a>
+        
+        <a href="api/python/example.add.html">add</a>
+        
+      </nav>
+      <main>
+        <h1>Authoring and configuration</h1>
+        <h1 id="authoring-and-configuration">Authoring and configuration</h1>
+<p>Run <code>doukimd build --config doukimd.yaml</code> or <code>doukimd check</code>. The latter
+compiles and validates without writing output. Paths are relative to the
+configuration file; directory traversal and paths escaping the project are
+rejected.</p>
+<p>See the runnable project under <code>examples/basic</code>.</p>
+<h2 id="markdown-and-metadata">Markdown and metadata</h2>
+<p>Pages under <code>docs/</code> become HTML at the same relative path. Optional YAML
+front matter accepts <code>title</code>, <code>render</code> (<code>markdown</code> or <code>jinja</code>), and <code>meta</code>.
+Unknown keys, duplicate keys, invalid types, and malformed YAML are errors.</p>
+<p>Enable Jinja with <code>render: jinja</code>. Templates receive <code>site</code>, <code>project</code>,
+<code>page</code>, <code>data</code>, <code>api</code>, <code>plugins</code>, and <code>build</code>. Project configuration and
+front matter remain literal YAML. Content is rendered once, before Markdown
+parsing. Values returned by templates are not evaluated again.</p>
+<p>Content includes come from <code>includes/</code>. Use the <code>md_text</code> filter when
+inserting a plain string into Markdown. Jinja syntax inside code fences is
+still evaluated on templated pages: use Jinja raw blocks for literal examples.
+Docstring prose is parsed as Markdown and never evaluated as Jinja.</p>
+<p>The dialect includes CommonMark, tables, footnotes, API blocks, and API
+references. Raw HTML is disabled in content. Python code highlighting uses
+Pygments; unknown languages fall back to plain text.</p>
+<h2 id="configuration">Configuration</h2>
+<p>Required settings are <code>site.title</code> and <code>project.name</code>. Defaults are
+<code>schema_version: 1</code>, <code>docs_dir: docs</code>, <code>output_dir: build</code>, and
+<code>includes_dir: includes</code>. Data is a mapping of names to YAML mapping files.
+<code>project.version</code> is optional. <code>api.generate_pages</code> defaults to true.</p>
+<p>An API source has <code>language: python</code>, a project-relative <code>root</code>, and
+<code>modules</code> containing import paths. Configured modules and their declared
+submodules, classes, and functions are collected statically. Included public
+declarations require valid Douki docstrings. Explicit Douki visibility and
+atpublic decorators control visibility; underscores do not imply privacy.
+Literal <code>__all__</code> limits module members. Explicit re-exports and exported
+standalone attributes are rejected in this version.</p>
+<h2 id="api-blocks-and-references">API blocks and references</h2>
+<pre><code class="language-markdown"><div class="highlight"><pre><span></span>::: api python:example.add
+show_source: true
+:::
+</pre></div>
+</code></pre>
+<p>API blocks accept <code>members: none</code> or <code>members: public</code> and boolean
+<code>show_source</code>. The latter displays a source location, not a repository link.
+<code>{@api python:example.add}</code> links to the canonical generated page.
+Unknown symbols and references without a generated destination fail the build.</p>
+<p>Generated pages live at <code>api/python/&lt;qualified-name&gt;.html</code>. Duplicate routes
+are errors; authored overrides and canonical aliases are not implemented.
+API directives inside docstrings are rejected.</p>
+<h2 id="links-and-output">Links and output</h2>
+<p>Relative Markdown links are rewritten to HTML and checked after all pages
+and heading anchors are known. Duplicate heading anchors get stable numeric
+suffixes. Local images and downloadable files must be under <code>docs/assets/</code>.
+External and site-root links are not fetched or checked.</p>
+<p>Output includes HTML, CSS, <code>search.json</code>, <code>symbols.json</code>, and a versioned
+build manifest. Search data is emitted; the bundled theme does not yet include
+an interactive search UI. No generated Markdown is written into source.</p>
+<p>DoukiMD replaces an existing output directory only when its manifest identifies
+it as a managed build. A failed compilation preserves the previous output.
+The output directory must not overlap documentation, source, includes, theme,
+or configured data inputs.</p>
+<h2 id="themes-and-plugins">Themes and plugins</h2>
+<p>Set <code>theme.directory</code> to a local directory containing <code>page.html</code> to override
+the bundled HTML template. Themes receive the content context plus
+<code>content</code>, <code>navigation</code>, and <code>stylesheet</code>. HTML autoescaping is enabled;
+only the engine-rendered content should use Jinja's <code>safe</code> filter.</p>
+<p>Explicitly enabled <code>plugins</code> are loaded from the <code>doukimd.plugins</code> Python
+entry-point group. Each entry point exposes an object with a
+<code>@doukimd.plugins.hookimpl</code> method named <code>doukimd_context(config)</code> returning
+a JSON-compatible mapping. Its values appear under <code>plugins.&lt;plugin-name&gt;</code>.
+Configuration order defines invocation order. Missing plugins, unsupported
+hooks, and invalid results fail the build. Plugins run trusted Python code.</p>
+<h2 id="initial-boundaries">Initial boundaries</h2>
+<p>Arx collection, inherited members, dynamic Python APIs, overload sets,
+automatic repository source links, incremental builds, a preview server, and
+cross-project inventories are follow-up work. Arx configuration is rejected
+until an adapter can consume retained frontend docstrings.</p>
+
+      </main>
+    </div>
+    <footer>Built with DoukiMD</footer>
+  </body>
+</html>
