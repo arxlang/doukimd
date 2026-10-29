@@ -238,3 +238,27 @@ class SiteBuild:
 
     files: dict[str, bytes]
     page_count: int
+
+
+@public
+class NavigationItem(Settings):
+    """
+    title: A route-aware navigation entry with nested API children.
+    attributes:
+      title:
+        type: str
+      url:
+        type: str
+      current:
+        type: bool
+      active:
+        type: bool
+      children:
+        type: list[NavigationItem]
+    """
+
+    title: str
+    url: str
+    current: bool
+    active: bool
+    children: list[NavigationItem] = Field(default_factory=list)

@@ -7,5 +7,5 @@ project:
 api:
   sources:
     - language: python
-      root: examples/basic/src
-      modules: [example]
+      root: src
+      modules: [doukimd]

@@ -59,6 +59,15 @@ Generated pages live at `api/python/<qualified-name>.html`. Duplicate routes
 are errors; authored overrides and canonical aliases are not implemented.
 API directives inside docstrings are rejected.
 
+When collected symbols exist and `api.generate_pages` is enabled, the engine
+also generates `api/index.html` (served at `/api/`). The menu gathers all
+references under **API Docs**, with nested modules, classes, and functions.
+The index lists root declarations; each reference page summarizes and links
+to its immediate children. Explicitly selected submodules remain visible
+even when their parent module is outside the configured collection.
+The bundled theme expands the active API branch and lists section anchors
+under **On this page**. Disabling generated pages removes the API section.
+
 ## Links and output
 
 Relative Markdown links are rewritten to HTML and checked after all pages
@@ -79,7 +88,12 @@ or configured data inputs.
 
 Set `theme.directory` to a local directory containing `page.html` to override
 the bundled HTML template. Themes receive the content context plus
-`content`, `navigation`, and `stylesheet`. HTML autoescaping is enabled;
+`content`, `navigation`, `table_of_contents`, and `stylesheet`.
+Navigation entries expose `title`, relative `url`, `current` (exact route),
+`active` (current route or descendant), and recursive `children`.
+Table-of-contents entries expose `title`, anchor `url`, and `level` (`h2` or
+`h3`). Both structures are planned by the engine and can be styled by themes.
+HTML autoescaping is enabled;
 only the engine-rendered content should use Jinja's `safe` filter.
 
 Explicitly enabled `plugins` are loaded from the `doukimd.plugins` Python

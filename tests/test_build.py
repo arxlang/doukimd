@@ -30,7 +30,7 @@ def test_full_example_and_repeatability(example: Path) -> None:
     first = build_site(path)
     second = build_site(path)
     assert first.files == second.files
-    assert first.page_count == 4
+    assert first.page_count == 5
     index = first.files['index.html'].decode()
     assert 'Python 3.10\u20133.14' in index
     assert 'Install the package for example' in index
@@ -46,7 +46,7 @@ def test_full_example_and_repeatability(example: Path) -> None:
     source = (example / 'src/example.py').read_text().splitlines()
     assert source[line - 1].strip() == '@public'
     assert json.loads(first.files[MANIFEST])['generator'] == 'doukimd'
-    assert len(json.loads(first.files['search.json'])) == 4
+    assert len(json.loads(first.files['search.json'])) == 5
 
 
 @typechecked
