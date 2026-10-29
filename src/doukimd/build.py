@@ -45,6 +45,7 @@ from doukimd.markdown import (
     resolve_references,
 )
 from doukimd.models import Config, Page, SiteBuild
+from doukimd.navigation import build_navigation
 from doukimd.plugins import plugin_context
 from doukimd.runtime import typechecked
 
@@ -198,9 +199,10 @@ def validate_links(
             path = unquote(target.path)
             if path.endswith('.md'):
                 path = path[:-3] + '.html'
+            destination = path + 'index.html' if path.endswith('/') else path
             route = (
                 posixpath.normpath(
-                    posixpath.join(posixpath.dirname(page.route), path)
+                    posixpath.join(posixpath.dirname(page.route), destination)
                 )
                 if path
                 else page.route
@@ -298,12 +300,19 @@ def compile_site(config_path: Path) -> SiteBuild:
         tokens = documents[page.route]
         content = parser.renderer.render(tokens, parser.options, {})
         relative = posixpath.dirname(page.route) or '.'
-        nav = [
+        nav = build_navigation(pages, page, inventory)
+        toc = [
             {
-                'title': other.title,
-                'url': posixpath.relpath(other.route, relative),
+                'title': ''.join(
+                    child.content
+                    for child in tokens[index + 1].children or []
+                    if child.type in {'text', 'code_inline'}
+                ),
+                'url': '#' + str(token.attrGet('id')),
+                'level': token.tag,
             }
-            for other in pages
+            for index, token in enumerate(tokens)
+            if token.type == 'heading_open' and token.tag in {'h2', 'h3'}
         ]
         try:
             html = environment.get_template('page.html').render(
@@ -315,6 +324,7 @@ def compile_site(config_path: Path) -> SiteBuild:
                 },
                 content=content,
                 navigation=nav,
+                table_of_contents=toc,
                 stylesheet=posixpath.relpath('theme.css', relative),
             )
         except TemplateError as error:

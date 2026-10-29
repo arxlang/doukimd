@@ -4,6 +4,7 @@ title: Discover authored pages and expand their Markdown templates.
 
 from __future__ import annotations
 
+import posixpath
 import re
 
 from pathlib import Path
@@ -145,6 +146,50 @@ def api_route(identifier: str) -> str:
     return f'api/{language}/{path}.html'
 
 
+@private
+@typechecked
+def api_summary(
+    items: list[ApiSymbol], route: str, parent_kind: str = ''
+) -> str:
+    """
+    title: Group links to immediate API children by declaration kind.
+    parameters:
+      items:
+        type: list[ApiSymbol]
+      route:
+        type: str
+      parent_kind:
+        type: str
+    returns:
+      type: str
+    """
+    groups = [
+        ('module', 'Modules'),
+        ('class', 'Classes'),
+        ('function', 'Methods' if parent_kind == 'class' else 'Functions'),
+    ]
+    sections: list[str] = []
+    for kind, title in groups:
+        members = sorted(
+            (item for item in items if item.kind == kind),
+            key=lambda item: item.identifier,
+        )
+        if not members:
+            continue
+        sections.append(f'## {title}')
+        for item in members:
+            target = posixpath.relpath(
+                api_route(item.identifier), posixpath.dirname(route)
+            )
+            summary = ' '.join(
+                str(item.documentation.get('title', '')).split()
+            )
+            sections.append(
+                f'- [{md_text(item.name)}]({target}) — {md_text(str(summary))}'
+            )
+    return '\n\n'.join(sections)
+
+
 @public
 @typechecked
 def plan_pages(
@@ -163,7 +208,18 @@ def plan_pages(
       type: dict[str, str]
     """
     routes: dict[str, str] = {}
-    if config.api.generate_pages:
+    if config.api.generate_pages and inventory:
+        roots = [
+            item for item in inventory.values() if item.parent not in inventory
+        ]
+        pages.append(
+            Page(
+                'api/index.html',
+                'API Docs',
+                api_summary(roots, 'api/index.html'),
+                PageSettings(),
+            )
+        )
         for identifier, item in sorted(inventory.items()):
             route = api_route(identifier)
             routes[identifier] = route
@@ -171,7 +227,16 @@ def plan_pages(
                 Page(
                     route,
                     item.name,
-                    '',
+                    f'::: api {identifier}\n:::\n\n'
+                    + api_summary(
+                        [
+                            child
+                            for child in inventory.values()
+                            if child.parent == identifier
+                        ],
+                        route,
+                        item.kind,
+                    ),
                     PageSettings(),
                     symbol=identifier,
                 )

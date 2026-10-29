@@ -11,7 +11,4 @@ This is the initial implementation of {{ project.name | md_text }}.
 - [Contributing](contributing.md)
 - [Release notes](changelog.md)
 
-The generated example reference demonstrates API documentation:
-
-::: api python:example.add
-:::
+- [API Docs](api/) — generated from DoukiMD's public declarations.

@@ -206,8 +206,45 @@ def api_markdown(item: ApiSymbol, show_source: bool) -> str:
             parts.append(describe(value))
         else:
             parts.append(f'### {name.replace("_", " ").title()}')
-            parts.append(describe(value))
+            if name in {'parameters', 'attributes'} and isinstance(
+                value, dict
+            ):
+                parts.extend(
+                    f'- **{md_text(str(key))}** — '
+                    + field_description(field).replace('\n', '\n  ')
+                    for key, field in value.items()
+                )
+            elif name in {'returns', 'yields'}:
+                parts.append(field_description(value))
+            else:
+                parts.append(describe(value))
     return '\n\n'.join(parts)
+
+
+@private
+@typechecked
+def field_description(value: object) -> str:
+    """
+    title: Format Douki types, defaults, and prose without JSON wrappers.
+    parameters:
+      value:
+        type: object
+    returns:
+      type: str
+    """
+    if not isinstance(value, dict):
+        return describe(value)
+    parts: list[str] = []
+    for name, item in value.items():
+        if name == 'type':
+            parts.append(f'**Type:** {md_text(str(item))}')
+        elif name == 'default':
+            parts.append(f'**Default:** {md_text(str(item))}')
+        elif name == 'description':
+            parts.append(describe(item))
+        else:
+            parts.append(f'**{md_text(str(name))}:** {describe(item)}')
+    return '; '.join(parts)
 
 
 @public
@@ -231,14 +268,6 @@ def parse_document(
     """
     try:
         tokens = parser.parse(text)
-        if page.symbol is not None:
-            marker = Token('doukimd_api', '', 0)
-            marker.meta = {
-                'identifier': page.symbol,
-                'members': 'none',
-                'show_source': True,
-            }
-            tokens = [marker]
         expanded: list[Token] = []
         for token in tokens:
             if token.type != 'doukimd_api':
