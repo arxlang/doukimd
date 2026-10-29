@@ -1,0 +1,583 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 1742" width="1120" height="1742" role="img" aria-labelledby="chart-title chart-description" font-family="DejaVu Sans, sans-serif">
+  <title id="chart-title">DoukiMD color palettes</title>
+  <desc id="chart-description">Terracotta, Ocean, Forest, Violet, and Slate. Each card shows light and dark swatches for every theme color role, with hex values taken directly from the palette configuration.</desc>
+  <rect width="1120" height="1742" rx="20" fill="#f3f5f8" />
+  <text x="40" y="59" fill="#243044" font-size="36" font-weight="700">Color palettes</text>
+  <text x="40" y="93" fill="#536174" font-size="18">Five presets. Light and dark. Every color, from the theme itself.</text>
+  <g aria-label="Terracotta">
+    <rect x="40" y="132" width="1040" height="298" rx="16" fill="#ffffff" stroke="#e1e6ed" />
+    <circle cx="70" cy="163" r="7" fill="#a6472b" />
+    <text x="89" y="171" fill="#243044" font-size="25" font-weight="700">Terracotta</text>
+    <text x="260" y="169" fill="#667085" font-size="15">DEFAULT</text>
+    <text x="64.0" y="204" fill="#536174" font-size="14" font-weight="700" letter-spacing="1">LIGHT</text>
+    <g>
+      <title>Canvas: #FFFFFF</title>
+      <rect x="64.0" y="217.0" width="156.0" height="60" rx="8" fill="#ffffff" stroke="#64748b" stroke-opacity=".18" />
+      <text x="77.0" y="241.0" fill="#000000" font-size="17" font-weight="600">Canvas</text>
+      <text x="77.0" y="263.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#FFFFFF</text>
+    </g>
+    <g>
+      <title>Surface: #F6F7F9</title>
+      <rect x="227.0" y="217.0" width="156.0" height="60" rx="8" fill="#f6f7f9" stroke="#64748b" stroke-opacity=".18" />
+      <text x="240.0" y="241.0" fill="#000000" font-size="17" font-weight="600">Surface</text>
+      <text x="240.0" y="263.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#F6F7F9</text>
+    </g>
+    <g>
+      <title>Border: #E4E7EC</title>
+      <rect x="390.0" y="217.0" width="156.0" height="60" rx="8" fill="#e4e7ec" stroke="#64748b" stroke-opacity=".18" />
+      <text x="403.0" y="241.0" fill="#000000" font-size="17" font-weight="600">Border</text>
+      <text x="403.0" y="263.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#E4E7EC</text>
+    </g>
+    <g>
+      <title>Highlight: #FCF0EB</title>
+      <rect x="64.0" y="284.0" width="156.0" height="60" rx="8" fill="#fcf0eb" stroke="#64748b" stroke-opacity=".18" />
+      <text x="77.0" y="308.0" fill="#000000" font-size="17" font-weight="600">Highlight</text>
+      <text x="77.0" y="330.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#FCF0EB</text>
+    </g>
+    <g>
+      <title>Accent: #A6472B</title>
+      <rect x="227.0" y="284.0" width="156.0" height="60" rx="8" fill="#a6472b" stroke="#64748b" stroke-opacity=".18" />
+      <text x="240.0" y="308.0" fill="#ffffff" font-size="17" font-weight="600">Accent</text>
+      <text x="240.0" y="330.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#A6472B</text>
+    </g>
+    <g>
+      <title>Active text: #A6472B</title>
+      <rect x="390.0" y="284.0" width="156.0" height="60" rx="8" fill="#a6472b" stroke="#64748b" stroke-opacity=".18" />
+      <text x="403.0" y="308.0" fill="#ffffff" font-size="17" font-weight="600">Active text</text>
+      <text x="403.0" y="330.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#A6472B</text>
+    </g>
+    <g>
+      <title>Code: #F5F7FA</title>
+      <rect x="64.0" y="351.0" width="156.0" height="60" rx="8" fill="#f5f7fa" stroke="#64748b" stroke-opacity=".18" />
+      <text x="77.0" y="375.0" fill="#000000" font-size="17" font-weight="600">Code</text>
+      <text x="77.0" y="397.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#F5F7FA</text>
+    </g>
+    <g>
+      <title>Muted text: #667085</title>
+      <rect x="227.0" y="351.0" width="156.0" height="60" rx="8" fill="#667085" stroke="#64748b" stroke-opacity=".18" />
+      <text x="240.0" y="375.0" fill="#ffffff" font-size="17" font-weight="600">Muted text</text>
+      <text x="240.0" y="397.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#667085</text>
+    </g>
+    <g>
+      <title>Body text: #243044</title>
+      <rect x="390.0" y="351.0" width="156.0" height="60" rx="8" fill="#243044" stroke="#64748b" stroke-opacity=".18" />
+      <text x="403.0" y="375.0" fill="#ffffff" font-size="17" font-weight="600">Body text</text>
+      <text x="403.0" y="397.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#243044</text>
+    </g>
+    <text x="574.0" y="204" fill="#536174" font-size="14" font-weight="700" letter-spacing="1">DARK</text>
+    <g>
+      <title>Canvas: #171C26</title>
+      <rect x="574.0" y="217.0" width="156.0" height="60" rx="8" fill="#171c26" stroke="#64748b" stroke-opacity=".18" />
+      <text x="587.0" y="241.0" fill="#ffffff" font-size="17" font-weight="600">Canvas</text>
+      <text x="587.0" y="263.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#171C26</text>
+    </g>
+    <g>
+      <title>Surface: #1D2430</title>
+      <rect x="737.0" y="217.0" width="156.0" height="60" rx="8" fill="#1d2430" stroke="#64748b" stroke-opacity=".18" />
+      <text x="750.0" y="241.0" fill="#ffffff" font-size="17" font-weight="600">Surface</text>
+      <text x="750.0" y="263.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#1D2430</text>
+    </g>
+    <g>
+      <title>Border: #323D4D</title>
+      <rect x="900.0" y="217.0" width="156.0" height="60" rx="8" fill="#323d4d" stroke="#64748b" stroke-opacity=".18" />
+      <text x="913.0" y="241.0" fill="#ffffff" font-size="17" font-weight="600">Border</text>
+      <text x="913.0" y="263.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#323D4D</text>
+    </g>
+    <g>
+      <title>Highlight: #352A29</title>
+      <rect x="574.0" y="284.0" width="156.0" height="60" rx="8" fill="#352a29" stroke="#64748b" stroke-opacity=".18" />
+      <text x="587.0" y="308.0" fill="#ffffff" font-size="17" font-weight="600">Highlight</text>
+      <text x="587.0" y="330.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#352A29</text>
+    </g>
+    <g>
+      <title>Accent: #F2AC92</title>
+      <rect x="737.0" y="284.0" width="156.0" height="60" rx="8" fill="#f2ac92" stroke="#64748b" stroke-opacity=".18" />
+      <text x="750.0" y="308.0" fill="#000000" font-size="17" font-weight="600">Accent</text>
+      <text x="750.0" y="330.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#F2AC92</text>
+    </g>
+    <g>
+      <title>Active text: #F2AC92</title>
+      <rect x="900.0" y="284.0" width="156.0" height="60" rx="8" fill="#f2ac92" stroke="#64748b" stroke-opacity=".18" />
+      <text x="913.0" y="308.0" fill="#000000" font-size="17" font-weight="600">Active text</text>
+      <text x="913.0" y="330.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#F2AC92</text>
+    </g>
+    <g>
+      <title>Code: #202835</title>
+      <rect x="574.0" y="351.0" width="156.0" height="60" rx="8" fill="#202835" stroke="#64748b" stroke-opacity=".18" />
+      <text x="587.0" y="375.0" fill="#ffffff" font-size="17" font-weight="600">Code</text>
+      <text x="587.0" y="397.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#202835</text>
+    </g>
+    <g>
+      <title>Muted text: #A2AEC0</title>
+      <rect x="737.0" y="351.0" width="156.0" height="60" rx="8" fill="#a2aec0" stroke="#64748b" stroke-opacity=".18" />
+      <text x="750.0" y="375.0" fill="#000000" font-size="17" font-weight="600">Muted text</text>
+      <text x="750.0" y="397.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#A2AEC0</text>
+    </g>
+    <g>
+      <title>Body text: #E3E8F0</title>
+      <rect x="900.0" y="351.0" width="156.0" height="60" rx="8" fill="#e3e8f0" stroke="#64748b" stroke-opacity=".18" />
+      <text x="913.0" y="375.0" fill="#000000" font-size="17" font-weight="600">Body text</text>
+      <text x="913.0" y="397.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#E3E8F0</text>
+    </g>
+  </g>
+  <g aria-label="Ocean">
+    <rect x="40" y="450" width="1040" height="298" rx="16" fill="#ffffff" stroke="#e1e6ed" />
+    <circle cx="70" cy="481" r="7" fill="#0d74ce" />
+    <text x="89" y="489" fill="#243044" font-size="25" font-weight="700">Ocean</text>
+    <text x="64.0" y="522" fill="#536174" font-size="14" font-weight="700" letter-spacing="1">LIGHT</text>
+    <g>
+      <title>Canvas: #FCFCFD</title>
+      <rect x="64.0" y="535.0" width="156.0" height="60" rx="8" fill="#fcfcfd" stroke="#64748b" stroke-opacity=".18" />
+      <text x="77.0" y="559.0" fill="#000000" font-size="17" font-weight="600">Canvas</text>
+      <text x="77.0" y="581.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#FCFCFD</text>
+    </g>
+    <g>
+      <title>Surface: #F9F9FB</title>
+      <rect x="227.0" y="535.0" width="156.0" height="60" rx="8" fill="#f9f9fb" stroke="#64748b" stroke-opacity=".18" />
+      <text x="240.0" y="559.0" fill="#000000" font-size="17" font-weight="600">Surface</text>
+      <text x="240.0" y="581.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#F9F9FB</text>
+    </g>
+    <g>
+      <title>Border: #CDCED6</title>
+      <rect x="390.0" y="535.0" width="156.0" height="60" rx="8" fill="#cdced6" stroke="#64748b" stroke-opacity=".18" />
+      <text x="403.0" y="559.0" fill="#000000" font-size="17" font-weight="600">Border</text>
+      <text x="403.0" y="581.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#CDCED6</text>
+    </g>
+    <g>
+      <title>Highlight: #E6F4FE</title>
+      <rect x="64.0" y="602.0" width="156.0" height="60" rx="8" fill="#e6f4fe" stroke="#64748b" stroke-opacity=".18" />
+      <text x="77.0" y="626.0" fill="#000000" font-size="17" font-weight="600">Highlight</text>
+      <text x="77.0" y="648.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#E6F4FE</text>
+    </g>
+    <g>
+      <title>Accent: #0D74CE</title>
+      <rect x="227.0" y="602.0" width="156.0" height="60" rx="8" fill="#0d74ce" stroke="#64748b" stroke-opacity=".18" />
+      <text x="240.0" y="626.0" fill="#ffffff" font-size="17" font-weight="600">Accent</text>
+      <text x="240.0" y="648.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#0D74CE</text>
+    </g>
+    <g>
+      <title>Active text: #113264</title>
+      <rect x="390.0" y="602.0" width="156.0" height="60" rx="8" fill="#113264" stroke="#64748b" stroke-opacity=".18" />
+      <text x="403.0" y="626.0" fill="#ffffff" font-size="17" font-weight="600">Active text</text>
+      <text x="403.0" y="648.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#113264</text>
+    </g>
+    <g>
+      <title>Code: #F0F0F3</title>
+      <rect x="64.0" y="669.0" width="156.0" height="60" rx="8" fill="#f0f0f3" stroke="#64748b" stroke-opacity=".18" />
+      <text x="77.0" y="693.0" fill="#000000" font-size="17" font-weight="600">Code</text>
+      <text x="77.0" y="715.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#F0F0F3</text>
+    </g>
+    <g>
+      <title>Muted text: #60646C</title>
+      <rect x="227.0" y="669.0" width="156.0" height="60" rx="8" fill="#60646c" stroke="#64748b" stroke-opacity=".18" />
+      <text x="240.0" y="693.0" fill="#ffffff" font-size="17" font-weight="600">Muted text</text>
+      <text x="240.0" y="715.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#60646C</text>
+    </g>
+    <g>
+      <title>Body text: #1C2024</title>
+      <rect x="390.0" y="669.0" width="156.0" height="60" rx="8" fill="#1c2024" stroke="#64748b" stroke-opacity=".18" />
+      <text x="403.0" y="693.0" fill="#ffffff" font-size="17" font-weight="600">Body text</text>
+      <text x="403.0" y="715.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#1C2024</text>
+    </g>
+    <text x="574.0" y="522" fill="#536174" font-size="14" font-weight="700" letter-spacing="1">DARK</text>
+    <g>
+      <title>Canvas: #111113</title>
+      <rect x="574.0" y="535.0" width="156.0" height="60" rx="8" fill="#111113" stroke="#64748b" stroke-opacity=".18" />
+      <text x="587.0" y="559.0" fill="#ffffff" font-size="17" font-weight="600">Canvas</text>
+      <text x="587.0" y="581.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#111113</text>
+    </g>
+    <g>
+      <title>Surface: #18191B</title>
+      <rect x="737.0" y="535.0" width="156.0" height="60" rx="8" fill="#18191b" stroke="#64748b" stroke-opacity=".18" />
+      <text x="750.0" y="559.0" fill="#ffffff" font-size="17" font-weight="600">Surface</text>
+      <text x="750.0" y="581.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#18191B</text>
+    </g>
+    <g>
+      <title>Border: #43484E</title>
+      <rect x="900.0" y="535.0" width="156.0" height="60" rx="8" fill="#43484e" stroke="#64748b" stroke-opacity=".18" />
+      <text x="913.0" y="559.0" fill="#ffffff" font-size="17" font-weight="600">Border</text>
+      <text x="913.0" y="581.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#43484E</text>
+    </g>
+    <g>
+      <title>Highlight: #0D2847</title>
+      <rect x="574.0" y="602.0" width="156.0" height="60" rx="8" fill="#0d2847" stroke="#64748b" stroke-opacity=".18" />
+      <text x="587.0" y="626.0" fill="#ffffff" font-size="17" font-weight="600">Highlight</text>
+      <text x="587.0" y="648.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#0D2847</text>
+    </g>
+    <g>
+      <title>Accent: #70B8FF</title>
+      <rect x="737.0" y="602.0" width="156.0" height="60" rx="8" fill="#70b8ff" stroke="#64748b" stroke-opacity=".18" />
+      <text x="750.0" y="626.0" fill="#000000" font-size="17" font-weight="600">Accent</text>
+      <text x="750.0" y="648.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#70B8FF</text>
+    </g>
+    <g>
+      <title>Active text: #C2E6FF</title>
+      <rect x="900.0" y="602.0" width="156.0" height="60" rx="8" fill="#c2e6ff" stroke="#64748b" stroke-opacity=".18" />
+      <text x="913.0" y="626.0" fill="#000000" font-size="17" font-weight="600">Active text</text>
+      <text x="913.0" y="648.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#C2E6FF</text>
+    </g>
+    <g>
+      <title>Code: #212225</title>
+      <rect x="574.0" y="669.0" width="156.0" height="60" rx="8" fill="#212225" stroke="#64748b" stroke-opacity=".18" />
+      <text x="587.0" y="693.0" fill="#ffffff" font-size="17" font-weight="600">Code</text>
+      <text x="587.0" y="715.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#212225</text>
+    </g>
+    <g>
+      <title>Muted text: #B0B4BA</title>
+      <rect x="737.0" y="669.0" width="156.0" height="60" rx="8" fill="#b0b4ba" stroke="#64748b" stroke-opacity=".18" />
+      <text x="750.0" y="693.0" fill="#000000" font-size="17" font-weight="600">Muted text</text>
+      <text x="750.0" y="715.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#B0B4BA</text>
+    </g>
+    <g>
+      <title>Body text: #EDEEF0</title>
+      <rect x="900.0" y="669.0" width="156.0" height="60" rx="8" fill="#edeef0" stroke="#64748b" stroke-opacity=".18" />
+      <text x="913.0" y="693.0" fill="#000000" font-size="17" font-weight="600">Body text</text>
+      <text x="913.0" y="715.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#EDEEF0</text>
+    </g>
+  </g>
+  <g aria-label="Forest">
+    <rect x="40" y="768" width="1040" height="298" rx="16" fill="#ffffff" stroke="#e1e6ed" />
+    <circle cx="70" cy="799" r="7" fill="#193b2d" />
+    <text x="89" y="807" fill="#243044" font-size="25" font-weight="700">Forest</text>
+    <text x="64.0" y="840" fill="#536174" font-size="14" font-weight="700" letter-spacing="1">LIGHT</text>
+    <g>
+      <title>Canvas: #FBFDFC</title>
+      <rect x="64.0" y="853.0" width="156.0" height="60" rx="8" fill="#fbfdfc" stroke="#64748b" stroke-opacity=".18" />
+      <text x="77.0" y="877.0" fill="#000000" font-size="17" font-weight="600">Canvas</text>
+      <text x="77.0" y="899.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#FBFDFC</text>
+    </g>
+    <g>
+      <title>Surface: #F7F9F8</title>
+      <rect x="227.0" y="853.0" width="156.0" height="60" rx="8" fill="#f7f9f8" stroke="#64748b" stroke-opacity=".18" />
+      <text x="240.0" y="877.0" fill="#000000" font-size="17" font-weight="600">Surface</text>
+      <text x="240.0" y="899.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#F7F9F8</text>
+    </g>
+    <g>
+      <title>Border: #CBCFCD</title>
+      <rect x="390.0" y="853.0" width="156.0" height="60" rx="8" fill="#cbcfcd" stroke="#64748b" stroke-opacity=".18" />
+      <text x="403.0" y="877.0" fill="#000000" font-size="17" font-weight="600">Border</text>
+      <text x="403.0" y="899.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#CBCFCD</text>
+    </g>
+    <g>
+      <title>Highlight: #E6F6EB</title>
+      <rect x="64.0" y="920.0" width="156.0" height="60" rx="8" fill="#e6f6eb" stroke="#64748b" stroke-opacity=".18" />
+      <text x="77.0" y="944.0" fill="#000000" font-size="17" font-weight="600">Highlight</text>
+      <text x="77.0" y="966.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#E6F6EB</text>
+    </g>
+    <g>
+      <title>Accent: #193B2D</title>
+      <rect x="227.0" y="920.0" width="156.0" height="60" rx="8" fill="#193b2d" stroke="#64748b" stroke-opacity=".18" />
+      <text x="240.0" y="944.0" fill="#ffffff" font-size="17" font-weight="600">Accent</text>
+      <text x="240.0" y="966.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#193B2D</text>
+    </g>
+    <g>
+      <title>Active text: #193B2D</title>
+      <rect x="390.0" y="920.0" width="156.0" height="60" rx="8" fill="#193b2d" stroke="#64748b" stroke-opacity=".18" />
+      <text x="403.0" y="944.0" fill="#ffffff" font-size="17" font-weight="600">Active text</text>
+      <text x="403.0" y="966.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#193B2D</text>
+    </g>
+    <g>
+      <title>Code: #EEF1F0</title>
+      <rect x="64.0" y="987.0" width="156.0" height="60" rx="8" fill="#eef1f0" stroke="#64748b" stroke-opacity=".18" />
+      <text x="77.0" y="1011.0" fill="#000000" font-size="17" font-weight="600">Code</text>
+      <text x="77.0" y="1033.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#EEF1F0</text>
+    </g>
+    <g>
+      <title>Muted text: #5F6563</title>
+      <rect x="227.0" y="987.0" width="156.0" height="60" rx="8" fill="#5f6563" stroke="#64748b" stroke-opacity=".18" />
+      <text x="240.0" y="1011.0" fill="#ffffff" font-size="17" font-weight="600">Muted text</text>
+      <text x="240.0" y="1033.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#5F6563</text>
+    </g>
+    <g>
+      <title>Body text: #1A211E</title>
+      <rect x="390.0" y="987.0" width="156.0" height="60" rx="8" fill="#1a211e" stroke="#64748b" stroke-opacity=".18" />
+      <text x="403.0" y="1011.0" fill="#ffffff" font-size="17" font-weight="600">Body text</text>
+      <text x="403.0" y="1033.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#1A211E</text>
+    </g>
+    <text x="574.0" y="840" fill="#536174" font-size="14" font-weight="700" letter-spacing="1">DARK</text>
+    <g>
+      <title>Canvas: #101211</title>
+      <rect x="574.0" y="853.0" width="156.0" height="60" rx="8" fill="#101211" stroke="#64748b" stroke-opacity=".18" />
+      <text x="587.0" y="877.0" fill="#ffffff" font-size="17" font-weight="600">Canvas</text>
+      <text x="587.0" y="899.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#101211</text>
+    </g>
+    <g>
+      <title>Surface: #171918</title>
+      <rect x="737.0" y="853.0" width="156.0" height="60" rx="8" fill="#171918" stroke="#64748b" stroke-opacity=".18" />
+      <text x="750.0" y="877.0" fill="#ffffff" font-size="17" font-weight="600">Surface</text>
+      <text x="750.0" y="899.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#171918</text>
+    </g>
+    <g>
+      <title>Border: #444947</title>
+      <rect x="900.0" y="853.0" width="156.0" height="60" rx="8" fill="#444947" stroke="#64748b" stroke-opacity=".18" />
+      <text x="913.0" y="877.0" fill="#ffffff" font-size="17" font-weight="600">Border</text>
+      <text x="913.0" y="899.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#444947</text>
+    </g>
+    <g>
+      <title>Highlight: #132D21</title>
+      <rect x="574.0" y="920.0" width="156.0" height="60" rx="8" fill="#132d21" stroke="#64748b" stroke-opacity=".18" />
+      <text x="587.0" y="944.0" fill="#ffffff" font-size="17" font-weight="600">Highlight</text>
+      <text x="587.0" y="966.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#132D21</text>
+    </g>
+    <g>
+      <title>Accent: #3DD68C</title>
+      <rect x="737.0" y="920.0" width="156.0" height="60" rx="8" fill="#3dd68c" stroke="#64748b" stroke-opacity=".18" />
+      <text x="750.0" y="944.0" fill="#000000" font-size="17" font-weight="600">Accent</text>
+      <text x="750.0" y="966.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#3DD68C</text>
+    </g>
+    <g>
+      <title>Active text: #B1F1CB</title>
+      <rect x="900.0" y="920.0" width="156.0" height="60" rx="8" fill="#b1f1cb" stroke="#64748b" stroke-opacity=".18" />
+      <text x="913.0" y="944.0" fill="#000000" font-size="17" font-weight="600">Active text</text>
+      <text x="913.0" y="966.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#B1F1CB</text>
+    </g>
+    <g>
+      <title>Code: #202221</title>
+      <rect x="574.0" y="987.0" width="156.0" height="60" rx="8" fill="#202221" stroke="#64748b" stroke-opacity=".18" />
+      <text x="587.0" y="1011.0" fill="#ffffff" font-size="17" font-weight="600">Code</text>
+      <text x="587.0" y="1033.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#202221</text>
+    </g>
+    <g>
+      <title>Muted text: #ADB5B2</title>
+      <rect x="737.0" y="987.0" width="156.0" height="60" rx="8" fill="#adb5b2" stroke="#64748b" stroke-opacity=".18" />
+      <text x="750.0" y="1011.0" fill="#000000" font-size="17" font-weight="600">Muted text</text>
+      <text x="750.0" y="1033.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#ADB5B2</text>
+    </g>
+    <g>
+      <title>Body text: #ECEEED</title>
+      <rect x="900.0" y="987.0" width="156.0" height="60" rx="8" fill="#eceeed" stroke="#64748b" stroke-opacity=".18" />
+      <text x="913.0" y="1011.0" fill="#000000" font-size="17" font-weight="600">Body text</text>
+      <text x="913.0" y="1033.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#ECEEED</text>
+    </g>
+  </g>
+  <g aria-label="Violet">
+    <rect x="40" y="1086" width="1040" height="298" rx="16" fill="#ffffff" stroke="#e1e6ed" />
+    <circle cx="70" cy="1117" r="7" fill="#6550b9" />
+    <text x="89" y="1125" fill="#243044" font-size="25" font-weight="700">Violet</text>
+    <text x="64.0" y="1158" fill="#536174" font-size="14" font-weight="700" letter-spacing="1">LIGHT</text>
+    <g>
+      <title>Canvas: #FDFCFD</title>
+      <rect x="64.0" y="1171.0" width="156.0" height="60" rx="8" fill="#fdfcfd" stroke="#64748b" stroke-opacity=".18" />
+      <text x="77.0" y="1195.0" fill="#000000" font-size="17" font-weight="600">Canvas</text>
+      <text x="77.0" y="1217.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#FDFCFD</text>
+    </g>
+    <g>
+      <title>Surface: #FAF9FB</title>
+      <rect x="227.0" y="1171.0" width="156.0" height="60" rx="8" fill="#faf9fb" stroke="#64748b" stroke-opacity=".18" />
+      <text x="240.0" y="1195.0" fill="#000000" font-size="17" font-weight="600">Surface</text>
+      <text x="240.0" y="1217.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#FAF9FB</text>
+    </g>
+    <g>
+      <title>Border: #D0CDD7</title>
+      <rect x="390.0" y="1171.0" width="156.0" height="60" rx="8" fill="#d0cdd7" stroke="#64748b" stroke-opacity=".18" />
+      <text x="403.0" y="1195.0" fill="#000000" font-size="17" font-weight="600">Border</text>
+      <text x="403.0" y="1217.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#D0CDD7</text>
+    </g>
+    <g>
+      <title>Highlight: #F4F0FE</title>
+      <rect x="64.0" y="1238.0" width="156.0" height="60" rx="8" fill="#f4f0fe" stroke="#64748b" stroke-opacity=".18" />
+      <text x="77.0" y="1262.0" fill="#000000" font-size="17" font-weight="600">Highlight</text>
+      <text x="77.0" y="1284.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#F4F0FE</text>
+    </g>
+    <g>
+      <title>Accent: #6550B9</title>
+      <rect x="227.0" y="1238.0" width="156.0" height="60" rx="8" fill="#6550b9" stroke="#64748b" stroke-opacity=".18" />
+      <text x="240.0" y="1262.0" fill="#ffffff" font-size="17" font-weight="600">Accent</text>
+      <text x="240.0" y="1284.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#6550B9</text>
+    </g>
+    <g>
+      <title>Active text: #2F265F</title>
+      <rect x="390.0" y="1238.0" width="156.0" height="60" rx="8" fill="#2f265f" stroke="#64748b" stroke-opacity=".18" />
+      <text x="403.0" y="1262.0" fill="#ffffff" font-size="17" font-weight="600">Active text</text>
+      <text x="403.0" y="1284.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#2F265F</text>
+    </g>
+    <g>
+      <title>Code: #F2EFF3</title>
+      <rect x="64.0" y="1305.0" width="156.0" height="60" rx="8" fill="#f2eff3" stroke="#64748b" stroke-opacity=".18" />
+      <text x="77.0" y="1329.0" fill="#000000" font-size="17" font-weight="600">Code</text>
+      <text x="77.0" y="1351.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#F2EFF3</text>
+    </g>
+    <g>
+      <title>Muted text: #65636D</title>
+      <rect x="227.0" y="1305.0" width="156.0" height="60" rx="8" fill="#65636d" stroke="#64748b" stroke-opacity=".18" />
+      <text x="240.0" y="1329.0" fill="#ffffff" font-size="17" font-weight="600">Muted text</text>
+      <text x="240.0" y="1351.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#65636D</text>
+    </g>
+    <g>
+      <title>Body text: #211F26</title>
+      <rect x="390.0" y="1305.0" width="156.0" height="60" rx="8" fill="#211f26" stroke="#64748b" stroke-opacity=".18" />
+      <text x="403.0" y="1329.0" fill="#ffffff" font-size="17" font-weight="600">Body text</text>
+      <text x="403.0" y="1351.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#211F26</text>
+    </g>
+    <text x="574.0" y="1158" fill="#536174" font-size="14" font-weight="700" letter-spacing="1">DARK</text>
+    <g>
+      <title>Canvas: #121113</title>
+      <rect x="574.0" y="1171.0" width="156.0" height="60" rx="8" fill="#121113" stroke="#64748b" stroke-opacity=".18" />
+      <text x="587.0" y="1195.0" fill="#ffffff" font-size="17" font-weight="600">Canvas</text>
+      <text x="587.0" y="1217.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#121113</text>
+    </g>
+    <g>
+      <title>Surface: #1A191B</title>
+      <rect x="737.0" y="1171.0" width="156.0" height="60" rx="8" fill="#1a191b" stroke="#64748b" stroke-opacity=".18" />
+      <text x="750.0" y="1195.0" fill="#ffffff" font-size="17" font-weight="600">Surface</text>
+      <text x="750.0" y="1217.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#1A191B</text>
+    </g>
+    <g>
+      <title>Border: #49474E</title>
+      <rect x="900.0" y="1171.0" width="156.0" height="60" rx="8" fill="#49474e" stroke="#64748b" stroke-opacity=".18" />
+      <text x="913.0" y="1195.0" fill="#ffffff" font-size="17" font-weight="600">Border</text>
+      <text x="913.0" y="1217.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#49474E</text>
+    </g>
+    <g>
+      <title>Highlight: #291F43</title>
+      <rect x="574.0" y="1238.0" width="156.0" height="60" rx="8" fill="#291f43" stroke="#64748b" stroke-opacity=".18" />
+      <text x="587.0" y="1262.0" fill="#ffffff" font-size="17" font-weight="600">Highlight</text>
+      <text x="587.0" y="1284.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#291F43</text>
+    </g>
+    <g>
+      <title>Accent: #BAA7FF</title>
+      <rect x="737.0" y="1238.0" width="156.0" height="60" rx="8" fill="#baa7ff" stroke="#64748b" stroke-opacity=".18" />
+      <text x="750.0" y="1262.0" fill="#000000" font-size="17" font-weight="600">Accent</text>
+      <text x="750.0" y="1284.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#BAA7FF</text>
+    </g>
+    <g>
+      <title>Active text: #E2DDFE</title>
+      <rect x="900.0" y="1238.0" width="156.0" height="60" rx="8" fill="#e2ddfe" stroke="#64748b" stroke-opacity=".18" />
+      <text x="913.0" y="1262.0" fill="#000000" font-size="17" font-weight="600">Active text</text>
+      <text x="913.0" y="1284.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#E2DDFE</text>
+    </g>
+    <g>
+      <title>Code: #232225</title>
+      <rect x="574.0" y="1305.0" width="156.0" height="60" rx="8" fill="#232225" stroke="#64748b" stroke-opacity=".18" />
+      <text x="587.0" y="1329.0" fill="#ffffff" font-size="17" font-weight="600">Code</text>
+      <text x="587.0" y="1351.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#232225</text>
+    </g>
+    <g>
+      <title>Muted text: #B5B2BC</title>
+      <rect x="737.0" y="1305.0" width="156.0" height="60" rx="8" fill="#b5b2bc" stroke="#64748b" stroke-opacity=".18" />
+      <text x="750.0" y="1329.0" fill="#000000" font-size="17" font-weight="600">Muted text</text>
+      <text x="750.0" y="1351.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#B5B2BC</text>
+    </g>
+    <g>
+      <title>Body text: #EEEEF0</title>
+      <rect x="900.0" y="1305.0" width="156.0" height="60" rx="8" fill="#eeeef0" stroke="#64748b" stroke-opacity=".18" />
+      <text x="913.0" y="1329.0" fill="#000000" font-size="17" font-weight="600">Body text</text>
+      <text x="913.0" y="1351.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#EEEEF0</text>
+    </g>
+  </g>
+  <g aria-label="Slate">
+    <rect x="40" y="1404" width="1040" height="298" rx="16" fill="#ffffff" stroke="#e1e6ed" />
+    <circle cx="70" cy="1435" r="7" fill="#60646c" />
+    <text x="89" y="1443" fill="#243044" font-size="25" font-weight="700">Slate</text>
+    <text x="64.0" y="1476" fill="#536174" font-size="14" font-weight="700" letter-spacing="1">LIGHT</text>
+    <g>
+      <title>Canvas: #FCFCFC</title>
+      <rect x="64.0" y="1489.0" width="156.0" height="60" rx="8" fill="#fcfcfc" stroke="#64748b" stroke-opacity=".18" />
+      <text x="77.0" y="1513.0" fill="#000000" font-size="17" font-weight="600">Canvas</text>
+      <text x="77.0" y="1535.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#FCFCFC</text>
+    </g>
+    <g>
+      <title>Surface: #F9F9F9</title>
+      <rect x="227.0" y="1489.0" width="156.0" height="60" rx="8" fill="#f9f9f9" stroke="#64748b" stroke-opacity=".18" />
+      <text x="240.0" y="1513.0" fill="#000000" font-size="17" font-weight="600">Surface</text>
+      <text x="240.0" y="1535.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#F9F9F9</text>
+    </g>
+    <g>
+      <title>Border: #CECECE</title>
+      <rect x="390.0" y="1489.0" width="156.0" height="60" rx="8" fill="#cecece" stroke="#64748b" stroke-opacity=".18" />
+      <text x="403.0" y="1513.0" fill="#000000" font-size="17" font-weight="600">Border</text>
+      <text x="403.0" y="1535.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#CECECE</text>
+    </g>
+    <g>
+      <title>Highlight: #F0F0F3</title>
+      <rect x="64.0" y="1556.0" width="156.0" height="60" rx="8" fill="#f0f0f3" stroke="#64748b" stroke-opacity=".18" />
+      <text x="77.0" y="1580.0" fill="#000000" font-size="17" font-weight="600">Highlight</text>
+      <text x="77.0" y="1602.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#F0F0F3</text>
+    </g>
+    <g>
+      <title>Accent: #60646C</title>
+      <rect x="227.0" y="1556.0" width="156.0" height="60" rx="8" fill="#60646c" stroke="#64748b" stroke-opacity=".18" />
+      <text x="240.0" y="1580.0" fill="#ffffff" font-size="17" font-weight="600">Accent</text>
+      <text x="240.0" y="1602.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#60646C</text>
+    </g>
+    <g>
+      <title>Active text: #1C2024</title>
+      <rect x="390.0" y="1556.0" width="156.0" height="60" rx="8" fill="#1c2024" stroke="#64748b" stroke-opacity=".18" />
+      <text x="403.0" y="1580.0" fill="#ffffff" font-size="17" font-weight="600">Active text</text>
+      <text x="403.0" y="1602.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#1C2024</text>
+    </g>
+    <g>
+      <title>Code: #F0F0F0</title>
+      <rect x="64.0" y="1623.0" width="156.0" height="60" rx="8" fill="#f0f0f0" stroke="#64748b" stroke-opacity=".18" />
+      <text x="77.0" y="1647.0" fill="#000000" font-size="17" font-weight="600">Code</text>
+      <text x="77.0" y="1669.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#F0F0F0</text>
+    </g>
+    <g>
+      <title>Muted text: #646464</title>
+      <rect x="227.0" y="1623.0" width="156.0" height="60" rx="8" fill="#646464" stroke="#64748b" stroke-opacity=".18" />
+      <text x="240.0" y="1647.0" fill="#ffffff" font-size="17" font-weight="600">Muted text</text>
+      <text x="240.0" y="1669.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#646464</text>
+    </g>
+    <g>
+      <title>Body text: #202020</title>
+      <rect x="390.0" y="1623.0" width="156.0" height="60" rx="8" fill="#202020" stroke="#64748b" stroke-opacity=".18" />
+      <text x="403.0" y="1647.0" fill="#ffffff" font-size="17" font-weight="600">Body text</text>
+      <text x="403.0" y="1669.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#202020</text>
+    </g>
+    <text x="574.0" y="1476" fill="#536174" font-size="14" font-weight="700" letter-spacing="1">DARK</text>
+    <g>
+      <title>Canvas: #111111</title>
+      <rect x="574.0" y="1489.0" width="156.0" height="60" rx="8" fill="#111111" stroke="#64748b" stroke-opacity=".18" />
+      <text x="587.0" y="1513.0" fill="#ffffff" font-size="17" font-weight="600">Canvas</text>
+      <text x="587.0" y="1535.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#111111</text>
+    </g>
+    <g>
+      <title>Surface: #191919</title>
+      <rect x="737.0" y="1489.0" width="156.0" height="60" rx="8" fill="#191919" stroke="#64748b" stroke-opacity=".18" />
+      <text x="750.0" y="1513.0" fill="#ffffff" font-size="17" font-weight="600">Surface</text>
+      <text x="750.0" y="1535.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#191919</text>
+    </g>
+    <g>
+      <title>Border: #484848</title>
+      <rect x="900.0" y="1489.0" width="156.0" height="60" rx="8" fill="#484848" stroke="#64748b" stroke-opacity=".18" />
+      <text x="913.0" y="1513.0" fill="#ffffff" font-size="17" font-weight="600">Border</text>
+      <text x="913.0" y="1535.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#484848</text>
+    </g>
+    <g>
+      <title>Highlight: #212225</title>
+      <rect x="574.0" y="1556.0" width="156.0" height="60" rx="8" fill="#212225" stroke="#64748b" stroke-opacity=".18" />
+      <text x="587.0" y="1580.0" fill="#ffffff" font-size="17" font-weight="600">Highlight</text>
+      <text x="587.0" y="1602.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#212225</text>
+    </g>
+    <g>
+      <title>Accent: #B0B4BA</title>
+      <rect x="737.0" y="1556.0" width="156.0" height="60" rx="8" fill="#b0b4ba" stroke="#64748b" stroke-opacity=".18" />
+      <text x="750.0" y="1580.0" fill="#000000" font-size="17" font-weight="600">Accent</text>
+      <text x="750.0" y="1602.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#B0B4BA</text>
+    </g>
+    <g>
+      <title>Active text: #EDEEF0</title>
+      <rect x="900.0" y="1556.0" width="156.0" height="60" rx="8" fill="#edeef0" stroke="#64748b" stroke-opacity=".18" />
+      <text x="913.0" y="1580.0" fill="#000000" font-size="17" font-weight="600">Active text</text>
+      <text x="913.0" y="1602.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#EDEEF0</text>
+    </g>
+    <g>
+      <title>Code: #222222</title>
+      <rect x="574.0" y="1623.0" width="156.0" height="60" rx="8" fill="#222222" stroke="#64748b" stroke-opacity=".18" />
+      <text x="587.0" y="1647.0" fill="#ffffff" font-size="17" font-weight="600">Code</text>
+      <text x="587.0" y="1669.0" fill="#ffffff" font-size="15" font-family="DejaVu Sans Mono, monospace">#222222</text>
+    </g>
+    <g>
+      <title>Muted text: #B4B4B4</title>
+      <rect x="737.0" y="1623.0" width="156.0" height="60" rx="8" fill="#b4b4b4" stroke="#64748b" stroke-opacity=".18" />
+      <text x="750.0" y="1647.0" fill="#000000" font-size="17" font-weight="600">Muted text</text>
+      <text x="750.0" y="1669.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#B4B4B4</text>
+    </g>
+    <g>
+      <title>Body text: #EEEEEE</title>
+      <rect x="900.0" y="1623.0" width="156.0" height="60" rx="8" fill="#eeeeee" stroke="#64748b" stroke-opacity=".18" />
+      <text x="913.0" y="1647.0" fill="#000000" font-size="17" font-weight="600">Body text</text>
+      <text x="913.0" y="1669.0" fill="#000000" font-size="15" font-family="DejaVu Sans Mono, monospace">#EEEEEE</text>
+    </g>
+  </g>
+</svg>

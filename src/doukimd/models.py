@@ -98,11 +98,16 @@ class ThemeSettings(Settings):
         type: Literal[bootstrap, none]
       color_mode:
         type: Literal[auto, light, dark]
+      palette:
+        type: Literal[terracotta, ocean, forest, violet, slate]
     """
 
     directory: str | None = None
     framework: Literal['bootstrap', 'none'] = 'bootstrap'
     color_mode: Literal['auto', 'light', 'dark'] = 'auto'
+    palette: Literal['terracotta', 'ocean', 'forest', 'violet', 'slate'] = (
+        'terracotta'
+    )
 
 
 @public

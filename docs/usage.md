@@ -93,6 +93,7 @@ The bundled theme uses Bootstrap by default. Configure presentation under
 theme:
   framework: bootstrap
   color_mode: auto
+  palette: terracotta
 ```
 
 `framework` accepts `bootstrap` or `none`; the latter omits Bootstrap for
@@ -106,6 +107,27 @@ configured default and is saved per project when browser storage is available.
 System mode follows subsequent OS preference changes. Without JavaScript,
 the configured light/dark mode is used; `auto` falls back to light.
 Navigation stays usable without JavaScript, including on mobile.
+
+`palette` accepts five presets: `terracotta` (the default), `ocean`, `forest`,
+`violet`, and `slate`. Each has light and dark colors and works with either
+framework setting. Readers can change Palette in the header independently
+of Appearance; both choices persist per project when storage is available.
+Invalid saved values fall back to configuration. Without JavaScript, the
+configured palette still applies.
+
+[![Light and dark colors for all five presets][palette-chart]][palette-chart]
+
+[palette-chart]: assets/color-palettes.svg
+
+Select the chart to open it at full size. It shows all nine theme color roles
+in both modes, using the exact preset values.
+
+Terracotta keeps DoukiMD's original colors. The other four presets use
+[Radix Colors](https://www.radix-ui.com/colors) 3.0.0 scales under the MIT
+license, bundled with their attribution. They require no Radix components,
+npm package, or network access. Body text, muted text, links, and active
+navigation colors are checked at 4.5:1 or better against their backgrounds.
+API-kind colors stay consistent across palettes.
 
 API labels identify modules, classes, functions, and methods in navigation
 and declaration headings. Method kinds are collected from class parentage,
@@ -122,7 +144,8 @@ Table-of-contents entries expose `title`, anchor `url`, and `level` (`h2` or
 HTML autoescaping is enabled;
 only the engine-rendered content should use Jinja's `safe` filter.
 
-Templates also receive `theme` settings, `home_url`, `theme_script`, and
+Templates also receive `theme` settings, `palettes` (supported preset names),
+`home_url`, `theme_script`, and
 `framework_stylesheet` (null for `none`). Load the optional framework CSS
 before `stylesheet`. The `page` object includes its API `identifier` and
 `kind`, both null for authored pages. Symbol kinds are also in `symbols.json`.

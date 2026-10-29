@@ -46,7 +46,7 @@ from doukimd.models import Config, Page, SiteBuild
 from doukimd.navigation import build_navigation
 from doukimd.plugins import plugin_context
 from doukimd.runtime import typechecked
-from doukimd.theme import theme_assets
+from doukimd.theme import palette_colors, theme_assets
 
 MANIFEST = '.doukimd-manifest.json'
 
@@ -250,6 +250,7 @@ def compile_site(config_path: Path) -> SiteBuild:
         'site': config.site.model_dump(),
         'project': config.project.model_dump(),
         'theme': config.theme.model_dump(),
+        'palettes': list(palette_colors()),
         'data': load_data(root, config),
         'api': {
             name: {
