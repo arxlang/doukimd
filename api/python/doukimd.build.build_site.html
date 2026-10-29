@@ -1,86 +1,113 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-color-mode="auto" data-bs-theme="light" data-preference-key="doukimd:doukimd:color-mode">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
     <title>build_site · DoukiMD</title>
+    <script src="../../theme.js"></script>
+    
+    <link rel="stylesheet" href="../../_doukimd/bootstrap/bootstrap.min.css">
+    
     <link rel="stylesheet" href="../../theme.css">
   </head>
   <body>
     <a class="skip-link" href="#content">Skip to content</a>
-    <header>DoukiMD <span>0.1.0</span></header>
+    <header class="site-header">
+      <a class="site-brand" href="../../index.html">
+        <span class="brand-mark" aria-hidden="true">D</span>
+        <span class="brand-name">DoukiMD</span>
+        <span class="version badge rounded-pill">0.1.0</span>
+      </a>
+      <div class="header-tools">
+        <span class="header-caption">Documentation</span>
+        <div class="mode-picker" hidden>
+          <label for="color-mode">Appearance</label>
+          <select id="color-mode" class="form-select form-select-sm" aria-label="Color mode">
+            <option value="auto">System</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </div>
+      </div>
+    </header>
     <div class="layout">
       <nav aria-label="Documentation">
         
         
+        <details class="navigation-panel" id="docs-navigation" open>
+          <summary class="navigation-toggle">Browse documentation</summary>
+          <div class="navigation-content">
+            <p class="sidebar-caption">Explore doukimd</p>
+            
         <ul>
           
           <li>
             
-            <a href="../../changelog.html">Release Notes</a>
+            <a href="../../changelog.html"><span class="nav-label">Release Notes</span></a>
             
           </li>
           
           <li>
             
-            <a href="../../contributing.html">Contributing</a>
+            <a href="../../contributing.html"><span class="nav-label">Contributing</span></a>
             
           </li>
           
           <li>
             
-            <a href="../../index.html">DoukiMD</a>
+            <a href="../../index.html"><span class="nav-label">DoukiMD</span></a>
             
           </li>
           
           <li>
             
-            <a href="../../usage.html">Authoring and configuration</a>
+            <a href="../../usage.html"><span class="nav-label">Authoring and configuration</span></a>
             
           </li>
           
           <li>
             
             <details open>
-              <summary><a href="../">API Docs</a></summary>
+              <summary><a href="../"><span class="nav-label">API Docs</span></a></summary>
               
         <ul>
           
           <li>
             
             <details open>
-              <summary><a href="doukimd.html">doukimd</a></summary>
+              <summary><a href="doukimd.html"><span class="nav-label">doukimd</span><span class="api-kind api-kind--module">module</span></a></summary>
               
         <ul>
           
           <li>
             
-            <a href="doukimd.__main__.html">__main__</a>
+            <a href="doukimd.__main__.html"><span class="nav-label">__main__</span><span class="api-kind api-kind--module">module</span></a>
             
           </li>
           
           <li>
             
             <details>
-              <summary><a href="doukimd.api.html">api</a></summary>
+              <summary><a href="doukimd.api.html"><span class="nav-label">api</span><span class="api-kind api-kind--module">module</span></a></summary>
               
         <ul>
           
           <li>
             
-            <a href="doukimd.api.collect_api.html">collect_api</a>
+            <a href="doukimd.api.collect_api.html"><span class="nav-label">collect_api</span><span class="api-kind api-kind--function">function</span></a>
             
           </li>
           
           <li>
             
-            <a href="doukimd.api.signature.html">signature</a>
+            <a href="doukimd.api.signature.html"><span class="nav-label">signature</span><span class="api-kind api-kind--function">function</span></a>
             
           </li>
           
           <li>
             
-            <a href="doukimd.api.visit.html">visit</a>
+            <a href="doukimd.api.visit.html"><span class="nav-label">visit</span><span class="api-kind api-kind--function">function</span></a>
             
           </li>
           
@@ -93,19 +120,19 @@
           <li>
             
             <details open>
-              <summary><a href="doukimd.build.html">build</a></summary>
+              <summary><a href="doukimd.build.html"><span class="nav-label">build</span><span class="api-kind api-kind--module">module</span></a></summary>
               
         <ul>
           
           <li>
             
-            <a href="doukimd.build.build_site.html" aria-current="page">build_site</a>
+            <a href="doukimd.build.build_site.html" aria-current="page"><span class="nav-label">build_site</span><span class="api-kind api-kind--function">function</span></a>
             
           </li>
           
           <li>
             
-            <a href="doukimd.build.compile_site.html">compile_site</a>
+            <a href="doukimd.build.compile_site.html"><span class="nav-label">compile_site</span><span class="api-kind api-kind--function">function</span></a>
             
           </li>
           
@@ -118,25 +145,25 @@
           <li>
             
             <details>
-              <summary><a href="doukimd.cli.html">cli</a></summary>
+              <summary><a href="doukimd.cli.html"><span class="nav-label">cli</span><span class="api-kind api-kind--module">module</span></a></summary>
               
         <ul>
           
           <li>
             
-            <a href="doukimd.cli.build.html">build</a>
+            <a href="doukimd.cli.build.html"><span class="nav-label">build</span><span class="api-kind api-kind--function">function</span></a>
             
           </li>
           
           <li>
             
-            <a href="doukimd.cli.check.html">check</a>
+            <a href="doukimd.cli.check.html"><span class="nav-label">check</span><span class="api-kind api-kind--function">function</span></a>
             
           </li>
           
           <li>
             
-            <a href="doukimd.cli.main.html">main</a>
+            <a href="doukimd.cli.main.html"><span class="nav-label">main</span><span class="api-kind api-kind--function">function</span></a>
             
           </li>
           
@@ -149,31 +176,31 @@
           <li>
             
             <details>
-              <summary><a href="doukimd.config.html">config</a></summary>
+              <summary><a href="doukimd.config.html"><span class="nav-label">config</span><span class="api-kind api-kind--module">module</span></a></summary>
               
         <ul>
           
           <li>
             
-            <a href="doukimd.config.load_config.html">load_config</a>
+            <a href="doukimd.config.load_config.html"><span class="nav-label">load_config</span><span class="api-kind api-kind--function">function</span></a>
             
           </li>
           
           <li>
             
-            <a href="doukimd.config.load_data.html">load_data</a>
+            <a href="doukimd.config.load_data.html"><span class="nav-label">load_data</span><span class="api-kind api-kind--function">function</span></a>
             
           </li>
           
           <li>
             
-            <a href="doukimd.config.project_path.html">project_path</a>
+            <a href="doukimd.config.project_path.html"><span class="nav-label">project_path</span><span class="api-kind api-kind--function">function</span></a>
             
           </li>
           
           <li>
             
-            <a href="doukimd.config.read_yaml.html">read_yaml</a>
+            <a href="doukimd.config.read_yaml.html"><span class="nav-label">read_yaml</span><span class="api-kind api-kind--function">function</span></a>
             
           </li>
           
@@ -186,37 +213,37 @@
           <li>
             
             <details>
-              <summary><a href="doukimd.content.html">content</a></summary>
+              <summary><a href="doukimd.content.html"><span class="nav-label">content</span><span class="api-kind api-kind--module">module</span></a></summary>
               
         <ul>
           
           <li>
             
-            <a href="doukimd.content.api_route.html">api_route</a>
+            <a href="doukimd.content.api_route.html"><span class="nav-label">api_route</span><span class="api-kind api-kind--function">function</span></a>
             
           </li>
           
           <li>
             
-            <a href="doukimd.content.discover_pages.html">discover_pages</a>
+            <a href="doukimd.content.discover_pages.html"><span class="nav-label">discover_pages</span><span class="api-kind api-kind--function">function</span></a>
             
           </li>
           
           <li>
             
-            <a href="doukimd.content.expand_page.html">expand_page</a>
+            <a href="doukimd.content.expand_page.html"><span class="nav-label">expand_page</span><span class="api-kind api-kind--function">function</span></a>
             
           </li>
           
           <li>
             
-            <a href="doukimd.content.plan_pages.html">plan_pages</a>
+            <a href="doukimd.content.plan_pages.html"><span class="nav-label">plan_pages</span><span class="api-kind api-kind--function">function</span></a>
             
           </li>
           
           <li>
             
-            <a href="doukimd.content.split_front_matter.html">split_front_matter</a>
+            <a href="doukimd.content.split_front_matter.html"><span class="nav-label">split_front_matter</span><span class="api-kind api-kind--function">function</span></a>
             
           </li>
           
@@ -229,20 +256,20 @@
           <li>
             
             <details>
-              <summary><a href="doukimd.errors.html">errors</a></summary>
+              <summary><a href="doukimd.errors.html"><span class="nav-label">errors</span><span class="api-kind api-kind--module">module</span></a></summary>
               
         <ul>
           
           <li>
             
             <details>
-              <summary><a href="doukimd.errors.BuildError.html">BuildError</a></summary>
+              <summary><a href="doukimd.errors.BuildError.html"><span class="nav-label">BuildError</span><span class="api-kind api-kind--class">class</span></a></summary>
               
         <ul>
           
           <li>
             
-            <a href="doukimd.errors.BuildError.__init__.html">__init__</a>
+            <a href="doukimd.errors.BuildError.__init__.html"><span class="nav-label">__init__</span><span class="api-kind api-kind--method">method</span></a>
             
           </li>
           
@@ -260,123 +287,38 @@
           
           <li>
             
-            <a href="doukimd.get_version.html">get_version</a>
+            <a href="doukimd.get_version.html"><span class="nav-label">get_version</span><span class="api-kind api-kind--function">function</span></a>
             
           </li>
           
           <li>
             
             <details>
-              <summary><a href="doukimd.markdown.html">markdown</a></summary>
+              <summary><a href="doukimd.markdown.html"><span class="nav-label">markdown</span><span class="api-kind api-kind--module">module</span></a></summary>
               
         <ul>
           
           <li>
             
-            <a href="doukimd.markdown.assign_anchors.html">assign_anchors</a>
+            <a href="doukimd.markdown.assign_anchors.html"><span class="nav-label">assign_anchors</span><span class="api-kind api-kind--function">function</span></a>
             
           </li>
           
           <li>
             
-            <a href="doukimd.markdown.markdown_parser.html">markdown_parser</a>
+            <a href="doukimd.markdown.markdown_parser.html"><span class="nav-label">markdown_parser</span><span class="api-kind api-kind--function">function</span></a>
             
           </li>
           
           <li>
             
-            <a href="doukimd.markdown.parse_document.html">parse_document</a>
+            <a href="doukimd.markdown.parse_document.html"><span class="nav-label">parse_document</span><span class="api-kind api-kind--function">function</span></a>
             
           </li>
           
           <li>
             
-            <a href="doukimd.markdown.resolve_references.html">resolve_references</a>
-            
-          </li>
-          
-        </ul>
-        
-            </details>
-            
-          </li>
-          
-          <li>
-            
-            <details>
-              <summary><a href="doukimd.models.html">models</a></summary>
-              
-        <ul>
-          
-          <li>
-            
-            <a href="doukimd.models.ApiSettings.html">ApiSettings</a>
-            
-          </li>
-          
-          <li>
-            
-            <a href="doukimd.models.ApiSymbol.html">ApiSymbol</a>
-            
-          </li>
-          
-          <li>
-            
-            <a href="doukimd.models.Config.html">Config</a>
-            
-          </li>
-          
-          <li>
-            
-            <a href="doukimd.models.NavigationItem.html">NavigationItem</a>
-            
-          </li>
-          
-          <li>
-            
-            <a href="doukimd.models.Page.html">Page</a>
-            
-          </li>
-          
-          <li>
-            
-            <a href="doukimd.models.PageSettings.html">PageSettings</a>
-            
-          </li>
-          
-          <li>
-            
-            <a href="doukimd.models.ProjectSettings.html">ProjectSettings</a>
-            
-          </li>
-          
-          <li>
-            
-            <a href="doukimd.models.PythonSource.html">PythonSource</a>
-            
-          </li>
-          
-          <li>
-            
-            <a href="doukimd.models.Settings.html">Settings</a>
-            
-          </li>
-          
-          <li>
-            
-            <a href="doukimd.models.SiteBuild.html">SiteBuild</a>
-            
-          </li>
-          
-          <li>
-            
-            <a href="doukimd.models.SiteSettings.html">SiteSettings</a>
-            
-          </li>
-          
-          <li>
-            
-            <a href="doukimd.models.ThemeSettings.html">ThemeSettings</a>
+            <a href="doukimd.markdown.resolve_references.html"><span class="nav-label">resolve_references</span><span class="api-kind api-kind--function">function</span></a>
             
           </li>
           
@@ -389,13 +331,79 @@
           <li>
             
             <details>
-              <summary><a href="doukimd.navigation.html">navigation</a></summary>
+              <summary><a href="doukimd.models.html"><span class="nav-label">models</span><span class="api-kind api-kind--module">module</span></a></summary>
               
         <ul>
           
           <li>
             
-            <a href="doukimd.navigation.build_navigation.html">build_navigation</a>
+            <a href="doukimd.models.ApiSettings.html"><span class="nav-label">ApiSettings</span><span class="api-kind api-kind--class">class</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="doukimd.models.ApiSymbol.html"><span class="nav-label">ApiSymbol</span><span class="api-kind api-kind--class">class</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="doukimd.models.Config.html"><span class="nav-label">Config</span><span class="api-kind api-kind--class">class</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="doukimd.models.NavigationItem.html"><span class="nav-label">NavigationItem</span><span class="api-kind api-kind--class">class</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="doukimd.models.Page.html"><span class="nav-label">Page</span><span class="api-kind api-kind--class">class</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="doukimd.models.PageSettings.html"><span class="nav-label">PageSettings</span><span class="api-kind api-kind--class">class</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="doukimd.models.ProjectSettings.html"><span class="nav-label">ProjectSettings</span><span class="api-kind api-kind--class">class</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="doukimd.models.PythonSource.html"><span class="nav-label">PythonSource</span><span class="api-kind api-kind--class">class</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="doukimd.models.Settings.html"><span class="nav-label">Settings</span><span class="api-kind api-kind--class">class</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="doukimd.models.SiteBuild.html"><span class="nav-label">SiteBuild</span><span class="api-kind api-kind--class">class</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="doukimd.models.SiteSettings.html"><span class="nav-label">SiteSettings</span><span class="api-kind api-kind--class">class</span></a>
+            
+          </li>
+          
+          <li>
+            
+            <a href="doukimd.models.ThemeSettings.html"><span class="nav-label">ThemeSettings</span><span class="api-kind api-kind--class">class</span></a>
             
           </li>
           
@@ -408,13 +416,13 @@
           <li>
             
             <details>
-              <summary><a href="doukimd.plugins.html">plugins</a></summary>
+              <summary><a href="doukimd.navigation.html"><span class="nav-label">navigation</span><span class="api-kind api-kind--module">module</span></a></summary>
               
         <ul>
           
           <li>
             
-            <a href="doukimd.plugins.plugin_context.html">plugin_context</a>
+            <a href="doukimd.navigation.build_navigation.html"><span class="nav-label">build_navigation</span><span class="api-kind api-kind--function">function</span></a>
             
           </li>
           
@@ -427,13 +435,51 @@
           <li>
             
             <details>
-              <summary><a href="doukimd.runtime.html">runtime</a></summary>
+              <summary><a href="doukimd.plugins.html"><span class="nav-label">plugins</span><span class="api-kind api-kind--module">module</span></a></summary>
               
         <ul>
           
           <li>
             
-            <a href="doukimd.runtime.typechecked.html">typechecked</a>
+            <a href="doukimd.plugins.plugin_context.html"><span class="nav-label">plugin_context</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="doukimd.runtime.html"><span class="nav-label">runtime</span><span class="api-kind api-kind--module">module</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="doukimd.runtime.typechecked.html"><span class="nav-label">typechecked</span><span class="api-kind api-kind--function">function</span></a>
+            
+          </li>
+          
+        </ul>
+        
+            </details>
+            
+          </li>
+          
+          <li>
+            
+            <details>
+              <summary><a href="doukimd.theme.html"><span class="nav-label">theme</span><span class="api-kind api-kind--module">module</span></a></summary>
+              
+        <ul>
+          
+          <li>
+            
+            <a href="doukimd.theme.theme_assets.html"><span class="nav-label">theme_assets</span><span class="api-kind api-kind--function">function</span></a>
             
           </li>
           
@@ -457,14 +503,20 @@
           
         </ul>
         
+          </div>
+        </details>
       </nav>
       <main id="content">
-        <h1>build_site</h1>
-        <h2 id="build-_site">build_site</h2>
-<pre><code class="language-python"><div class="highlight"><pre><span></span><span class="n">build_site</span><span class="p">(</span><span class="n">config_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SiteBuild</span>
-</pre></div>
+        <div class="page-heading">
+          <p class="eyebrow">API reference</p>
+          
+          <p class="symbol-path">python:doukimd.build.build_site</p>
+          
+        </div>
+        <h1 id="build-_site"><span class="api-kind api-kind--function">function</span> build_site</h1>
+<pre class="highlight"><code><span class="n">build_site</span><span class="p">(</span><span class="n">config_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SiteBuild</span>
 </code></pre>
-<p>Source: src/doukimd/build.py:373</p>
+<p>Source: src/doukimd/build.py:389</p>
 <p>Replace managed output only after the entire build succeeds.</p>
 <h3 id="parameters">Parameters</h3>
 <ul>
@@ -476,19 +528,19 @@
       </main>
       
       <aside aria-label="On this page">
-        <strong>On this page</strong>
-        <ul>
-          
-          <li class="toc-h2"><a href="#build-_site">build_site</a></li>
-          
-          <li class="toc-h3"><a href="#parameters">Parameters</a></li>
-          
-          <li class="toc-h3"><a href="#returns">Returns</a></li>
-          
-        </ul>
+        <div class="toc-panel">
+          <strong>On this page</strong>
+          <ul>
+            
+            <li class="toc-h3"><a href="#parameters">Parameters</a></li>
+            
+            <li class="toc-h3"><a href="#returns">Returns</a></li>
+            
+          </ul>
+        </div>
       </aside>
       
     </div>
-    <footer>Built with DoukiMD</footer>
+    <footer><span>doukimd</span><span>Built with <strong>DoukiMD</strong></span></footer>
   </body>
 </html>
