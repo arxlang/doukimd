@@ -16,7 +16,6 @@ import griffe
 from jsonschema import Draft202012Validator
 from plum import dispatch
 from public import private, public
-from pydantic import JsonValue
 
 from doukimd.config import project_path, read_yaml
 from doukimd.errors import BuildError
@@ -139,6 +138,22 @@ def signature(node: griffe.Class | griffe.Function) -> str:
     return node.signature()
 
 
+@dispatch
+@typechecked
+def signature(node: griffe.Attribute) -> str:
+    """
+    title: Display a data declaration without evaluating its value.
+    parameters:
+      node:
+        type: griffe.Attribute
+    returns:
+      type: str
+    """
+    annotation = f': {node.annotation}' if node.annotation else ''
+    value = f' = {node.value}' if node.value is not None else ''
+    return f'{node.name}{annotation}{value}'
+
+
 @private
 @typechecked
 def hidden(node: griffe.Object) -> bool:
@@ -166,43 +181,9 @@ def hidden(node: griffe.Object) -> bool:
 
 @private
 @typechecked
-def symbol(node: griffe.Object, root: Path) -> ApiSymbol:
-    """
-    title: Normalize a supported declaration into the shared symbol model.
-    parameters:
-      node:
-        type: griffe.Object
-      root:
-        type: Path
-    returns:
-      type: ApiSymbol
-    """
-    data = documentation(node, root)
-    return ApiSymbol(
-        identifier=f'python:{node.path}',
-        name=node.name,
-        kind=(
-            'method'
-            if isinstance(node, griffe.Function)
-            and isinstance(node.parent, griffe.Class)
-            else node.kind.value
-        ),
-        signature=signature(node),
-        source=source_path(node).relative_to(root).as_posix(),
-        line=node.lineno,
-        documentation=cast(dict[str, JsonValue], data),
-        parent=(
-            f'python:{node.parent.path}' if node.parent is not None else None
-        ),
-    )
-
-
-@private
-@dispatch
-@typechecked
 def visit(node: object, root: Path) -> list[ApiSymbol]:
     """
-    title: Fail closed for unsupported API nodes.
+    title: Visit a declaration using the default unscoped collector.
     parameters:
       node:
         type: object
@@ -211,81 +192,21 @@ def visit(node: object, root: Path) -> list[ApiSymbol]:
     returns:
       type: list[ApiSymbol]
     """
-    raise BuildError('api', f'Unsupported declaration: {type(node).__name__}')
+    from doukimd.collection import Collector, FunctionCapture
 
-
-@dispatch
-@typechecked
-def visit(node: griffe.Function, root: Path) -> list[ApiSymbol]:
-    """
-    title: Collect a function or method declaration.
-    parameters:
-      node:
-        type: griffe.Function
-      root:
-        type: Path
-    returns:
-      type: list[ApiSymbol]
-    """
-    if hidden(node):
-        return []
-    if node.overloads:
-        raise BuildError(
-            'api', f'Overload sets are not supported: {node.path}'
-        )
-    return [symbol(node, root)]
-
-
-@dispatch
-@typechecked
-def visit(node: griffe.Module | griffe.Class, root: Path) -> list[ApiSymbol]:
-    """
-    title: Collect declarations and explicitly selected public members.
-    parameters:
-      node:
-        type: griffe.Module | griffe.Class
-      root:
-        type: Path
-    returns:
-      type: list[ApiSymbol]
-    """
-    if hidden(node):
-        return []
-    result = [symbol(node, root)]
-    exports = node.exports if isinstance(node, griffe.Module) else None
-    if exports is not None:
-        if any(not isinstance(name, str) for name in exports):
-            raise BuildError('api', f'Dynamic exports: {node.path}')
-        missing = set(exports).difference(node.members)
-        if missing:
-            raise BuildError('api', f'Unresolved exports: {missing}')
-    for name, child in sorted(node.members.items()):
-        if exports is not None and name not in exports:
-            continue
-        if isinstance(child, griffe.Alias):
-            if exports is not None:
-                raise BuildError(
-                    'api',
-                    f'Explicit re-export is not supported yet: {child.path}',
-                    source_path(node),
-                )
-            continue
-        if isinstance(child, (griffe.Module, griffe.Class, griffe.Function)):
-            result.extend(visit(child, root))
-        elif exports is not None:
-            raise BuildError(
-                'api',
-                f'Exported attributes are not supported yet: {child.path}',
-                source_path(node),
-            )
-    return result
+    return cast(
+        list[ApiSymbol],
+        Collector(root, root, None, FunctionCapture()).visit(
+            node, getattr(node, 'path', '')
+        ),
+    )
 
 
 @public
 @typechecked
 def collect_api(root: Path, config: Config) -> dict[str, ApiSymbol]:
     """
-    title: Collect configured modules using static analysis only.
+    title: Collect isolated source folders without importing project code.
     parameters:
       root:
         type: Path
@@ -294,32 +215,86 @@ def collect_api(root: Path, config: Config) -> dict[str, ApiSymbol]:
     returns:
       type: dict[str, ApiSymbol]
     """
+    from doukimd.collection import Collector, FunctionCapture
+
     inventory: dict[str, ApiSymbol] = {}
+    names: set[str] = set()
     for source in config.api.sources:
+        if source.name is not None:
+            if source.name in names:
+                raise BuildError('api', f'Duplicate API source: {source.name}')
+            names.add(source.name)
         search = project_path(root, source.root)
-        for module in source.modules:
-            if re.fullmatch(r'[A-Za-z]\w*(?:\.[A-Za-z]\w*)*', module) is None:
-                raise BuildError('api', f'Invalid module name: {module}')
-            try:
-                node = griffe.load(
-                    module,
-                    search_paths=[search],
-                    allow_inspection=False,
-                    resolve_aliases=False,
+        if not search.is_dir():
+            raise BuildError('api', 'API source folder does not exist', search)
+        for path in search.rglob('*'):
+            if path.is_symlink() and not path.resolve().is_relative_to(search):
+                raise BuildError(
+                    'api', 'API source escapes selected folder', path
                 )
-            except (
-                griffe.LoadingError,
-                griffe.NameResolutionError,
-                ModuleNotFoundError,
-                KeyError,
-                OSError,
-                SyntaxError,
-            ) as error:
-                raise BuildError('api', str(error), search) from error
-            for item in visit(node, root):
-                if item.identifier in inventory:
-                    raise BuildError(
-                        'api', f'Duplicate API symbol: {item.identifier}'
-                    )
-                inventory[item.identifier] = item
+        capture = FunctionCapture()
+        modules = list(source.modules)
+        loader_search = search
+        if not modules:
+            if (search / '__init__.py').is_file():
+                loader_search = search.parent
+                modules = [search.name]
+            else:
+                for directory in search.iterdir():
+                    if (
+                        directory.is_dir()
+                        and not (directory / '__init__.py').is_file()
+                        and any(directory.rglob('*.py'))
+                    ):
+                        raise BuildError(
+                            'api',
+                            'Namespace packages are unsupported',
+                            directory,
+                        )
+                modules = sorted(
+                    [path.stem for path in search.glob('*.py')]
+                    + [
+                        path.name
+                        for path in search.iterdir()
+                        if path.is_dir() and (path / '__init__.py').is_file()
+                    ]
+                )
+            if not modules:
+                raise BuildError(
+                    'api', 'No Python modules in source folder', search
+                )
+        loader = griffe.GriffeLoader(
+            search_paths=[loader_search],
+            allow_inspection=False,
+            extensions=griffe.load_extensions(capture),
+        )
+        nodes: list[griffe.Object | griffe.Alias] = []
+        try:
+            for module in modules:
+                if (
+                    re.fullmatch(r'[A-Za-z_]\w*(?:\.[A-Za-z_]\w*)*', module)
+                    is None
+                ):
+                    raise BuildError('api', f'Invalid module name: {module}')
+                nodes.append(loader.load(module))
+            loader.resolve_aliases(external=False)
+            collector = Collector(root, search, source.name, capture)
+            for node in nodes:
+                for item in collector.visit(node, node.path):
+                    if item.identifier in inventory:
+                        raise BuildError(
+                            'api', f'Duplicate API symbol: {item.identifier}'
+                        )
+                    inventory[item.identifier] = item
+        except (
+            griffe.LoadingError,
+            griffe.NameResolutionError,
+            griffe.AliasResolutionError,
+            griffe.CyclicAliasError,
+            ModuleNotFoundError,
+            KeyError,
+            OSError,
+            SyntaxError,
+        ) as error:
+            raise BuildError('api', str(error), search) from error
     return inventory

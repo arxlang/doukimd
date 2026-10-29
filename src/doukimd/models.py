@@ -61,6 +61,8 @@ class PythonSource(Settings):
     attributes:
       language:
         type: Literal[python]
+      name:
+        type: str | None
       root:
         type: str
       modules:
@@ -68,8 +70,9 @@ class PythonSource(Settings):
     """
 
     language: Literal['python'] = 'python'
+    name: str | None = Field(default=None, pattern=r'^[a-zA-Z][\w-]*$')
     root: str = 'src'
-    modules: list[str] = Field(min_length=1)
+    modules: list[str] = Field(default_factory=list)
 
 
 @public
@@ -160,11 +163,34 @@ class PageSettings(Settings):
         type: Literal[markdown, jinja]
       meta:
         type: dict[str, JsonValue]
+      api_source:
+        type: str | None
     """
 
     title: str | None = None
     render: Literal['markdown', 'jinja'] = 'markdown'
     meta: dict[str, JsonValue] = Field(default_factory=dict)
+    api_source: str | None = None
+
+
+@public
+@typechecked
+@dataclass(frozen=True, config=ConfigDict(strict=True))
+class ApiVariant:
+    """
+    title: A statically collected callable signature and its own prose.
+    attributes:
+      signature:
+        type: str
+      documentation:
+        type: dict[str, JsonValue]
+      line:
+        type: int | None
+    """
+
+    signature: str
+    documentation: dict[str, JsonValue]
+    line: int | None
 
 
 @public
@@ -190,6 +216,14 @@ class ApiSymbol:
         type: dict[str, JsonValue]
       parent:
         type: str | None
+      source_name:
+        type: str | None
+      canonical:
+        type: str | None
+      generated:
+        type: bool
+      variants:
+        type: list[ApiVariant]
     """
 
     identifier: str
@@ -200,6 +234,10 @@ class ApiSymbol:
     line: int | None
     documentation: dict[str, JsonValue]
     parent: str | None = None
+    source_name: str | None = None
+    canonical: str | None = None
+    generated: bool = False
+    variants: list[ApiVariant] = field(default_factory=list)
 
 
 @public

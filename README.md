@@ -21,6 +21,8 @@ Use `doukimd check` to validate without writing files.
 - Markdown pages with validated YAML front matter.
 - Opt-in Jinja in Markdown with project, page, data, and API metadata.
 - Static Python API extraction and validation against Douki's shipped schema.
+- Public re-exports, properties, data declarations, and callable variants.
+- Named API source folders with per-page and per-block selection.
 - Native API blocks, virtual API pages, and forward API references.
 - Local link and heading validation, assets, code highlighting, and JSON
   symbol and search inventories.
@@ -32,10 +34,11 @@ See [authoring and configuration](docs/usage.md) and the complete
 
 ## Initial scope
 
-Python 3.10–3.14 is supported. API generation requires valid Douki docstrings
-for included public declarations. Source code is never imported or rewritten.
+Python 3.10–3.14 is supported. Handwritten modules, classes, and callables
+require valid Douki docstrings. Data declarations can use their annotations
+and class-field documentation. Source code is never imported or rewritten.
 Arx collection requires a future frontend documentation adapter and is
-explicitly rejected today. Re-exports, inherited members, overload sets,
+explicitly rejected today. Inherited members,
 incremental builds, preview serving, and cross-project links are follow-ups.
 
 The generated search data has no bundled interactive search UI yet.
