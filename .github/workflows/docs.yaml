@@ -27,3 +27,34 @@ jobs:
           name: documentation
           path: build/
           include-hidden-files: true
+          if-no-files-found: error
+
+  publish:
+    needs: documentation
+    if: >-
+      github.event_name == 'workflow_dispatch' &&
+      github.repository == 'arxlang/doukimd' &&
+      github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    concurrency:
+      group: documentation-gh-pages
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: documentation
+          path: build/
+      - name: Verify the documentation entry point
+        run: test -f build/index.html
+      - name: Publish documentation to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build
+          publish_branch: gh-pages
