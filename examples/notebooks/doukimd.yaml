@@ -1,0 +1,10 @@
+site:
+  title: Saved notebooks
+project:
+  name: notebook-example
+navigation:
+  navbar:
+    - title: Home
+      path: index.md
+    - title: Tutorial
+      path: tutorial.ipynb

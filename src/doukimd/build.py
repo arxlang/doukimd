@@ -50,8 +50,10 @@ from doukimd.navigation import (
     build_navigation,
     sidebar_for_page,
 )
+from doukimd.notebook_rendering import render_notebook
 from doukimd.plugins import plugin_context
 from doukimd.runtime import typechecked
+from doukimd.search import search_records
 from doukimd.theme import palette_colors, theme_assets
 
 MANIFEST = '.doukimd-manifest.json'
@@ -176,8 +178,8 @@ def validate_links(
         if target.scheme or target.netloc or value.startswith('/'):
             return value
         path = unquote(target.path)
-        if path.endswith('.md'):
-            path = path[:-3] + '.html'
+        if path.endswith(('.md', '.ipynb')):
+            path = posixpath.splitext(path)[0] + '.html'
         destination = path + 'index.html' if path.endswith('/') else path
         route = (
             posixpath.normpath(
@@ -307,14 +309,20 @@ def compile_site(config_path: Path) -> SiteBuild:
         },
         'plugins': plugin_context(config),
         'build': {'format': 'html'},
+        'search': config.search.model_dump(),
     }
     parser = markdown_parser()
     parser.options['highlight'] = highlight_code
     documents: dict[str, list[Token]] = {}
     for page in pages:
         parser.options['html'] = page.settings.html
-        text = expand_page(page, root, config, context)
-        tokens = parse_document(parser, text, page, inventory)
+        if page.notebook is not None:
+            tokens = render_notebook(
+                page, root, config, context, parser, inventory
+            )
+        else:
+            text = expand_page(page, root, config, context)
+            tokens = parse_document(parser, text, page, inventory)
         process_html(tokens, page)
         assign_anchors(tokens, page)
         documents[page.route] = tokens
@@ -336,12 +344,14 @@ def compile_site(config_path: Path) -> SiteBuild:
         autoescape=True,
     )
     bundled = theme_assets(config.theme)
+    if not config.search.enabled:
+        bundled.pop('search.js')
     check_output_routes(
         [
             *assets,
             *bundled,
             *by_route,
-            'search.json',
+            *(['search.json'] if config.search.enabled else []),
             'symbols.json',
             MANIFEST,
         ]
@@ -402,6 +412,8 @@ def compile_site(config_path: Path) -> SiteBuild:
                 ],
                 stylesheet=posixpath.relpath('theme.css', relative),
                 theme_script=posixpath.relpath('theme.js', relative),
+                search_script=posixpath.relpath('search.js', relative),
+                search_index_url=posixpath.relpath('search.json', relative),
                 framework_stylesheet=(
                     posixpath.relpath(
                         '_doukimd/bootstrap/bootstrap.min.css', relative
@@ -419,18 +431,12 @@ def compile_site(config_path: Path) -> SiteBuild:
         except TemplateError as error:
             raise BuildError('theme', str(error), page.source) from error
         artifacts[page.route] = html.encode('utf-8')
-        search.append(
-            {
-                'title': page.title,
-                'url': page.route,
-                'text': ' '.join(
-                    token.content for token in tokens if token.type == 'inline'
-                ),
-            }
-        )
-    artifacts['search.json'] = json.dumps(
-        search, ensure_ascii=False, sort_keys=True
-    ).encode('utf-8')
+        if config.search.enabled:
+            search.extend(search_records(page, tokens))
+    if config.search.enabled:
+        artifacts['search.json'] = json.dumps(
+            search, ensure_ascii=False, sort_keys=True
+        ).encode('utf-8')
     artifacts['symbols.json'] = json.dumps(
         {
             'schema_version': 1,

@@ -25,6 +25,8 @@ from pydantic import ValidationError
 from doukimd.config import project_path, read_yaml
 from doukimd.errors import BuildError
 from doukimd.models import ApiSymbol, Config, Page, PageSettings
+from doukimd.notebook_models import MarkdownCell
+from doukimd.notebooks import load_notebook, notebook_text
 from doukimd.runtime import typechecked
 
 
@@ -100,7 +102,7 @@ def split_front_matter(text: str, source: Path) -> tuple[PageSettings, str]:
 @typechecked
 def discover_pages(root: Path, config: Config) -> list[Page]:
     """
-    title: Discover Markdown pages while preserving relative routes.
+    title: Discover Markdown and notebook pages with their relative routes.
     parameters:
       root:
         type: Path
@@ -115,21 +117,51 @@ def discover_pages(root: Path, config: Config) -> list[Page]:
             'discovery', 'Documentation directory is missing', docs
         )
     pages: list[Page] = []
-    for path in sorted(docs.rglob('*.md')):
+    for path in sorted([*docs.rglob('*.md'), *docs.rglob('*.ipynb')]):
         if not path.resolve().is_relative_to(docs):
             raise BuildError('discovery', 'Page escapes docs directory', path)
-        try:
-            text = path.read_text(encoding='utf-8')
-        except (OSError, UnicodeError) as error:
-            raise BuildError('discovery', str(error), path) from error
-        settings, body = split_front_matter(text, path)
+        notebook = None
+        if path.suffix == '.ipynb':
+            notebook = load_notebook(path)
+            raw_settings = notebook.metadata.get('doukimd', {})
+            try:
+                settings = PageSettings.model_validate(raw_settings)
+            except ValidationError as error:
+                raise BuildError('metadata', str(error), path) from error
+            if notebook.cells and isinstance(notebook.cells[0], MarkdownCell):
+                cell = notebook.cells[0]
+                front, body = split_front_matter(
+                    notebook_text(cell.source), path
+                )
+                settings = PageSettings.model_validate(
+                    {
+                        **settings.model_dump(exclude_unset=True),
+                        **front.model_dump(exclude_unset=True),
+                    }
+                )
+                cell.source = body
+            text = '\n\n'.join(
+                notebook_text(cell.source)
+                for cell in notebook.cells
+                if isinstance(cell, MarkdownCell)
+                and 'remove-cell' not in cell.metadata.tags
+            )
+        else:
+            try:
+                text = path.read_text(encoding='utf-8')
+            except (OSError, UnicodeError) as error:
+                raise BuildError('discovery', str(error), path) from error
+            settings, text = split_front_matter(text, path)
+        body = text
         relative = path.relative_to(docs)
         route = relative.with_suffix('.html').as_posix()
         title = settings.title
         if title is None:
             heading = re.search(r'^# +(.+)$', body, flags=re.MULTILINE)
             title = heading[1] if heading else relative.stem
-        pages.append(Page(route, title, body, settings, path))
+        pages.append(
+            Page(route, title, body, settings, path, notebook=notebook)
+        )
     return pages
 
 

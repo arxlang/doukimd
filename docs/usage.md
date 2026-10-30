@@ -9,7 +9,8 @@ See the runnable project under `examples/basic`.
 
 ## Markdown and metadata
 
-Pages under `docs/` become HTML at the same relative path. Optional YAML
+Markdown and `.ipynb` pages under `docs/` become HTML at the same relative
+path. Optional YAML
 front matter accepts `title`, `render` (`markdown` or `jinja`), and `meta`,
 plus the page controls described below.
 Unknown keys, duplicate keys, invalid types, and malformed YAML are errors.
@@ -252,14 +253,93 @@ suffixes. Local images and downloads must match the configured `assets`
 patterns (by default `docs/assets/**`).
 External and site-root links are not fetched or checked.
 
-Output includes HTML, CSS, `search.json`, `symbols.json`, and a versioned
-build manifest. Search data is emitted; the bundled theme does not yet include
-an interactive search UI. No generated Markdown is written into source.
+Output includes HTML, CSS, the local search script and index, `symbols.json`,
+and a versioned build manifest. No generated Markdown is written into source.
 
 DoukiMD replaces an existing output directory only when its manifest identifies
 it as a managed build. A failed compilation preserves the previous output.
 The output directory must not overlap documentation, source, includes, theme,
 or configured data inputs.
+
+## Notebooks
+
+Version 4 Jupyter notebooks are discovered alongside Markdown. A notebook
+`tutorials/lesson.ipynb` produces `tutorials/lesson.html`; links and menus can
+use the `.ipynb` name, including queries and heading anchors. Notebook and
+Markdown files share one route namespace, so matching stems are errors.
+
+Builds validate the original document against nbformat's shipped schema and
+render existing cells and outputs. They never start a kernel, import notebook
+code, install its dependencies, execute cells, or change notebook files.
+Run notebooks in Jupyter separately to refresh their saved results.
+
+The first cell, when Markdown, can contain the same YAML front matter as a
+`.md` page. Alternatively, put page settings in notebook JSON metadata under
+`metadata.doukimd`; first-cell front matter overrides explicitly supplied
+fields. All page controls, API source selection, and search exclusion apply.
+With `render: jinja`, only Markdown cell sources are templated. Code, raw
+cells, attachments, and saved outputs remain literal.
+
+Markdown cells support the normal API blocks, references, local links,
+headings, and TOC. Reference definitions and footnotes are scoped to their
+cell; footnotes receive unique page-wide ids. Code is highlighted using
+`language_info.name` or `kernelspec.language`. Raw cells render as escaped
+text. Standard cell tags `remove-cell`, `remove-input`, and `remove-output`
+omit the selected content from both HTML and search; the latter two apply
+to code cells.
+
+Saved stdout, stderr, and tracebacks render as escaped text without ANSI
+control codes. MIME bundles choose one representation in this order: HTML,
+SVG, PNG, JPEG, GIF, WebP, Markdown, JSON, then plain text. Markdown outputs
+use plain CommonMark and tables without Jinja or API directives. Unsupported
+formats need a supported fallback; otherwise the build fails with a cell
+location. A widget with a plain-text fallback displays that fallback.
+
+PNG and other raster outputs are validated as base64. Images and Markdown
+image attachments are embedded as data URLs, with SVG kept in image context.
+HTML outputs use sandboxed frames with scripts, forms, parent access, and
+external resource loading disabled. Inline styles and embedded data images
+are allowed; frames can be resized vertically. Interactive widgets and
+JavaScript outputs are not executed. Rich-output links are separate from
+document reference validation.
+
+Try `doukimd build --config examples/notebooks/doukimd.yaml` for a complete
+example with saved output.
+
+## Local search
+
+Search is enabled by default and runs in the reader's browser, using only the
+bundled `search.js` and lazily fetched `search.json`. It indexes guide prose,
+code, generated API documentation, and visible notebook content, with links
+to Markdown heading anchors. API result titles include qualified identities.
+Each query requires all its words; title matches rank above body matches,
+and results keep the best matching section per page.
+
+```yaml
+search:
+  enabled: true
+  limit: 8
+  min_length: 2
+```
+
+`limit` accepts 1–50 results; `min_length` accepts 1–10 characters. Set
+`search: false` in page front matter or notebook page metadata to omit that
+page from the index. This affects search, not whether the page is published.
+Disabling the site search omits its controls, script, and index.
+
+Open search with the header button, `/`, or Ctrl/Cmd+K when outside editable
+controls. Arrow keys move between results, Tab follows native dialog focus,
+and Escape closes the dialog and restores focus. Queries support Unicode
+normalization and case-insensitive matching. Failed index loads show a retry
+message. Result text is inserted as text, never interpreted as HTML.
+
+Serve the generated site over HTTP, including under a repository subpath.
+For local use: `python -m http.server --directory build`. Browsers generally
+block fetching the search index when opening HTML through `file://`.
+Search requires JavaScript and native dialog support; other navigation works
+without either. Custom themes receive `search`, `search_script`, and
+`search_index_url` to integrate their own controls. The index is a JSON array
+of `{title, url, text}` records, with site-root-relative page and section URLs.
 
 ## Themes and plugins
 

@@ -24,6 +24,8 @@ jobs:
         with:
           node-version: "24"
           package-manager-cache: false
+      - name: Check local search
+        run: node tests/search.cjs src/doukimd/themes/default/search.js
       - name: Check appearance and mobile navigation
         run: node tests/theme.cjs src/doukimd/themes/default/theme.js
 
@@ -66,3 +68,4 @@ jobs:
           python -m venv wheel-check
           wheel-check/bin/python -m pip install dist/*.whl
           wheel-check/bin/doukimd check --config examples/basic/doukimd.yaml
+          wheel-check/bin/doukimd check --config examples/notebooks/doukimd.yaml

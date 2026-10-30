@@ -18,7 +18,7 @@ Use `doukimd check` to validate without writing files.
 
 ## Included
 
-- Markdown pages with validated YAML front matter.
+- Markdown and saved Jupyter notebook pages with validated metadata.
 - Opt-in Jinja in Markdown with project, page, data, and API metadata.
 - Static Python API extraction and validation against Douki's shipped schema.
 - Public re-exports, properties, data declarations, and callable variants.
@@ -28,6 +28,7 @@ Use `doukimd check` to validate without writing files.
 - Page layouts, trusted HTML opt-in, local branding, and extra stylesheets.
 - Local link and heading validation, assets, code highlighting, and JSON
   symbol and search inventories.
+- Local browser search across guides, notebooks, and API sections.
 - A bundled theme, local Jinja theme overrides, and explicit context plugins.
 - Safe replacement of managed output after successful builds.
 
@@ -43,7 +44,8 @@ Arx collection requires a future frontend documentation adapter and is
 explicitly rejected today. Inherited members,
 incremental builds, preview serving, and cross-project links are follow-ups.
 
-The generated search data has no bundled interactive search UI yet.
+Notebooks render stored results without executing cells; interactive widgets
+and notebook execution are outside the build.
 
 ## Development
 
