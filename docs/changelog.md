@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+# [1.2.0](https://github.com/arxlang/doukimd/compare/1.1.1...1.2.0) (2026-10-30)
+
+
+### Features
+
+* replace sidebar trees with full-width accordion groups ([#11](https://github.com/arxlang/doukimd/issues/11)) ([75cde6f](https://github.com/arxlang/doukimd/commit/75cde6f6b187b4e59214a634e9720cd131352bbc))
+
 ## [1.1.1](https://github.com/arxlang/doukimd/compare/1.1.0...1.1.1) (2026-10-30)
 
 
