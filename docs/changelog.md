@@ -1,6 +1,18 @@
 # Release Notes
 ---
 
+## [1.4.1](https://github.com/arxlang/doukimd/compare/1.4.0...1.4.1) (2026-10-30)
+
+
+### Bug Fixes
+
+* preserve annotations for Python 3.14 dispatch ([#15](https://github.com/arxlang/doukimd/issues/15)) ([a74281a](https://github.com/arxlang/doukimd/commit/a74281adf353a0b4cb63c594bd0be53baa80d70f))
+
+
+### Performance Improvements
+
+* reuse validated indexes and prepared navigation ([#14](https://github.com/arxlang/doukimd/issues/14)) ([9970cdb](https://github.com/arxlang/doukimd/commit/9970cdbe66fc94b971b0e3319a8006ec76acd1a9))
+
 # [1.4.0](https://github.com/arxlang/doukimd/compare/1.3.0...1.4.0) (2026-10-30)
 
 
