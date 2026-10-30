@@ -17,6 +17,27 @@
           {% endfor %}
         </ul>
         {% endmacro %}
+        {% macro sidebar_menu(items, parent=none) %}
+        <ul class="sidebar-list">
+          {% if parent and parent.url %}
+          <li class="sidebar-overview">
+            <a href="{{ parent.url }}" aria-label="{{ parent.title }} overview"{% if parent.current %} aria-current="page"{% endif %}>Overview</a>
+          </li>
+          {% endif %}
+          {% for item in items %}
+          <li{% if item.active %} class="nav-active"{% endif %}>
+            {% if item.children %}
+            <details class="sidebar-group"{% if item.active %} open{% endif %}>
+              <summary class="sidebar-group-title">{{ label(item) }}</summary>
+              {{ sidebar_menu(item.children, item) }}
+            </details>
+            {% else %}
+            <a href="{{ item.url }}"{% if item.current %} aria-current="page"{% endif %}>{{ label(item) }}</a>
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+        {% endmacro %}
 <!doctype html>
 <html lang="en" data-color-mode="{{ theme.color_mode }}" data-bs-theme="{{ 'light' if theme.color_mode == 'auto' else theme.color_mode }}" data-preference-key="doukimd:{{ project.name }}:color-mode" data-palette="{{ theme.palette }}" data-palettes="{{ palettes | join(',') }}">
   <head>
@@ -82,7 +103,7 @@
           <summary class="navigation-toggle">Browse documentation</summary>
           <div class="navigation-content">
             <p class="sidebar-caption">{{ sidebar_title }}</p>
-            {{ menu(navigation) }}
+            {{ sidebar_menu(navigation) }}
           </div>
         </details>
       </nav>

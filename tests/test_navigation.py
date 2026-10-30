@@ -105,7 +105,7 @@ def test_navigation_groups_symbols_and_uses_routes(example: Path) -> None:
     nav = nav.partition('</nav>')[0]
     assert nav.count('API Docs</span>') == 1
     assert nav.count(' aria-current="page"') == 1
-    assert nav.count('<details open>') == 2
+    assert nav.count('<details class="sidebar-group" open>') == 2
     assert re.search(r'href="example.add.html" aria-current="page"', nav)
 
 
