@@ -21,6 +21,7 @@ from public import private, public
 
 from doukimd.content import expand_page
 from doukimd.errors import BuildError
+from doukimd.indexes import ApiIndex
 from doukimd.markdown import parse_document
 from doukimd.models import ApiSymbol, Config, Page
 from doukimd.notebook_models import (
@@ -163,7 +164,7 @@ class NotebookRenderer:
       parser:
         type: MarkdownIt
       inventory:
-        type: dict[str, ApiSymbol]
+        type: ApiIndex | dict[str, ApiSymbol]
       language:
         type: str
       footnotes:
@@ -177,7 +178,7 @@ class NotebookRenderer:
         config: Config,
         context: dict[str, object],
         parser: MarkdownIt,
-        inventory: dict[str, ApiSymbol],
+        inventory: ApiIndex | dict[str, ApiSymbol],
         language: str,
     ) -> None:
         """
@@ -194,7 +195,7 @@ class NotebookRenderer:
           parser:
             type: MarkdownIt
           inventory:
-            type: dict[str, ApiSymbol]
+            type: ApiIndex | dict[str, ApiSymbol]
           language:
             type: str
         """
@@ -203,7 +204,7 @@ class NotebookRenderer:
         self.config: Config = config
         self.context: dict[str, object] = context
         self.parser: MarkdownIt = parser
-        self.inventory: dict[str, ApiSymbol] = inventory
+        self.inventory: ApiIndex | dict[str, ApiSymbol] = inventory
         self.language: str = language
         self.footnotes: int = 0
 
@@ -420,7 +421,7 @@ def render_notebook(
     config: Config,
     context: dict[str, object],
     parser: MarkdownIt,
-    inventory: dict[str, ApiSymbol],
+    inventory: ApiIndex | dict[str, ApiSymbol],
 ) -> list[Token]:
     """
     title: Expand saved notebook content before anchors and links are resolved.
@@ -436,7 +437,7 @@ def render_notebook(
       parser:
         type: MarkdownIt
       inventory:
-        type: dict[str, ApiSymbol]
+        type: ApiIndex | dict[str, ApiSymbol]
     returns:
       type: list[Token]
     """

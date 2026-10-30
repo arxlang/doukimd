@@ -38,6 +38,7 @@ from doukimd.content import (
 )
 from doukimd.errors import BuildError
 from doukimd.html import process_html
+from doukimd.indexes import ApiIndex, SiteIndex
 from doukimd.markdown import (
     assign_anchors,
     markdown_parser,
@@ -45,11 +46,8 @@ from doukimd.markdown import (
     resolve_references,
 )
 from doukimd.models import Config, Page, SiteBuild
-from doukimd.navigation import (
-    build_navbar,
-    build_navigation,
-    sidebar_for_page,
-)
+from doukimd.navigation import sidebar_for_page
+from doukimd.navigation_plan import NavigationPlan
 from doukimd.notebook_rendering import render_notebook
 from doukimd.plugins import plugin_context
 from doukimd.runtime import typechecked
@@ -143,7 +141,7 @@ def highlight_code(code: str, language: str, attrs: str) -> str:
 def validate_links(
     tokens: list[Token],
     page: Page,
-    pages: dict[str, Page],
+    pages: SiteIndex | dict[str, Page],
     assets: dict[str, bytes],
 ) -> None:
     """
@@ -154,10 +152,12 @@ def validate_links(
       page:
         type: Page
       pages:
-        type: dict[str, Page]
+        type: SiteIndex | dict[str, Page]
       assets:
         type: dict[str, bytes]
     """
+
+    planned = pages.by_route if isinstance(pages, SiteIndex) else pages
 
     @typechecked
     def resolve(value: str) -> str:
@@ -188,12 +188,12 @@ def validate_links(
             if path
             else page.route
         )
-        if route not in pages and route not in assets:
+        if route not in planned and route not in assets:
             raise BuildError(
                 'references', f'Unknown local target: {value}', page.source
             )
-        if target.fragment and route in pages:
-            if unquote(target.fragment) not in pages[route].anchors:
+        if target.fragment and route in planned:
+            if unquote(target.fragment) not in planned[route].anchors:
                 raise BuildError(
                     'references',
                     f'Unknown heading anchor: {value}',
@@ -277,6 +277,8 @@ def compile_site(config_path: Path) -> SiteBuild:
                 page.source,
             )
     routes = plan_pages(pages, inventory, config)
+    api = ApiIndex(inventory, routes)
+    site = SiteIndex(pages)
     if not pages:
         raise BuildError('planning', 'The site has no pages')
     context: dict[str, object] = {
@@ -317,12 +319,10 @@ def compile_site(config_path: Path) -> SiteBuild:
     for page in pages:
         parser.options['html'] = page.settings.html
         if page.notebook is not None:
-            tokens = render_notebook(
-                page, root, config, context, parser, inventory
-            )
+            tokens = render_notebook(page, root, config, context, parser, api)
         else:
             text = expand_page(page, root, config, context)
-            tokens = parse_document(parser, text, page, inventory)
+            tokens = parse_document(parser, text, page, api)
         process_html(tokens, page)
         assign_anchors(tokens, page)
         documents[page.route] = tokens
@@ -330,8 +330,8 @@ def compile_site(config_path: Path) -> SiteBuild:
     by_route = {page.route: page for page in pages}
     for page in pages:
         tokens = documents[page.route]
-        resolve_references(tokens, page, inventory, routes)
-        validate_links(tokens, page, by_route, assets)
+        resolve_references(tokens, page, api, api)
+        validate_links(tokens, page, site, assets)
     loaders: list[BaseLoader] = [PackageLoader('doukimd', 'themes/default')]
     if config.theme.directory is not None:
         custom = project_path(root, config.theme.directory)
@@ -356,14 +356,15 @@ def compile_site(config_path: Path) -> SiteBuild:
             MANIFEST,
         ]
     )
+    navigation = NavigationPlan(site, api, config)
     artifacts = {**assets, **bundled}
     search: list[dict[str, str]] = []
     for page in pages:
         tokens = documents[page.route]
         content = parser.renderer.render(tokens, parser.options, {})
         relative = posixpath.dirname(page.route) or '.'
-        nav = build_navigation(pages, page, inventory, config)
-        navbar = build_navbar(config, pages, page, inventory)
+        nav = navigation.navigation(page)
+        navbar = navigation.header(page)
         sidebar = sidebar_for_page(config, page)
         toc = [
             {

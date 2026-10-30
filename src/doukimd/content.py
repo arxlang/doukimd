@@ -24,6 +24,7 @@ from pydantic import ValidationError
 
 from doukimd.config import project_path, read_yaml
 from doukimd.errors import BuildError
+from doukimd.indexes import ApiIndex
 from doukimd.models import ApiSymbol, Config, Page, PageSettings
 from doukimd.notebook_models import MarkdownCell
 from doukimd.notebooks import load_notebook, notebook_text
@@ -183,17 +184,17 @@ def api_route(identifier: str) -> str:
 @private
 @typechecked
 def api_summary(
-    items: list[ApiSymbol], route: str, routes: dict[str, str]
+    items: tuple[ApiSymbol, ...], route: str, api: ApiIndex
 ) -> str:
     """
     title: Group links to immediate API children by declaration kind.
     parameters:
       items:
-        type: list[ApiSymbol]
+        type: tuple[ApiSymbol, Ellipsis]
       route:
         type: str
-      routes:
-        type: dict[str, str]
+      api:
+        type: ApiIndex
     returns:
       type: str
     """
@@ -218,7 +219,7 @@ def api_summary(
         sections.append(f'## {title}')
         for item in members:
             target = posixpath.relpath(
-                routes[item.identifier], posixpath.dirname(route)
+                api.routes[item.identifier], posixpath.dirname(route)
             )
             summary = ' '.join(
                 str(item.documentation.get('title', '')).split()
@@ -259,14 +260,13 @@ def plan_pages(
             if counts[route.casefold()] > 1:
                 suffix = hashlib.sha256(name.encode('utf-8')).hexdigest()[:16]
                 routes[name] = route[:-5] + f'--{suffix}.html'
-        roots = [
-            item for item in inventory.values() if item.parent not in inventory
-        ]
+        api = ApiIndex(inventory, routes)
+        roots = tuple(inventory[name] for name in api.roots.get(None, ()))
         pages.append(
             Page(
                 'api/index.html',
                 'API Docs',
-                api_summary(roots, 'api/index.html', routes),
+                api_summary(roots, 'api/index.html', api),
                 PageSettings(),
             )
         )
@@ -282,13 +282,9 @@ def plan_pages(
                     ),
                     f'::: api {identifier}\n:::\n\n'
                     + api_summary(
-                        [
-                            child
-                            for child in inventory.values()
-                            if child.parent == identifier
-                        ],
+                        api.children.get(identifier, ()),
                         route,
-                        routes,
+                        api,
                     ),
                     PageSettings(),
                     symbol=identifier,
