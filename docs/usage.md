@@ -186,9 +186,9 @@ external link may also have children.
 `api: "*"` inserts the generated API browser in a sidebar.
 `api: arx` selects only symbols from the source named `arx` in `api.sources`;
 no filesystem paths or handwritten API routes are needed in the menu. A
-single package links to its root page; multiple roots are offered as package
-links. API generation must be enabled and the selected source must have
-generated pages.
+single package links to its root page. All selected modules and submodules
+appear in one flat accordion list. API generation must be enabled and the
+selected source must have generated pages.
 
 A sidebar's `paths` match output route prefixes ending in `/`, or exact HTML
 routes. The longest matching prefix wins; equally specific matches across
@@ -201,20 +201,23 @@ that product's navbar branch active on its descendants.
 
 Header API entries link to the API index or a single selected package. When
 a named source has multiple roots, the header offers only those root links;
-the contextual API browser stays in the sidebar. Header dropdowns remain
+the module accordion stays in the sidebar. Header dropdowns remain
 closed until opened by the reader.
 
-The API sidebar shows flat, collapsible groups such as **Modules**,
-**Classes**, **Functions**, and **Methods**, with a count for each group.
-The API index lists package roots. Open a module or class to see only its
-immediate declarations; opening a function, method, or attribute keeps its
-owner's groups visible and highlights the selected member. Breadcrumb links
-lead to the containing modules and classes, and the API menu heading links
-back to its entry point when it has one. Menus with multiple roots keep a
-flat **Packages** group available for switching between them. Other source
-menus retain their own roots when the current page is outside their scope.
-There are no recursive declaration trees, and all groups start open for
-scanning and can be collapsed.
+The API sidebar keeps the same ordered list of module accordions on every
+page. Only one module opens at a time. Each contains a **Module overview**
+link and flat declaration links with kind labels; classes never open nested
+menus. Their methods, attributes, and nested classes are linked from the
+documentation content. Member pages highlight their containing class in
+the sidebar with `aria-current="location"`.
+
+The current page's closest module opens automatically; otherwise the first
+module starts open. Submodules appear at the same level with dotted names.
+When a menu includes multiple roots, names include their package and source
+to stay distinct. Named-source menus keep their selected modules even on
+pages from another source. Native `details` grouping works without
+JavaScript in supporting browsers; the theme adds an exclusivity fallback
+for older browsers. All module links remain usable without JavaScript.
 
 Configured nested page menus use full-width accordion headings without tree
 lines or increasing indentation. Select a heading to expand or collapse its

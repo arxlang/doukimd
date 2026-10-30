@@ -59,5 +59,15 @@
       resize();
       mobile.addEventListener("change", resize);
     }
+    // Also support exclusive groups in browsers without details[name].
+    document.querySelectorAll(".api-navigation").forEach((menu) => {
+      const modules = [...menu.querySelectorAll("details.api-module")];
+      modules.forEach((module) => module.addEventListener("toggle", () => {
+        if (!module.open) return;
+        modules.forEach((other) => {
+          if (other !== module) other.open = false;
+        });
+      }));
+    });
   });
 })();

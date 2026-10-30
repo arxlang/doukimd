@@ -72,7 +72,7 @@ def test_api_index_and_member_summaries(example: Path) -> None:
 @typechecked
 def test_navigation_groups_symbols_and_uses_routes(example: Path) -> None:
     """
-    title: Keep titles distinct and group the current API owner's members.
+    title: Keep titles distinct inside a stable module accordion.
     parameters:
       example:
         type: Path
@@ -95,14 +95,11 @@ def test_navigation_groups_symbols_and_uses_routes(example: Path) -> None:
     assert api.title == 'API Docs'
     assert api.url == '../'
     assert api.active and not api.current
-    assert api.layout == 'sections'
-    module = api.breadcrumbs[0]
+    assert api.layout == 'modules'
+    module = api.children[0]
     assert module.title == 'example'
     assert module.active and not module.current
-    assert not module.children
-    functions = api.children[0]
-    assert functions.title == 'Functions'
-    function = functions.children[0]
+    function = module.children[0]
     assert function.current and function.active
     assert function.url == 'example.add.html'
     result = compile_site(example / 'doukimd.yaml')
@@ -112,7 +109,7 @@ def test_navigation_groups_symbols_and_uses_routes(example: Path) -> None:
     assert nav.count('API Docs</span>') == 1
     assert nav.count(' aria-current="page"') == 1
     assert 'class="sidebar-group"' not in nav
-    assert nav.count('<details class="api-section" open>') == 1
+    assert len(re.findall(r'<details class="api-module"[^>]* open>', nav)) == 1
     assert re.search(r'href="example.add.html" aria-current="page"', nav)
 
 
@@ -203,7 +200,7 @@ def test_no_generated_api_menu_without_pages(example: Path) -> None:
 @typechecked
 def test_flat_api_navigation_reaches_all_nested_pages(example: Path) -> None:
     """
-    title: Reach every declaration by following flat links from the API index.
+    title: Keep module order stable and reach members through class pages.
     parameters:
       example:
         type: Path
@@ -237,18 +234,35 @@ def test_flat_api_navigation_reaches_all_nested_pages(example: Path) -> None:
         if route in visited:
             continue
         visited.add(route)
-        sidebar = result.files[route].decode()
-        sidebar = sidebar.partition('<nav aria-label="Documentation">')[2]
+        html = result.files[route].decode()
+        sidebar = html.partition('<nav aria-label="Documentation">')[2]
         sidebar = sidebar.partition('</nav>')[0]
         assert 'class="sidebar-group"' not in sidebar
-        assert sidebar.count('aria-current="page"') == 1
+        assert sidebar.count('aria-current=') == 1
+        modules = re.findall(
+            r'<details class="api-module" name="[^"]+"([^>]*)>\s*'
+            r'<summary><span class="nav-label">(.*?)</span></summary>',
+            sidebar,
+        )
+        assert [title for _, title in modules] == [
+            'example',
+            'package',
+            'package.nested',
+        ]
+        opened = [
+            title for attributes, title in modules if 'open' in attributes
+        ]
+        assert len(opened) == 1
+        if route.startswith('api/python/package.nested'):
+            assert opened == ['package.nested']
         for section in re.findall(
-            r'<details class="api-section" open>(.*?)</details>',
+            r'<details class="api-module"[^>]*>(.*?)</details>',
             sidebar,
             re.DOTALL,
         ):
             assert '<details' not in section
-        for href in re.findall(r'href="([^"]+)"', sidebar):
+        main = html.partition('<main id="content">')[2].partition('</main>')[0]
+        for href in re.findall(r'href="([^"]+)"', sidebar + main):
             target = urlsplit(urljoin(f'https://docs.example/{route}', href))
             path = target.path.lstrip('/')
             if path.endswith('/'):
@@ -262,7 +276,7 @@ def test_flat_api_navigation_reaches_all_nested_pages(example: Path) -> None:
 @typechecked
 def test_empty_api_owner_retains_location(example: Path) -> None:
     """
-    title: Keep an empty module reachable without inventing a member group.
+    title: Keep an empty module's overview accessible inside its accordion.
     parameters:
       example:
         type: Path
@@ -274,27 +288,74 @@ def test_empty_api_owner_retains_location(example: Path) -> None:
     html = compile_site(config).files['api/python/empty.html'].decode()
     sidebar = html.partition('<nav aria-label="Documentation">')[2]
     sidebar = sidebar.partition('</nav>')[0]
-    assert 'href="empty.html" aria-current="page">empty</a>' in sidebar
-    assert 'No child declarations.' in sidebar
-    assert 'class="api-section"' not in sidebar
+    assert (
+        'href="empty.html" aria-label="empty module overview"'
+        ' aria-current="page">Module overview</a>' in sidebar
+    )
+    assert (
+        len(re.findall(r'<details class="api-module"[^>]* open>', sidebar))
+        == 1
+    )
     assert 'href="../"' in sidebar
 
 
+@pytest.mark.parametrize('symbol', ['python:example', 'python:example.add'])
 @typechecked
-def test_unknown_api_navigation_kind_fails(example: Path) -> None:
+def test_unknown_api_navigation_kind_fails(example: Path, symbol: str) -> None:
     """
     title: Reject an unsupported declaration kind instead of losing its link.
     parameters:
       example:
         type: Path
+      symbol:
+        type: str
     """
     config = load_config(example / 'doukimd.yaml')
     inventory = collect_api(example, config)
     pages = discover_pages(example, config)
     plan_pages(pages, inventory, config)
     current = next(page for page in pages if page.symbol == 'python:example')
-    inventory['python:example.add'] = replace(
-        inventory['python:example.add'], kind='unsupported'
-    )
-    with pytest.raises(BuildError, match='Unsupported API kind'):
+    inventory[symbol] = replace(inventory[symbol], kind='unsupported')
+    with pytest.raises(BuildError, match=r'Unsupported API .*kind'):
         build_navigation(pages, current, inventory)
+
+
+@typechecked
+def test_selected_nested_roots_have_distinct_module_names(
+    example: Path,
+) -> None:
+    """
+    title: Distinguish same-named nested modules selected as separate roots.
+    parameters:
+      example:
+        type: Path
+    """
+    for name in ['first', 'second']:
+        package = example / 'src' / name
+        package.mkdir()
+        (package / '__init__.py').write_text('"""title: Package."""')
+        (package / 'nested.py').write_text('"""title: Nested module."""')
+    (example / 'docs/index.md').write_text('# Home')
+    config = example / 'doukimd.yaml'
+    config.write_text(
+        config.read_text().replace(
+            '[example]', '[first.nested, second.nested]'
+        )
+    )
+    result = compile_site(config)
+    for name in ['first', 'second']:
+        html = result.files[f'api/python/{name}.nested.html'].decode()
+        sidebar = html.partition('<nav aria-label="Documentation">')[2]
+        sidebar = sidebar.partition('</nav>')[0]
+        groups = re.findall(
+            r'<details class="api-module" name="[^"]+"([^>]*)>\s*'
+            r'<summary><span class="nav-label">(.*?)</span></summary>',
+            sidebar,
+        )
+        assert [title for _, title in groups] == [
+            'first.nested',
+            'second.nested',
+        ]
+        assert [title for attrs, title in groups if 'open' in attrs] == [
+            f'{name}.nested'
+        ]

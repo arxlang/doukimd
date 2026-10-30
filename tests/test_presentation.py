@@ -556,7 +556,10 @@ def test_header_does_not_duplicate_active_sidebar_tree(example: Path) -> None:
     assert 'href="example.add.html"' in header
     assert sidebar.count('api-kind--function') == 1
     assert 'class="sidebar-group"' not in sidebar
-    assert sidebar.count('<details class="api-section" open>') == 1
+    assert (
+        len(re.findall(r'<details class="api-module"[^>]* open>', sidebar))
+        == 1
+    )
     assert 'href="example.add.html" aria-current="page"' in sidebar
     index = result.files['api/index.html'].decode()
     header = index.partition('<nav class="site-navbar"')[2].partition(
@@ -610,11 +613,11 @@ def test_header_scoped_api_uses_package_entry_points(
 
 @pytest.mark.parametrize('framework', ['bootstrap', 'none'])
 @typechecked
-def test_api_sections_follow_current_owner(
+def test_api_module_accordion_keeps_class_members_in_content(
     example: Path, framework: str
 ) -> None:
     """
-    title: Show flat owner groups and preserve module, class, and member links.
+    title: Keep one module group and flat class links on every member page.
     parameters:
       example:
         type: Path
@@ -638,26 +641,35 @@ def test_api_sections_follow_current_owner(
     sidebar = html.partition('<nav aria-label="Documentation">')[2]
     sidebar = sidebar.partition('</nav>')[0]
     assert 'class="sidebar-group"' not in sidebar
-    assert sidebar.count('<details class="api-section" open>') == 1
-    assert 'Methods</span>' in sidebar
+    assert (
+        len(re.findall(r'<details class="api-module"[^>]* open>', sidebar))
+        == 1
+    )
+    assert 'api-section' not in sidebar and 'api-breadcrumbs' not in sidebar
     assert 'href="../"' in sidebar
     assert 'href="example.html"' in sidebar
     assert 'href="example.Widget.html"' in sidebar
-    assert 'href="example.Other.html"' not in sidebar
+    assert 'href="example.Other.html"' in sidebar
     assert 'href="example.Other.create.html"' not in sidebar
-    assert 'href="example.add.html"' not in sidebar
-    assert sidebar.count('aria-current="page"') == 1
-    assert 'href="example.Widget.create.html" aria-current="page"' in sidebar
-    assert 'api-kind--method' in sidebar
+    assert 'href="example.add.html"' in sidebar
+    assert 'href="example.Widget.create.html"' not in sidebar
+    assert 'href="example.Widget.html" aria-current="location"' in sidebar
+    assert 'api-kind--method' not in sidebar
+    assert 'api-kind--class' in sidebar
     overview = result.files['api/python/example.Widget.html'].decode()
-    assert (
-        'href="example.Widget.html" aria-current="page">Widget</a>' in overview
-    )
+    assert 'href="example.Widget.html" aria-current="page">' in overview
+    main = overview.partition('<main id="content">')[2].partition('</main>')[0]
+    assert 'href="example.Widget.create.html"' in main
     module = result.files['api/python/example.html'].decode()
     module = module.partition('<nav aria-label="Documentation">')[2]
     module = module.partition('</nav>')[0]
-    assert module.count('<details class="api-section" open>') == 2
-    assert 'Classes</span>' in module and 'Functions</span>' in module
+    assert (
+        len(re.findall(r'<details class="api-module"[^>]* open>', module)) == 1
+    )
+    assert (
+        'href="example.html" aria-label="example module overview"'
+        ' aria-current="page">Module overview</a>' in module
+    )
     assert 'href="example.Widget.html"' in module
     assert 'href="example.Other.html"' in module
     assert 'href="example.Widget.create.html"' not in module
@@ -665,10 +677,11 @@ def test_api_sections_follow_current_owner(
     index = result.files['api/index.html'].decode()
     index = index.partition('<nav aria-label="Documentation">')[2]
     index = index.partition('</nav>')[0]
-    assert index.count('<details class="api-section" open>') == 1
-    assert 'Modules</span>' in index
+    assert (
+        len(re.findall(r'<details class="api-module"[^>]* open>', index)) == 1
+    )
     assert 'href="python/example.html"' in index
-    assert 'example.Widget' not in index
+    assert 'python/example.Widget.html' in index
 
 
 @typechecked
@@ -742,7 +755,7 @@ def test_nested_page_accordions_and_overview_links(project: Path) -> None:
 
 @pytest.mark.parametrize('current_source', ['first', 'second'])
 @typechecked
-def test_scoped_api_sections_keep_package_switching(
+def test_scoped_api_accordions_keep_package_switching(
     example: Path, current_source: str
 ) -> None:
     """
@@ -785,15 +798,72 @@ def test_scoped_api_sections_keep_package_switching(
     sidebar = sidebar.partition('</nav>')[0]
     assert 'second' not in sidebar
     assert 'first / example' in sidebar and 'first / extra' in sidebar
+    assert (
+        len(re.findall(r'<details class="api-module"[^>]* open>', sidebar))
+        == 1
+    )
+    assert sidebar.count('class="api-module"') == 2
     if current_source == 'first':
-        assert 'Packages</span>' in sidebar
-        assert 'Functions</span>' in sidebar
         assert 'href="extra.html"' in sidebar
         assert 'href="example.add.html" aria-current="page"' in sidebar
         assert sidebar.count('aria-current="page"') == 1
     else:
-        assert 'Modules</span>' in sidebar
-        assert 'Functions</span>' not in sidebar
         assert 'href="../first/example.html"' in sidebar
         assert 'href="../first/extra.html"' in sidebar
         assert 'aria-current="page"' not in sidebar
+
+
+@typechecked
+def test_separate_api_menus_have_independent_accordion_names(
+    example: Path,
+) -> None:
+    """
+    title: Scope native accordion grouping independently for nested API menus.
+    parameters:
+      example:
+        type: Path
+    """
+    (example / 'src/extra.py').write_text('"""title: Extra module."""')
+    config = configure(
+        example,
+        {
+            'api': {'sources': [{'root': 'src'}]},
+            'navigation': {
+                'default_sidebar': 'reference',
+                'sidebars': [
+                    {
+                        'id': 'reference',
+                        'title': 'Reference',
+                        'items': [
+                            {'title': 'First API menu', 'api': '*'},
+                            {
+                                'title': 'Additional reference',
+                                'children': [
+                                    {'title': 'Second API menu', 'api': '*'}
+                                ],
+                            },
+                        ],
+                    }
+                ],
+            },
+        },
+    )
+    html = compile_site(config).files['api/python/example.add.html'].decode()
+    menus = re.findall(
+        r'<section class="api-navigation"[^>]*>(.*?)</section>',
+        html,
+        re.DOTALL,
+    )
+    assert len(menus) == 2
+    names: list[str] = []
+    for menu in menus:
+        groups = re.findall(
+            r'<details class="api-module" name="([^"]+)"', menu
+        )
+        assert len(groups) == 2 and len(set(groups)) == 1
+        assert (
+            len(re.findall(r'<details class="api-module"[^>]* open>', menu))
+            == 1
+        )
+        names.append(groups[0])
+    assert names[0] != names[1]

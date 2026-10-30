@@ -32,6 +32,19 @@ function browser(options = {}) {
     addEventListener: (name, fn) => { paletteEvents[name] = fn; },
   };
   const navigation = { open: true };
+  const apiMenus = (options.apiMenus || []).map(states => {
+    const modules = states.map(open => ({
+      open,
+      addEventListener: function(name, fn) { this[name] = fn; },
+    }));
+    return {
+      modules,
+      querySelectorAll: selector => {
+        assert.equal(selector, "details.api-module");
+        return modules;
+      },
+    };
+  });
   let ready;
   const context = {
     document: {
@@ -41,6 +54,10 @@ function browser(options = {}) {
         "docs-navigation": navigation,
       }[id] || null),
       addEventListener: (name, fn) => { ready = fn; },
+      querySelectorAll: selector => {
+        assert.equal(selector, ".api-navigation");
+        return apiMenus;
+      },
     },
     localStorage: {
       getItem: (key) => {
@@ -67,6 +84,12 @@ function browser(options = {}) {
   ready();
   return {
     dataset, storage, navigation, select, picker, paletteSelect, palettePicker,
+    apiMenus,
+    toggleModule: (menu, index, open) => {
+      const module = apiMenus[menu].modules[index];
+      module.open = open;
+      module.toggle();
+    },
     choose: (mode) => { select.value = mode; events.change(); },
     choosePalette: (name) => {
       paletteSelect.value = name;
@@ -147,4 +170,18 @@ invalidPalette.choosePalette("unknown");
 assert.equal(invalidPalette.dataset.palette, "slate");
 blocked.choosePalette("violet");
 assert.equal(blocked.dataset.palette, "violet");
-console.log("Appearance, palette, and mobile navigation checks passed");
+const accordion = browser({ apiMenus: [[true, false, false], [true, false]] });
+accordion.toggleModule(0, 1, true);
+assert.deepEqual(accordion.apiMenus[0].modules.map(module => module.open), [false, true, false]);
+assert.deepEqual(accordion.apiMenus[1].modules.map(module => module.open), [true, false]);
+accordion.toggleModule(0, 1, false);
+assert.deepEqual(accordion.apiMenus[0].modules.map(module => module.open), [false, false, false]);
+accordion.toggleModule(0, 2, true);
+accordion.toggleModule(0, 0, true);
+// A delayed close event must not close the newly opened module.
+accordion.apiMenus[0].modules[2].toggle();
+assert.deepEqual(accordion.apiMenus[0].modules.map(module => module.open), [true, false, false]);
+accordion.toggleModule(1, 1, true);
+assert.deepEqual(accordion.apiMenus[0].modules.map(module => module.open), [true, false, false]);
+assert.deepEqual(accordion.apiMenus[1].modules.map(module => module.open), [false, true]);
+console.log("Appearance, palette, mobile, and accordion navigation checks passed");
