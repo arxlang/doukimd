@@ -6,7 +6,9 @@ from __future__ import annotations
 
 import re
 
+from dataclasses import replace
 from pathlib import Path
+from urllib.parse import urljoin, urlsplit
 
 import pytest
 
@@ -70,7 +72,7 @@ def test_api_index_and_member_summaries(example: Path) -> None:
 @typechecked
 def test_navigation_groups_symbols_and_uses_routes(example: Path) -> None:
     """
-    title: Keep duplicate titles distinct and expand only the active branch.
+    title: Keep titles distinct and group the current API owner's members.
     parameters:
       example:
         type: Path
@@ -93,10 +95,14 @@ def test_navigation_groups_symbols_and_uses_routes(example: Path) -> None:
     assert api.title == 'API Docs'
     assert api.url == '../'
     assert api.active and not api.current
-    module = api.children[0]
+    assert api.layout == 'sections'
+    module = api.breadcrumbs[0]
     assert module.title == 'example'
     assert module.active and not module.current
-    function = module.children[0]
+    assert not module.children
+    functions = api.children[0]
+    assert functions.title == 'Functions'
+    function = functions.children[0]
     assert function.current and function.active
     assert function.url == 'example.add.html'
     result = compile_site(example / 'doukimd.yaml')
@@ -105,7 +111,8 @@ def test_navigation_groups_symbols_and_uses_routes(example: Path) -> None:
     nav = nav.partition('</nav>')[0]
     assert nav.count('API Docs</span>') == 1
     assert nav.count(' aria-current="page"') == 1
-    assert nav.count('<details class="sidebar-group" open>') == 2
+    assert 'class="sidebar-group"' not in nav
+    assert nav.count('<details class="api-section" open>') == 1
     assert re.search(r'href="example.add.html" aria-current="page"', nav)
 
 
@@ -191,3 +198,103 @@ def test_no_generated_api_menu_without_pages(example: Path) -> None:
     result = compile_site(config)
     assert 'api/index.html' not in result.files
     assert 'API Docs</span>' not in result.files['index.html'].decode()
+
+
+@typechecked
+def test_flat_api_navigation_reaches_all_nested_pages(example: Path) -> None:
+    """
+    title: Reach every declaration by following flat links from the API index.
+    parameters:
+      example:
+        type: Path
+    """
+    package = example / 'src/package'
+    package.mkdir()
+    (package / '__init__.py').write_text('"""title: Package."""')
+    (package / 'nested.py').write_text(
+        '"""title: Nested module."""\n'
+        'class Widget:\n'
+        '    """title: Widget."""\n'
+        '    class Inner:\n'
+        '        """title: Nested class."""\n'
+        '        def create(self) -> None:\n'
+        '            """title: Create an item."""\n'
+    )
+    config = example / 'doukimd.yaml'
+    config.write_text(
+        config.read_text().replace('[example]', '[example, package]')
+    )
+    result = compile_site(config)
+    routes = {
+        route
+        for route in result.files
+        if route.startswith('api/') and route.endswith('.html')
+    }
+    pending = ['api/index.html']
+    visited: set[str] = set()
+    while pending:
+        route = pending.pop()
+        if route in visited:
+            continue
+        visited.add(route)
+        sidebar = result.files[route].decode()
+        sidebar = sidebar.partition('<nav aria-label="Documentation">')[2]
+        sidebar = sidebar.partition('</nav>')[0]
+        assert 'class="sidebar-group"' not in sidebar
+        assert sidebar.count('aria-current="page"') == 1
+        for section in re.findall(
+            r'<details class="api-section" open>(.*?)</details>',
+            sidebar,
+            re.DOTALL,
+        ):
+            assert '<details' not in section
+        for href in re.findall(r'href="([^"]+)"', sidebar):
+            target = urlsplit(urljoin(f'https://docs.example/{route}', href))
+            path = target.path.lstrip('/')
+            if path.endswith('/'):
+                path += 'index.html'
+            if path in routes:
+                pending.append(path)
+    assert visited == routes
+    assert 'api/python/package.nested.Widget.Inner.create.html' in visited
+
+
+@typechecked
+def test_empty_api_owner_retains_location(example: Path) -> None:
+    """
+    title: Keep an empty module reachable without inventing a member group.
+    parameters:
+      example:
+        type: Path
+    """
+    (example / 'src/empty.py').write_text('"""title: Empty module."""')
+    (example / 'docs/index.md').write_text('# Home')
+    config = example / 'doukimd.yaml'
+    config.write_text(config.read_text().replace('[example]', '[empty]'))
+    html = compile_site(config).files['api/python/empty.html'].decode()
+    sidebar = html.partition('<nav aria-label="Documentation">')[2]
+    sidebar = sidebar.partition('</nav>')[0]
+    assert 'href="empty.html" aria-current="page">empty</a>' in sidebar
+    assert 'No child declarations.' in sidebar
+    assert 'class="api-section"' not in sidebar
+    assert 'href="../"' in sidebar
+
+
+@typechecked
+def test_unknown_api_navigation_kind_fails(example: Path) -> None:
+    """
+    title: Reject an unsupported declaration kind instead of losing its link.
+    parameters:
+      example:
+        type: Path
+    """
+    config = load_config(example / 'doukimd.yaml')
+    inventory = collect_api(example, config)
+    pages = discover_pages(example, config)
+    plan_pages(pages, inventory, config)
+    current = next(page for page in pages if page.symbol == 'python:example')
+    inventory['python:example.add'] = replace(
+        inventory['python:example.add'], kind='unsupported'
+    )
+    with pytest.raises(BuildError, match='Unsupported API kind'):
+        build_navigation(pages, current, inventory)

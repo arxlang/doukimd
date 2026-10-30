@@ -439,7 +439,7 @@ class SiteBuild:
 @public
 class NavigationItem(Settings):
     """
-    title: A route-aware navigation entry with nested API children.
+    title: A route-aware menu entry with nested pages or flat API sections.
     attributes:
       title:
         type: str
@@ -453,6 +453,10 @@ class NavigationItem(Settings):
         type: list[NavigationItem]
       kind:
         type: str | None
+      layout:
+        type: Literal[nested, sections]
+      breadcrumbs:
+        type: list[NavigationItem]
     """
 
     title: str
@@ -461,3 +465,5 @@ class NavigationItem(Settings):
     active: bool
     children: list[NavigationItem] = Field(default_factory=list)
     kind: str | None = None
+    layout: Literal['nested', 'sections'] = 'nested'
+    breadcrumbs: list[NavigationItem] = Field(default_factory=list)

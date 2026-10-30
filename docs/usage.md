@@ -183,11 +183,11 @@ these targets and computes links relative to each output page. `url` accepts
 HTTP, HTTPS, or mailto links. A `children` group needs no target; a page or
 external link may also have children.
 
-`api: "*"` inserts the complete generated API hierarchy in a sidebar.
+`api: "*"` inserts the generated API browser in a sidebar.
 `api: arx` selects only symbols from the source named `arx` in `api.sources`;
 no filesystem paths or handwritten API routes are needed in the menu. A
-single package links to its root page; multiple roots form a collapsible
-group. API generation must be enabled and the selected source must have
+single package links to its root page; multiple roots are offered as package
+links. API generation must be enabled and the selected source must have
 generated pages.
 
 A sidebar's `paths` match output route prefixes ending in `/`, or exact HTML
@@ -201,16 +201,28 @@ that product's navbar branch active on its descendants.
 
 Header API entries link to the API index or a single selected package. When
 a named source has multiple roots, the header offers only those root links;
-the full declaration tree stays in the sidebar. Header dropdowns remain
+the contextual API browser stays in the sidebar. Header dropdowns remain
 closed until opened by the reader.
 
-Sidebar groups use full-width accordion headings without tree lines or
-increasing indentation. Select a heading to expand or collapse its children;
-an **Overview** link inside opens the group's own page, when it has one.
+The API sidebar shows flat, collapsible groups such as **Modules**,
+**Classes**, **Functions**, and **Methods**, with a count for each group.
+The API index lists package roots. Open a module or class to see only its
+immediate declarations; opening a function, method, or attribute keeps its
+owner's groups visible and highlights the selected member. Breadcrumb links
+lead to the containing modules and classes, and the API menu heading links
+back to its entry point when it has one. Menus with multiple roots keep a
+flat **Packages** group available for switching between them. Other source
+menus retain their own roots when the current page is outside their scope.
+There are no recursive declaration trees, and all groups start open for
+scanning and can be collapsed.
+
+Configured nested page menus use full-width accordion headings without tree
+lines or increasing indentation. Select a heading to expand or collapse its
+children; an **Overview** link inside opens the group's own page, when it
+has one.
 Groups containing the current page expand automatically, and other groups
-start closed. Readers can keep several groups open. This applies to both
-generated API modules and classes and configured nested page menus, and
-works without JavaScript or Bootstrap.
+start closed. Readers can keep several groups open. Both menu styles work
+without JavaScript or Bootstrap.
 
 ## Page layouts and branding
 

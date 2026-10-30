@@ -54,13 +54,12 @@ def navigation_item(
     )
 
 
-@public
+@private
 @typechecked
-def build_navigation(
+def automatic_navigation(
     pages: list[Page],
     current: Page,
     inventory: dict[str, ApiSymbol],
-    config: Config | None = None,
 ) -> list[NavigationItem]:
     """
     title: Gather generated references under one API Docs menu entry.
@@ -71,8 +70,6 @@ def build_navigation(
         type: Page
       inventory:
         type: dict[str, ApiSymbol]
-      config:
-        type: Config | None
     returns:
       type: list[NavigationItem]
     """
@@ -110,12 +107,127 @@ def build_navigation(
             children = [
                 symbol_navigation(name) for name in by_parent.get(None, [])
             ]
-        navigation.append(navigation_item(page, current, children))
-    if config is not None:
-        return configured_sidebar(
-            config, navigation, pages, current, inventory
-        )
+        item = navigation_item(page, current, children)
+        if page.route == 'api/index.html' and page.source is None:
+            item = item.model_copy(update={'layout': 'sections'})
+        navigation.append(item)
     return navigation
+
+
+@private
+@typechecked
+def sectioned_navigation(item: NavigationItem) -> NavigationItem:
+    """
+    title: Replace API recursion with owner breadcrumbs and flat kind groups.
+    parameters:
+      item:
+        type: NavigationItem
+    returns:
+      type: NavigationItem
+    """
+    if item.layout != 'sections':
+        return item.model_copy(
+            update={
+                'children': [
+                    sectioned_navigation(child) for child in item.children
+                ]
+            }
+        )
+    path: list[NavigationItem] = []
+    children = item.children
+    while branch := next((child for child in children if child.active), None):
+        path.append(branch)
+        children = branch.children
+    # Member pages keep their containing module or class as the context.
+    if path and path[-1].kind not in {'module', 'class'}:
+        path.pop()
+    members = path[-1].children if path else item.children
+    titles = {
+        'module': 'Modules',
+        'class': 'Classes',
+        'function': 'Functions',
+        'method': 'Methods',
+        'property': 'Properties',
+        'attribute': 'Attributes',
+        'enum-member': 'Enum values',
+        'type-alias': 'Type aliases',
+    }
+    groups: dict[str, list[NavigationItem]] = {}
+    for member in members:
+        if member.kind not in titles:
+            raise BuildError(
+                'navigation', f'Unsupported API kind: {member.kind}'
+            )
+        groups.setdefault(str(member.kind), []).append(
+            member.model_copy(update={'children': []})
+        )
+    sections = [
+        NavigationItem(
+            title=title,
+            url=None,
+            current=False,
+            active=any(child.active for child in groups[kind]),
+            children=groups[kind],
+        )
+        for kind, title in titles.items()
+        if kind in groups
+    ]
+    if path and len(item.children) > 1:
+        # Keep other selected roots reachable even when a scoped menu has
+        # no single landing-page URL.
+        sections.insert(
+            0,
+            NavigationItem(
+                title='Packages',
+                url=None,
+                current=False,
+                active=False,
+                children=[
+                    root.model_copy(update={'children': [], 'current': False})
+                    for root in item.children
+                ],
+            ),
+        )
+    return item.model_copy(
+        update={
+            'children': sections,
+            'breadcrumbs': [
+                ancestor.model_copy(update={'children': []})
+                for ancestor in path
+            ],
+        }
+    )
+
+
+@public
+@typechecked
+def build_navigation(
+    pages: list[Page],
+    current: Page,
+    inventory: dict[str, ApiSymbol],
+    config: Config | None = None,
+) -> list[NavigationItem]:
+    """
+    title: Resolve the sidebar and show only the current API owner's members.
+    parameters:
+      pages:
+        type: list[Page]
+      current:
+        type: Page
+      inventory:
+        type: dict[str, ApiSymbol]
+      config:
+        type: Config | None
+    returns:
+      type: list[NavigationItem]
+    """
+    automatic = automatic_navigation(pages, current, inventory)
+    navigation = (
+        configured_sidebar(config, automatic, pages, current, inventory)
+        if config is not None
+        else automatic
+    )
+    return [sectioned_navigation(item) for item in navigation]
 
 
 @private
@@ -270,6 +382,7 @@ def configured_items(
                 )
             else:
                 item = tree.model_copy(update={'title': entry.title})
+            item = item.model_copy(update={'layout': 'sections'})
             if not expand_api:
                 # Header menus expose entry points; the full tree belongs
                 # to the sidebar. Preserve a chooser for multiple roots.
@@ -415,7 +528,7 @@ def build_navbar(
     """
     return configured_items(
         config.navigation.navbar,
-        build_navigation(pages, current, inventory),
+        automatic_navigation(pages, current, inventory),
         pages,
         current,
         inventory,
