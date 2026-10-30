@@ -17,31 +17,24 @@
           {% endfor %}
         </ul>
         {% endmacro %}
-        {% macro api_menu(item) %}
+        {% macro api_menu(item, group_id) %}
         <section class="api-navigation" aria-label="{{ item.title }}">
-          {% if item.url %}<a class="api-home" href="{{ item.url }}"{% if item.current and not item.breadcrumbs %} aria-current="page"{% endif %}>{% if item.breadcrumbs %}<span aria-hidden="true">←</span>{% endif %}<span class="nav-label">{{ item.title }}</span></a>{% else %}<p class="api-menu-title">{{ item.title }}</p>{% endif %}
-          {% if item.breadcrumbs %}
-          <ol class="api-breadcrumbs" aria-label="API location">
-            {% for ancestor in item.breadcrumbs %}
-            <li><a href="{{ ancestor.url }}"{% if ancestor.current %} aria-current="page"{% endif %}>{{ ancestor.title }}</a></li>
-            {% endfor %}
-          </ol>
-          {% endif %}
-          {% for group in item.children %}
-          <details class="api-section" open>
-            <summary><span class="nav-label">{{ group.title }}</span><span class="api-section-count">{{ group.children | length }}</span></summary>
+          {% if item.url %}<a class="api-home" href="{{ item.url }}"{% if item.current %} aria-current="page"{% endif %}><span class="nav-label">{{ item.title }}</span></a>{% else %}<p class="api-menu-title">{{ item.title }}</p>{% endif %}
+          {% set active_modules = item.children | selectattr('active') | list %}
+          {% for module in item.children %}
+          <details class="api-module" name="doukimd-api-{{ group_id }}"{% if module.active or (loop.first and not active_modules) %} open{% endif %}>
+            <summary><span class="nav-label">{{ module.title }}</span></summary>
             <ul class="api-members">
-              {% for member in group.children %}
-              <li><a href="{{ member.url }}"{% if member.current %} aria-current="page"{% endif %}>{{ label(member) }}</a></li>
+              <li class="api-overview"><a href="{{ module.url }}" aria-label="{{ module.title }} module overview"{% if module.current %} aria-current="page"{% endif %}>Module overview</a></li>
+              {% for member in module.children %}
+              <li><a href="{{ member.url }}"{% if member.current %} aria-current="page"{% elif member.active %} aria-current="location"{% endif %}>{{ label(member) }}</a></li>
               {% endfor %}
             </ul>
           </details>
-          {% else %}
-          <p class="api-empty">No child declarations.</p>
           {% endfor %}
         </section>
         {% endmacro %}
-        {% macro sidebar_menu(items, parent=none) %}
+        {% macro sidebar_menu(items, parent=none, group_id='sidebar') %}
         <ul class="sidebar-list">
           {% if parent and parent.url %}
           <li class="sidebar-overview">
@@ -49,13 +42,14 @@
           </li>
           {% endif %}
           {% for item in items %}
+          {% set entry_id = group_id ~ '-' ~ loop.index %}
           <li{% if item.active %} class="nav-active"{% endif %}>
-            {% if item.layout == 'sections' %}
-            {{ api_menu(item) }}
+            {% if item.layout == 'modules' %}
+            {{ api_menu(item, entry_id) }}
             {% elif item.children %}
             <details class="sidebar-group"{% if item.active %} open{% endif %}>
               <summary class="sidebar-group-title">{{ label(item) }}</summary>
-              {{ sidebar_menu(item.children, item) }}
+              {{ sidebar_menu(item.children, item, entry_id) }}
             </details>
             {% else %}
             <a href="{{ item.url }}"{% if item.current %} aria-current="page"{% endif %}>{{ label(item) }}</a>
