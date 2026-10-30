@@ -131,8 +131,14 @@ def test_class_methods_have_distinct_labels(example: Path) -> None:
     result = compile_site(example / 'doukimd.yaml')
     html = result.files['api/python/example.Widget.create.html'].decode()
     assert 'api-kind--method">method</span>' in html
-    assert 'api-kind--class">class</span>' in html
-    assert 'api-kind--module">module</span>' in html
+    assert (
+        'api-kind--class">class</span>'
+        in result.files['api/python/example.Widget.html'].decode()
+    )
+    assert (
+        'api-kind--module">module</span>'
+        in result.files['api/python/example.html'].decode()
+    )
     assert (
         '<h2 id="methods">Methods</h2>'
         in result.files['api/python/example.Widget.html'].decode()

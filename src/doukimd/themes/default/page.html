@@ -17,6 +17,30 @@
           {% endfor %}
         </ul>
         {% endmacro %}
+        {% macro api_menu(item) %}
+        <section class="api-navigation" aria-label="{{ item.title }}">
+          {% if item.url %}<a class="api-home" href="{{ item.url }}"{% if item.current and not item.breadcrumbs %} aria-current="page"{% endif %}>{% if item.breadcrumbs %}<span aria-hidden="true">←</span>{% endif %}<span class="nav-label">{{ item.title }}</span></a>{% else %}<p class="api-menu-title">{{ item.title }}</p>{% endif %}
+          {% if item.breadcrumbs %}
+          <ol class="api-breadcrumbs" aria-label="API location">
+            {% for ancestor in item.breadcrumbs %}
+            <li><a href="{{ ancestor.url }}"{% if ancestor.current %} aria-current="page"{% endif %}>{{ ancestor.title }}</a></li>
+            {% endfor %}
+          </ol>
+          {% endif %}
+          {% for group in item.children %}
+          <details class="api-section" open>
+            <summary><span class="nav-label">{{ group.title }}</span><span class="api-section-count">{{ group.children | length }}</span></summary>
+            <ul class="api-members">
+              {% for member in group.children %}
+              <li><a href="{{ member.url }}"{% if member.current %} aria-current="page"{% endif %}>{{ label(member) }}</a></li>
+              {% endfor %}
+            </ul>
+          </details>
+          {% else %}
+          <p class="api-empty">No child declarations.</p>
+          {% endfor %}
+        </section>
+        {% endmacro %}
         {% macro sidebar_menu(items, parent=none) %}
         <ul class="sidebar-list">
           {% if parent and parent.url %}
@@ -26,7 +50,9 @@
           {% endif %}
           {% for item in items %}
           <li{% if item.active %} class="nav-active"{% endif %}>
-            {% if item.children %}
+            {% if item.layout == 'sections' %}
+            {{ api_menu(item) }}
+            {% elif item.children %}
             <details class="sidebar-group"{% if item.active %} open{% endif %}>
               <summary class="sidebar-group-title">{{ label(item) }}</summary>
               {{ sidebar_menu(item.children, item) }}
