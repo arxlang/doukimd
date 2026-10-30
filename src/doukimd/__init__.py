@@ -22,7 +22,7 @@ def get_version() -> str:
     try:
         return version('doukimd')
     except PackageNotFoundError:
-        return '1.1.0'  # semantic-release
+        return '1.1.1'  # semantic-release
 
 
 __version__ = get_version()

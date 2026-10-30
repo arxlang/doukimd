@@ -1,6 +1,6 @@
 [project]
 name = "doukimd"
-version = "1.1.0"  # semantic-release
+version = "1.1.1"  # semantic-release
 description = "Markdown documentation with first-class Douki API references"
 readme = "README.md"
 authors = [{name = "Ivan Ogasawara", email = "ivan.ogasawara@gmail.com"}]

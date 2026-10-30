@@ -1,6 +1,14 @@
 # Release Notes
 ---
 
+## [1.1.1](https://github.com/arxlang/doukimd/compare/1.1.0...1.1.1) (2026-10-30)
+
+
+### Bug Fixes
+
+* rebuild and publish docs after package releases ([#9](https://github.com/arxlang/doukimd/issues/9)) ([c45c26d](https://github.com/arxlang/doukimd/commit/c45c26de685122c6ee379da8c1a95f29e65bf79d))
+* remove the duplicate floating API menu ([#10](https://github.com/arxlang/doukimd/issues/10)) ([5196076](https://github.com/arxlang/doukimd/commit/5196076738f117f0d4d095931a0627cbd13107a5))
+
 # [1.1.0](https://github.com/arxlang/doukimd/compare/1.0.0...1.1.0) (2026-10-30)
 
 
