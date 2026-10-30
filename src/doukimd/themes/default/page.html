@@ -1,14 +1,14 @@
 {% macro label(item) -%}
         <span class="nav-label">{{ item.title }}</span>{% if item.kind %}<span class="api-kind api-kind--{{ item.kind }}">{{ item.kind }}</span>{% endif %}
         {%- endmacro %}
-        {% macro menu(items) %}
+        {% macro menu(items, expand_active=true) %}
         <ul>
           {% for item in items %}
           <li{% if item.active %} class="nav-active"{% endif %}>
             {% if item.children %}
-            <details{% if item.active %} open{% endif %}>
+            <details{% if expand_active and item.active %} open{% endif %}>
               <summary>{% if item.url %}<a href="{{ item.url }}"{% if item.current %} aria-current="page"{% endif %}>{{ label(item) }}</a>{% else %}<span class="nav-group">{{ label(item) }}</span>{% endif %}</summary>
-              {{ menu(item.children) }}
+              {{ menu(item.children, expand_active) }}
             </details>
             {% else %}
             <a href="{{ item.url }}"{% if item.current %} aria-current="page"{% endif %}>{{ label(item) }}</a>
@@ -48,7 +48,7 @@
       <nav class="site-navbar" aria-label="Primary">
         <details class="navbar-panel" open>
           <summary class="navbar-toggle">Menu</summary>
-          {{ menu(navbar) }}
+          {{ menu(navbar, false) }}
         </details>
       </nav>
       {% endif %}

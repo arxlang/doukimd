@@ -183,8 +183,8 @@ these targets and computes links relative to each output page. `url` accepts
 HTTP, HTTPS, or mailto links. A `children` group needs no target; a page or
 external link may also have children.
 
-`api: "*"` inserts the complete generated API tree. `api: arx` selects only
-symbols from the source named `arx` in `api.sources`; no filesystem paths or
+`api: "*"` inserts the complete generated API tree in a sidebar.
+`api: arx` selects only symbols from the source named `arx` in `api.sources`; no filesystem paths or
 handwritten API routes are needed in the menu. A single package links to its
 root page; multiple roots form a collapsible group. API generation must be
 enabled and the selected source must have generated pages.
@@ -197,6 +197,12 @@ explicitly, or `sidebar: false` to hide it. Otherwise the configured
 pages have no sidebar. All configured menu targets are checked, including
 menus that are currently hidden. Index links for a product directory mark
 that product's navbar branch active on its descendants.
+
+Header API entries link to the API index or a single selected package. When
+a named source has multiple roots, the header offers only those root links;
+the full declaration tree stays in the sidebar. Header dropdowns remain
+closed until opened by the reader; active sidebar branches expand
+automatically.
 
 ## Page layouts and branding
 

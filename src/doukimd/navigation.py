@@ -166,6 +166,7 @@ def configured_items(
     pages: list[Page],
     current: Page,
     inventory: dict[str, ApiSymbol],
+    expand_api: bool = True,
 ) -> list[NavigationItem]:
     """
     title: Resolve menu entries against planned routes and API sources.
@@ -180,13 +181,15 @@ def configured_items(
         type: Page
       inventory:
         type: dict[str, ApiSymbol]
+      expand_api:
+        type: bool
     returns:
       type: list[NavigationItem]
     """
     result: list[NavigationItem] = []
     for entry in entries:
         children = configured_items(
-            entry.children, automatic, pages, current, inventory
+            entry.children, automatic, pages, current, inventory, expand_api
         )
         item = NavigationItem(
             title=entry.title,
@@ -267,6 +270,21 @@ def configured_items(
                 )
             else:
                 item = tree.model_copy(update={'title': entry.title})
+            if not expand_api:
+                # Header menus expose entry points; the full tree belongs
+                # to the sidebar. Preserve a chooser for multiple roots.
+                item = item.model_copy(
+                    update={
+                        'children': []
+                        if item.url is not None
+                        else [
+                            child.model_copy(update={'children': []})
+                            for child in item.children
+                        ],
+                        'current': item.url
+                        == navigation_item(current, current, []).url,
+                    }
+                )
         result.append(item)
     return result
 
@@ -401,4 +419,5 @@ def build_navbar(
         pages,
         current,
         inventory,
+        expand_api=False,
     )
