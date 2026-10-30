@@ -72,7 +72,8 @@
       "@semantic-release/exec",
       {
         "prepareCmd": "poetry lock && poetry build",
-        "publishCmd": "poetry publish"
+        "publishCmd": "poetry publish",
+        "successCmd": "if [ -n \"$GITHUB_OUTPUT\" ]; then printf 'source_ref=%s\\n' \"$(git rev-parse HEAD)\" >> \"$GITHUB_OUTPUT\"; fi"
       }
     ],
     [

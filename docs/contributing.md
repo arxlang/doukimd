@@ -28,11 +28,17 @@ with DoukiMD. Publication is never triggered by pull requests.
 
 ## Publish the documentation
 
-After merging documentation changes, run the **Documentation** workflow
-manually from upstream `main`. It builds the site and publishes the
-`documentation` artifact to the `gh-pages` branch. Push and pull-request
-runs only build and validate the documentation.
+After a successful package release, the **Release** workflow calls the
+**Documentation** workflow with the exact release commit. The site is built
+after publication, so its version badge and changelog match the released
+version, and published to `gh-pages`. Failed releases, dry runs, and runs
+without a new version do not trigger this deployment.
 
-After the first manual run creates `gh-pages`, configure **Settings → Pages**
+For documentation-only changes, run **Documentation** manually from upstream
+`main`. It builds the site and publishes the `documentation` artifact to the
+same `gh-pages` branch. Push and pull-request runs only build and validate
+documentation. Both publication paths share the deployment concurrency group.
+
+After the first publication creates `gh-pages`, configure **Settings → Pages**
 to **Deploy from a branch**, selecting `gh-pages` and **/ (root)**.
 The publishing action adds `.nojekyll` for the generated static site.
