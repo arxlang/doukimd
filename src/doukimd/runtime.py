@@ -82,4 +82,7 @@ def typechecked(function: T) -> T:
             )
         return result
 
+    # Python 3.14 wraps copies __annotate__, not a shared annotation dict.
+    # Plum resolves that dict in place before inspecting __wrapped__.
+    checked.__annotations__ = function.__annotations__
     return cast(T, checked)
