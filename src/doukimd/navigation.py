@@ -11,6 +11,7 @@ from urllib.parse import quote, unquote, urlsplit
 from public import private, public
 
 from doukimd.errors import BuildError
+from doukimd.indexes import ApiIndex, SiteIndex, api_index, site_index
 from doukimd.models import (
     ApiSymbol,
     Config,
@@ -57,26 +58,28 @@ def navigation_item(
 @private
 @typechecked
 def automatic_navigation(
-    pages: list[Page],
+    pages: SiteIndex | list[Page],
     current: Page,
-    inventory: dict[str, ApiSymbol],
+    inventory: ApiIndex | dict[str, ApiSymbol],
 ) -> list[NavigationItem]:
     """
     title: Gather generated references under one API Docs menu entry.
     parameters:
       pages:
-        type: list[Page]
+        type: SiteIndex | list[Page]
       current:
         type: Page
       inventory:
-        type: dict[str, ApiSymbol]
+        type: ApiIndex | dict[str, ApiSymbol]
     returns:
       type: list[NavigationItem]
     """
-    symbols = {page.symbol: page for page in pages if page.symbol is not None}
+    site = site_index(pages)
+    api = api_index(inventory)
+    symbols = site.by_symbol
     by_parent: dict[str | None, list[str]] = {}
     for name in sorted(symbols):
-        parent = inventory[name].parent
+        parent = api.symbols[name].parent
         by_parent.setdefault(parent if parent in symbols else None, []).append(
             name
         )
@@ -94,7 +97,7 @@ def automatic_navigation(
         children = [
             symbol_navigation(child) for child in by_parent.get(name, [])
         ]
-        symbol = inventory[name]
+        symbol = api.symbols[name]
         title = symbols[name].title
         if symbol.kind == 'module' and symbol.parent not in symbols:
             qualified = symbol.identifier.rsplit(':', 1)[-1]
@@ -108,7 +111,7 @@ def automatic_navigation(
         )
 
     navigation: list[NavigationItem] = []
-    for page in pages:
+    for page in site.pages:
         if page.symbol is not None:
             continue
         children: list[NavigationItem] = []
@@ -203,20 +206,20 @@ def module_navigation(item: NavigationItem) -> NavigationItem:
 @public
 @typechecked
 def build_navigation(
-    pages: list[Page],
+    pages: SiteIndex | list[Page],
     current: Page,
-    inventory: dict[str, ApiSymbol],
+    inventory: ApiIndex | dict[str, ApiSymbol],
     config: Config | None = None,
 ) -> list[NavigationItem]:
     """
     title: Resolve the sidebar and keep API modules in stable accordions.
     parameters:
       pages:
-        type: list[Page]
+        type: SiteIndex | list[Page]
       current:
         type: Page
       inventory:
-        type: dict[str, ApiSymbol]
+        type: ApiIndex | dict[str, ApiSymbol]
       config:
         type: Config | None
     returns:
@@ -233,14 +236,14 @@ def build_navigation(
 
 @private
 @typechecked
-def local_target(path: str, pages: list[Page]) -> tuple[Page, str]:
+def local_target(path: str, pages: SiteIndex | list[Page]) -> tuple[Page, str]:
     """
     title: Resolve a docs-root page path and optional heading without guessing.
     parameters:
       path:
         type: str
       pages:
-        type: list[Page]
+        type: SiteIndex | list[Page]
     returns:
       type: tuple[Page, str]
     """
@@ -261,7 +264,7 @@ def local_target(path: str, pages: list[Page]) -> tuple[Page, str]:
         route = posixpath.splitext(route)[0] + '.html'
     if route.endswith('/'):
         route += 'index.html'
-    page = next((page for page in pages if page.route == route), None)
+    page = site_index(pages).by_route.get(route)
     if page is None:
         raise BuildError('navigation', f'Unknown page: {path}')
     if target.fragment and unquote(target.fragment) not in page.anchors:
@@ -276,9 +279,9 @@ def local_target(path: str, pages: list[Page]) -> tuple[Page, str]:
 def configured_items(
     entries: list[NavEntry],
     automatic: list[NavigationItem],
-    pages: list[Page],
+    pages: SiteIndex | list[Page],
     current: Page,
-    inventory: dict[str, ApiSymbol],
+    inventory: ApiIndex | dict[str, ApiSymbol],
     expand_api: bool = True,
 ) -> list[NavigationItem]:
     """
@@ -289,20 +292,22 @@ def configured_items(
       automatic:
         type: list[NavigationItem]
       pages:
-        type: list[Page]
+        type: SiteIndex | list[Page]
       current:
         type: Page
       inventory:
-        type: dict[str, ApiSymbol]
+        type: ApiIndex | dict[str, ApiSymbol]
       expand_api:
         type: bool
     returns:
       type: list[NavigationItem]
     """
+    site = site_index(pages)
+    api = api_index(inventory)
     result: list[NavigationItem] = []
     for entry in entries:
         children = configured_items(
-            entry.children, automatic, pages, current, inventory, expand_api
+            entry.children, automatic, site, current, api, expand_api
         )
         item = NavigationItem(
             title=entry.title,
@@ -312,7 +317,7 @@ def configured_items(
             children=children,
         )
         if entry.path is not None:
-            page, suffix = local_target(entry.path, pages)
+            page, suffix = local_target(entry.path, site)
             item = navigation_item(page, current, children).model_copy(
                 update={'title': entry.title}
             )
@@ -343,14 +348,7 @@ def configured_items(
                 raise BuildError('navigation', f'Invalid URL: {entry.url}')
             item = item.model_copy(update={'url': entry.url})
         elif entry.api is not None:
-            api_page = next(
-                (
-                    p
-                    for p in pages
-                    if p.route == 'api/index.html' and p.source is None
-                ),
-                None,
-            )
+            api_page = site.api_page
             if api_page is None:
                 raise BuildError('navigation', 'API pages are not generated')
             tree = next(
@@ -361,11 +359,9 @@ def configured_items(
             children = tree.children
             if entry.api != '*':
                 roots = {
-                    navigation_item(page, current, []).url
-                    for page in pages
-                    if page.symbol is not None
-                    and inventory[page.symbol].source_name == entry.api
-                    and inventory[page.symbol].parent not in inventory
+                    navigation_item(site.by_symbol[name], current, []).url
+                    for name in api.roots.get(entry.api, ())
+                    if name in site.by_symbol
                 }
                 children = [child for child in children if child.url in roots]
                 if not children:
@@ -408,9 +404,9 @@ def configured_items(
 def configured_sidebar(
     config: Config,
     automatic: list[NavigationItem],
-    pages: list[Page],
+    pages: SiteIndex | list[Page],
     current: Page,
-    inventory: dict[str, ApiSymbol],
+    inventory: ApiIndex | dict[str, ApiSymbol],
 ) -> list[NavigationItem]:
     """
     title: Select one menu by front matter, longest route prefix, or default.
@@ -420,11 +416,11 @@ def configured_sidebar(
       automatic:
         type: list[NavigationItem]
       pages:
-        type: list[Page]
+        type: SiteIndex | list[Page]
       current:
         type: Page
       inventory:
-        type: dict[str, ApiSymbol]
+        type: ApiIndex | dict[str, ApiSymbol]
     returns:
       type: list[NavigationItem]
     """
@@ -509,9 +505,9 @@ def sidebar_for_page(config: Config, current: Page) -> SidebarSettings | None:
 @typechecked
 def build_navbar(
     config: Config,
-    pages: list[Page],
+    pages: SiteIndex | list[Page],
     current: Page,
-    inventory: dict[str, ApiSymbol],
+    inventory: ApiIndex | dict[str, ApiSymbol],
 ) -> list[NavigationItem]:
     """
     title: Resolve ordered top-level menus using the same checked page routes.
@@ -519,11 +515,11 @@ def build_navbar(
       config:
         type: Config
       pages:
-        type: list[Page]
+        type: SiteIndex | list[Page]
       current:
         type: Page
       inventory:
-        type: dict[str, ApiSymbol]
+        type: ApiIndex | dict[str, ApiSymbol]
     returns:
       type: list[NavigationItem]
     """

@@ -23,6 +23,7 @@ from pydantic import ValidationError
 from doukimd.config import read_yaml
 from doukimd.content import md_text
 from doukimd.errors import BuildError
+from doukimd.indexes import ApiIndex, api_index
 from doukimd.models import ApiSymbol, Page, Settings
 from doukimd.references import resolve_symbol
 from doukimd.runtime import typechecked
@@ -279,7 +280,10 @@ def field_description(value: object) -> str:
 @public
 @typechecked
 def parse_document(
-    parser: MarkdownIt, text: str, page: Page, inventory: dict[str, ApiSymbol]
+    parser: MarkdownIt,
+    text: str,
+    page: Page,
+    inventory: ApiIndex | dict[str, ApiSymbol],
 ) -> list[Token]:
     """
     title: Expand API nodes into ordinary document tokens before resolution.
@@ -291,10 +295,11 @@ def parse_document(
       page:
         type: Page
       inventory:
-        type: dict[str, ApiSymbol]
+        type: ApiIndex | dict[str, ApiSymbol]
     returns:
       type: list[Token]
     """
+    api = api_index(inventory)
     try:
         tokens = parser.parse(text)
         expanded: list[Token] = []
@@ -305,15 +310,11 @@ def parse_document(
             identifier = resolve_symbol(
                 str(token.meta['identifier']),
                 token.meta.get('source') or page.settings.api_source,
-                inventory,
+                api,
             )
-            selected = [inventory[identifier]]
+            selected = [api.symbols[identifier]]
             if token.meta['members'] == 'public':
-                selected.extend(
-                    item
-                    for item in inventory.values()
-                    if item.parent == identifier
-                )
+                selected.extend(api.children.get(identifier, ()))
             for item in selected:
                 content = api_markdown(item, bool(token.meta['show_source']))
                 # Authored HTML settings do not apply to docstrings.
@@ -378,8 +379,8 @@ def assign_anchors(tokens: list[Token], page: Page) -> None:
 def resolve_references(
     tokens: list[Token],
     page: Page,
-    inventory: dict[str, ApiSymbol],
-    routes: dict[str, str],
+    inventory: ApiIndex | dict[str, ApiSymbol],
+    routes: ApiIndex | dict[str, str],
 ) -> None:
     """
     title: Resolve forward API references using the complete site inventory.
@@ -389,10 +390,12 @@ def resolve_references(
       page:
         type: Page
       inventory:
-        type: dict[str, ApiSymbol]
+        type: ApiIndex | dict[str, ApiSymbol]
       routes:
-        type: dict[str, str]
+        type: ApiIndex | dict[str, str]
     """
+    api = api_index(inventory)
+    planned = routes.routes if isinstance(routes, ApiIndex) else routes
     for token in tokens:
         if token.children is None:
             continue
@@ -405,7 +408,7 @@ def resolve_references(
                 identifier = resolve_symbol(
                     str(child.meta['identifier']),
                     child.meta.get('source') or page.settings.api_source,
-                    inventory,
+                    api,
                 )
             except BuildError as error:
                 raise BuildError(
@@ -413,7 +416,7 @@ def resolve_references(
                     f'No generated API page: {error.message}',
                     page.source,
                 ) from error
-            if identifier not in routes:
+            if identifier not in planned:
                 raise BuildError(
                     'references',
                     f'No generated API page for {identifier}',
@@ -423,10 +426,10 @@ def resolve_references(
             link.attrSet(
                 'href',
                 posixpath.relpath(
-                    routes[identifier], posixpath.dirname(page.route) or '.'
+                    planned[identifier], posixpath.dirname(page.route) or '.'
                 ),
             )
             label = Token('text', '', 0)
-            label.content = inventory[identifier].name
+            label.content = api.symbols[identifier].name
             children.extend([link, label, Token('link_close', 'a', -1)])
         token.children = children

@@ -17,7 +17,16 @@ from doukimd.build import compile_site
 from doukimd.config import load_config
 from doukimd.content import discover_pages, plan_pages
 from doukimd.errors import BuildError
-from doukimd.navigation import build_navigation
+from doukimd.indexes import ApiIndex, SiteIndex
+from doukimd.models import (
+    ApiSymbol,
+    Config,
+    NavigationItem,
+    Page,
+    PageSettings,
+)
+from doukimd.navigation import build_navbar, build_navigation
+from doukimd.navigation_plan import NavigationPlan, NavigationView
 from doukimd.runtime import typechecked
 
 
@@ -359,3 +368,235 @@ def test_selected_nested_roots_have_distinct_module_names(
         assert [title for attrs, title in groups if 'open' in attrs] == [
             f'{name}.nested'
         ]
+
+
+@typechecked
+def navigation_data(
+    items: list[NavigationItem] | tuple[NavigationView, ...],
+) -> list[dict[str, object]]:
+    """
+    title: Compare every documented theme field across both navigation paths.
+    parameters:
+      items:
+        type: list[NavigationItem] | tuple[NavigationView, Ellipsis]
+    returns:
+      type: list[dict[str, object]]
+    """
+    return [
+        {
+            'title': item.title,
+            'url': item.url,
+            'kind': item.kind,
+            'layout': item.layout,
+            'current': item.current,
+            'active': item.active,
+            'children': navigation_data(item.children),
+        }
+        for item in items
+    ]
+
+
+@pytest.mark.parametrize('configured', [False, True])
+@typechecked
+def test_prepared_navigation_matches_standalone_helpers(
+    configured: bool,
+) -> None:
+    """
+    title: Preserve links and flags across directories and source scopes.
+    parameters:
+      configured:
+        type: bool
+    """
+    names = [
+        ('one', 'one', 'module', None),
+        ('one', 'one.child', 'module', 'one'),
+        ('one', 'one.child.Widget', 'class', 'one.child'),
+        ('one', 'one.child.Widget.Inner', 'class', 'one.child.Widget'),
+        (
+            'one',
+            'one.child.Widget.Inner.method',
+            'method',
+            'one.child.Widget.Inner',
+        ),
+        ('two', 'two', 'module', None),
+        ('two', 'two.value', 'attribute', 'two'),
+    ]
+    inventory = {
+        f'python:{source}:{name}': ApiSymbol(
+            identifier=f'python:{source}:{name}',
+            name=name.rsplit('.', 1)[-1],
+            kind=kind,
+            signature='',
+            source='src/example.py',
+            line=1,
+            documentation={'title': name},
+            parent=f'python:{source}:{parent}' if parent else None,
+            source_name=source,
+        )
+        for source, name, kind, parent in names
+    }
+    pages = [
+        Page('index.html', 'Home', '', PageSettings()),
+        Page('guide/index.html', 'Guide', '', PageSettings()),
+        Page('guide/é space/index.html', 'Unicode', '', PageSettings()),
+        Page('guide/é space/file #?.html', 'Escaped', '', PageSettings()),
+        Page(
+            'guide/custom.html',
+            'Custom',
+            '',
+            PageSettings(sidebar='all') if configured else PageSettings(),
+        ),
+        Page('hidden.html', 'Hidden', '', PageSettings(sidebar=False)),
+        Page('landing.html', 'Landing', '', PageSettings(layout='landing')),
+    ]
+    pages[1].anchors.add('section')
+    config = Config(
+        site={'title': 'Docs'},
+        project={'name': 'test'},
+        navigation={
+            'navbar': [
+                {'title': 'Home', 'path': 'index.md'},
+                {'title': 'One', 'api': 'one'},
+                {'title': 'All APIs', 'api': '*'},
+                {
+                    'title': 'Guide',
+                    'path': 'guide/index.md',
+                    'children': [
+                        {
+                            'title': 'Unicode',
+                            'path': 'guide/é%20space/index.md',
+                        },
+                        {
+                            'title': 'Escaped',
+                            'path': 'guide/é%20space/file%20%23%3F.md',
+                        },
+                    ],
+                },
+            ],
+            **(
+                {
+                    'default_sidebar': 'all',
+                    'sidebars': [
+                        {
+                            'id': 'all',
+                            'title': 'All docs',
+                            'items': [
+                                {
+                                    'title': 'Guide',
+                                    'path': 'guide/index.md?view=one#section',
+                                },
+                                {'title': 'API', 'api': '*'},
+                            ],
+                        },
+                        {
+                            'id': 'one',
+                            'title': 'One docs',
+                            'paths': ['guide/', 'api/python/one/'],
+                            'items': [
+                                {
+                                    'title': 'Learn',
+                                    'children': [
+                                        {
+                                            'title': 'Guide',
+                                            'path': 'guide/index.md',
+                                        },
+                                        {
+                                            'title': 'Unicode',
+                                            'path': 'guide/é%20space/index.md',
+                                        },
+                                        {
+                                            'title': 'External',
+                                            'url': 'https://example.org/',
+                                        },
+                                    ],
+                                },
+                                {'title': 'One API', 'api': 'one'},
+                            ],
+                        },
+                    ],
+                }
+                if configured
+                else {}
+            ),
+        },
+    )
+    routes = plan_pages(pages, inventory, config)
+    api = ApiIndex(inventory, routes)
+    plan = NavigationPlan(SiteIndex(pages), api, config)
+    snapshots = []
+    for page in pages:
+        sidebar = plan.navigation(page)
+        header = plan.header(page)
+        expected = build_navigation(pages, page, inventory, config)
+        assert navigation_data(sidebar) == navigation_data(expected)
+        assert navigation_data(header) == navigation_data(
+            build_navbar(config, pages, page, inventory)
+        )
+        snapshots.append(navigation_data(sidebar))
+    # Reusing the plan cannot change previously returned page selections.
+    assert navigation_data(plan.navigation(pages[0])) == snapshots[0]
+    if snapshots[0]:
+        assert isinstance(plan.navigation(pages[0])[0].children, tuple)
+
+
+@typechecked
+def test_menu_preparation_is_scoped_to_each_build(
+    example: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """
+    title: Prepare navigation once per build and refresh after source changes.
+    parameters:
+      example:
+        type: Path
+      monkeypatch:
+        type: pytest.MonkeyPatch
+    """
+    import doukimd.navigation_plan as planning
+
+    original = planning.automatic_navigation
+    calls = 0
+
+    @typechecked
+    def counted(
+        pages: SiteIndex | list[Page],
+        current: Page,
+        inventory: ApiIndex | dict[str, ApiSymbol],
+    ) -> list[NavigationItem]:
+        """
+        title: Count full hierarchy preparation independently of page count.
+        parameters:
+          pages:
+            type: SiteIndex | list[Page]
+          current:
+            type: Page
+          inventory:
+            type: ApiIndex | dict[str, ApiSymbol]
+        returns:
+          type: list[NavigationItem]
+        """
+        nonlocal calls
+        calls += 1
+        return original(pages, current, inventory)
+
+    monkeypatch.setattr(planning, 'automatic_navigation', counted)
+    source = example / 'src/example.py'
+    source.write_text(
+        source.read_text()
+        + '\n'.join(
+            f'\ndef item_{number}() -> None:\n'
+            f'    """title: Item {number}."""\n'
+            for number in range(32)
+        )
+    )
+    first = compile_site(example / 'doukimd.yaml')
+    assert first.page_count > 32
+    assert calls == 1
+    source.write_text(
+        source.read_text()
+        + '\ndef later() -> None:\n    """title: Later."""\n'
+    )
+    second = compile_site(example / 'doukimd.yaml')
+    assert calls == 2
+    assert 'api/python/example.later.html' not in first.files
+    assert 'api/python/example.later.html' in second.files
