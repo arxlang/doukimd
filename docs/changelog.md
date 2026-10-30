@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+# [1.1.0](https://github.com/arxlang/doukimd/compare/1.0.0...1.1.0) (2026-10-30)
+
+
+### Features
+
+* render saved notebooks and add local documentation search ([#8](https://github.com/arxlang/doukimd/issues/8)) ([d9b25f9](https://github.com/arxlang/doukimd/commit/d9b25f98eaa0fab832c26d5b3b408f968ef586cd))
+
 # 1.0.0 (2026-10-30)
 
 

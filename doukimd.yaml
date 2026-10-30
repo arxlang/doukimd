@@ -3,7 +3,7 @@ site:
   title: DoukiMD
 project:
   name: doukimd
-  version: "1.0.0"
+  version: "1.1.0"
 theme:
   framework: bootstrap
   color_mode: auto

@@ -1788,7 +1788,7 @@ files = [
 [package.dependencies]
 fastjsonschema = ">=2.15"
 jsonschema = ">=2.6"
-jupyter-core = ">=4.12,<5.0 || >=5.1.dev0"
+jupyter-core = ">=4.12,<5.0.dev0 || >=5.1.dev0"
 traitlets = ">=5.1"
 
 [package.extras]
