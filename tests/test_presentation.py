@@ -512,3 +512,95 @@ def test_encoded_navigation_assets_and_html_anchors(project: Path) -> None:
     assert 'href="Guide%20%231.html#learn-1"' in html
     assert 'src="assets/logo%20%231.svg"' in html
     assert '<h2 id="learn-1">' in result.files['Guide #1.html'].decode()
+
+
+@typechecked
+def test_header_does_not_duplicate_active_sidebar_tree(example: Path) -> None:
+    """
+    title: Keep API declarations in the sidebar and active header menus closed.
+    parameters:
+      example:
+        type: Path
+    """
+    config = configure(
+        example,
+        {
+            'navigation': {
+                'navbar': [
+                    {'title': 'API Docs', 'api': '*'},
+                    {
+                        'title': 'Selected pages',
+                        'children': [
+                            {
+                                'title': 'Addition',
+                                'path': 'api/python/example.add.html',
+                            },
+                        ],
+                    },
+                ]
+            }
+        },
+    )
+    result = compile_site(config)
+    html = result.files['api/python/example.add.html'].decode()
+    header = html.partition('<nav class="site-navbar"')[2].partition('</nav>')[
+        0
+    ]
+    sidebar = html.partition('<nav aria-label="Documentation">')[2]
+    sidebar = sidebar.partition('</nav>')[0]
+    assert 'href="../"' in header and 'API Docs</span>' in header
+    assert 'api-kind--' not in header
+    assert '<details open>' not in header
+    assert '<summary><span class="nav-group">' in header
+    assert 'href="example.add.html"' in header
+    assert sidebar.count('api-kind--function') == 1
+    assert sidebar.count('<details open>') == 2
+    assert 'href="example.add.html" aria-current="page"' in sidebar
+    index = result.files['api/index.html'].decode()
+    header = index.partition('<nav class="site-navbar"')[2].partition(
+        '</nav>'
+    )[0]
+    assert 'href="./" aria-current="page"' in header
+
+
+@pytest.mark.parametrize('roots', [1, 2])
+@typechecked
+def test_header_scoped_api_uses_package_entry_points(
+    example: Path, roots: int
+) -> None:
+    """
+    title: Preserve named-source routing without recursive header API menus.
+    parameters:
+      example:
+        type: Path
+      roots:
+        type: int
+    """
+    if roots == 2:
+        (example / 'src/extra.py').write_text('"""title: Extra API."""')
+    config = configure(
+        example,
+        {
+            'api': {'sources': [{'name': 'selected', 'root': 'src'}]},
+            'navigation': {
+                'navbar': [{'title': 'Python API', 'api': 'selected'}]
+            },
+        },
+    )
+    result = compile_site(config)
+    html = result.files['api/python/selected/example.html'].decode()
+    header = html.partition('<nav class="site-navbar"')[2].partition('</nav>')[
+        0
+    ]
+    sidebar = html.partition('<nav aria-label="Documentation">')[2]
+    sidebar = sidebar.partition('</nav>')[0]
+    assert 'api-kind--function' not in header
+    assert '<details open>' not in header
+    assert 'api-kind--function' in sidebar
+    if roots == 1:
+        assert 'href="example.html" aria-current="page"' in header
+        assert 'api-kind--module' not in header
+    else:
+        assert header.count('api-kind--module') == 2
+        assert 'href="extra.html"' in header
+        assert 'href="example.html" aria-current="page"' in header
