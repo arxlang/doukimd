@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+# [1.3.0](https://github.com/arxlang/doukimd/compare/1.2.0...1.3.0) (2026-10-30)
+
+
+### Features
+
+* show contextual API sections instead of declaration trees ([#12](https://github.com/arxlang/doukimd/issues/12)) ([54c63cb](https://github.com/arxlang/doukimd/commit/54c63cbb230e6cca6dff20c7dad1989a8df377ff))
+
 # [1.2.0](https://github.com/arxlang/doukimd/compare/1.1.1...1.2.0) (2026-10-30)
 
 
