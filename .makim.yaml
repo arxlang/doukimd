@@ -13,6 +13,8 @@ groups:
           doukimd check --help
           doukimd check --config examples/basic/doukimd.yaml
           doukimd build --config examples/basic/doukimd.yaml
+          doukimd check --config examples/notebooks/doukimd.yaml
+          doukimd build --config examples/notebooks/doukimd.yaml
       linter:
         help: Run repository pre-commit checks
         run: pre-commit run --all-files

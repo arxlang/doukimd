@@ -12,6 +12,7 @@ from public import public
 from pydantic import BaseModel, ConfigDict, Field, JsonValue, model_validator
 from pydantic.dataclasses import dataclass
 
+from doukimd.notebook_models import Notebook
 from doukimd.runtime import typechecked
 
 
@@ -209,6 +210,24 @@ class NavigationSettings(Settings):
 
 
 @public
+class SearchSettings(Settings):
+    """
+    title: Local full-text search over authored, notebook, and API content.
+    attributes:
+      enabled:
+        type: bool
+      limit:
+        type: int
+      min_length:
+        type: int
+    """
+
+    enabled: bool = True
+    limit: int = Field(default=8, ge=1, le=50)
+    min_length: int = Field(default=2, ge=1, le=10)
+
+
+@public
 class Config(Settings):
     """
     title: Version one project configuration.
@@ -237,6 +256,8 @@ class Config(Settings):
         type: list[str]
       navigation:
         type: NavigationSettings
+      search:
+        type: SearchSettings
     """
 
     schema_version: Literal[1] = 1
@@ -251,6 +272,7 @@ class Config(Settings):
     plugins: list[str] = Field(default_factory=list)
     assets: list[str] = Field(default_factory=lambda: ['assets/**'])
     navigation: NavigationSettings = Field(default_factory=NavigationSettings)
+    search: SearchSettings = Field(default_factory=SearchSettings)
 
 
 @public
@@ -278,6 +300,8 @@ class PageSettings(Settings):
         type: bool
       template:
         type: str
+      search:
+        type: bool
     """
 
     title: str | None = None
@@ -290,6 +314,7 @@ class PageSettings(Settings):
     show_title: bool = True
     html: bool = False
     template: str = 'page.html'
+    search: bool = True
 
 
 @public
@@ -380,6 +405,8 @@ class Page:
         type: str | None
       anchors:
         type: set[str]
+      notebook:
+        type: Notebook | None
     """
 
     route: str
@@ -389,6 +416,7 @@ class Page:
     source: Path | None = None
     symbol: str | None = None
     anchors: set[str] = field(default_factory=set)
+    notebook: Notebook | None = None
 
 
 @public

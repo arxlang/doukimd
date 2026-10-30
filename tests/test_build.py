@@ -46,7 +46,10 @@ def test_full_example_and_repeatability(example: Path) -> None:
     source = (example / 'src/example.py').read_text().splitlines()
     assert source[line - 1].strip() == '@public'
     assert json.loads(first.files[MANIFEST])['generator'] == 'doukimd'
-    assert len(json.loads(first.files['search.json'])) == 5
+    entries = json.loads(first.files['search.json'])
+    assert {entry['url'].split('#')[0] for entry in entries} == {
+        route for route in first.files if route.endswith('.html')
+    }
 
 
 @typechecked

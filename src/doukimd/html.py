@@ -180,6 +180,8 @@ def process_html(
         return
     for token in tokens:
         for item in [token, *(token.children or [])]:
+            if item.meta.get('notebook_output'):
+                continue
             if item.type not in {'html_block', 'html_inline'}:
                 continue
             parser = HtmlContent(page, resolve)

@@ -83,6 +83,7 @@ def theme_assets(settings: ThemeSettings) -> dict[str, bytes]:
     assets = {
         'theme.css': stylesheet,
         'theme.js': resources.joinpath('default/theme.js').read_bytes(),
+        'search.js': resources.joinpath('default/search.js').read_bytes(),
         '_doukimd/radix/LICENSE': resources.joinpath(
             'vendor/radix/LICENSE'
         ).read_bytes(),

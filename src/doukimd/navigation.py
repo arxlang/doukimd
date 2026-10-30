@@ -144,8 +144,8 @@ def local_target(path: str, pages: list[Page]) -> tuple[Page, str]:
         or not route
     ):
         raise BuildError('navigation', f'Invalid page path: {path}')
-    if route.endswith('.md'):
-        route = route[:-3] + '.html'
+    if route.endswith(('.md', '.ipynb')):
+        route = posixpath.splitext(route)[0] + '.html'
     if route.endswith('/'):
         route += 'index.html'
     page = next((page for page in pages if page.route == route), None)
