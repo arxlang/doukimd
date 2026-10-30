@@ -4,6 +4,7 @@ title: Project menus, scoped APIs, authored layouts, and branding assets.
 
 from __future__ import annotations
 
+import re
 import shutil
 
 from pathlib import Path
@@ -554,7 +555,7 @@ def test_header_does_not_duplicate_active_sidebar_tree(example: Path) -> None:
     assert '<summary><span class="nav-group">' in header
     assert 'href="example.add.html"' in header
     assert sidebar.count('api-kind--function') == 1
-    assert sidebar.count('<details open>') == 2
+    assert sidebar.count('<details class="sidebar-group" open>') == 2
     assert 'href="example.add.html" aria-current="page"' in sidebar
     index = result.files['api/index.html'].decode()
     header = index.partition('<nav class="site-navbar"')[2].partition(
@@ -604,3 +605,130 @@ def test_header_scoped_api_uses_package_entry_points(
         assert header.count('api-kind--module') == 2
         assert 'href="extra.html"' in header
         assert 'href="example.html" aria-current="page"' in header
+
+
+@pytest.mark.parametrize('framework', ['bootstrap', 'none'])
+@typechecked
+def test_api_accordion_pages_and_active_ancestors(
+    example: Path, framework: str
+) -> None:
+    """
+    title: Expand active API groups and keep their overview pages reachable.
+    parameters:
+      example:
+        type: Path
+      framework:
+        type: str
+    """
+    source = example / 'src/example.py'
+    source.write_text(
+        source.read_text() + '\nclass Widget:\n'
+        '    """title: Widget."""\n'
+        '    def create(self) -> None:\n'
+        '        """title: Create a widget."""\n'
+        '\nclass Other:\n'
+        '    """title: Another widget."""\n'
+        '    def create(self) -> None:\n'
+        '        """title: Create another widget."""\n'
+    )
+    config = configure(example, {'theme': {'framework': framework}})
+    result = compile_site(config)
+    html = result.files['api/python/example.Widget.create.html'].decode()
+    sidebar = html.partition('<nav aria-label="Documentation">')[2]
+    sidebar = sidebar.partition('</nav>')[0]
+    groups = re.findall(
+        r'<details class="sidebar-group"([^>]*)>\s*'
+        r'<summary class="sidebar-group-title">(.*?)</summary>',
+        sidebar,
+        re.DOTALL,
+    )
+    assert len(groups) == 4
+    for attributes, summary in groups:
+        assert '<a ' not in summary
+        assert ('open' in attributes) == ('Other</span>' not in summary)
+    assert sidebar.count('class="sidebar-overview"') == 4
+    for url, name in [
+        ('../', 'API Docs'),
+        ('example.html', 'example'),
+        ('example.Widget.html', 'Widget'),
+        ('example.Other.html', 'Other'),
+    ]:
+        assert f'href="{url}" aria-label="{name} overview"' in sidebar
+    assert sidebar.count('aria-current="page"') == 1
+    assert 'href="example.Widget.create.html" aria-current="page"' in sidebar
+    assert 'api-kind--method' in sidebar
+    assert 'api-kind--class' in sidebar
+    overview = result.files['api/python/example.Widget.html'].decode()
+    assert (
+        'href="example.Widget.html" aria-label="Widget overview"'
+        ' aria-current="page">Overview</a>' in overview
+    )
+
+
+@typechecked
+def test_nested_page_accordions_and_overview_links(project: Path) -> None:
+    """
+    title: Give nested page groups separate toggles and navigable overviews.
+    parameters:
+      project:
+        type: Path
+    """
+    (project / 'docs/deep.md').write_text('# Deep page')
+    config = configure(
+        project,
+        {
+            'navigation': {
+                'default_sidebar': 'guide',
+                'sidebars': [
+                    {
+                        'id': 'guide',
+                        'title': 'Guide',
+                        'items': [
+                            {
+                                'title': 'Learn & explore',
+                                'path': 'index.md',
+                                'children': [
+                                    {
+                                        'title': 'Concepts',
+                                        'children': [
+                                            {
+                                                'title': 'A deep page',
+                                                'path': 'deep.md',
+                                            }
+                                        ],
+                                    }
+                                ],
+                            },
+                            {
+                                'title': 'Elsewhere',
+                                'children': [
+                                    {
+                                        'title': 'Repository',
+                                        'url': 'https://example.com',
+                                    }
+                                ],
+                            },
+                        ],
+                    }
+                ],
+            }
+        },
+    )
+    result = compile_site(config)
+    sidebar = result.files['deep.html'].decode()
+    sidebar = sidebar.partition('<nav aria-label="Documentation">')[2]
+    sidebar = sidebar.partition('</nav>')[0]
+    assert sidebar.count('<details class="sidebar-group" open>') == 2
+    assert sidebar.count('<details class="sidebar-group">') == 1
+    assert sidebar.count('class="sidebar-overview"') == 1
+    assert 'href="index.html" aria-label="Learn &amp; explore overview"' in (
+        sidebar
+    )
+    assert 'href="deep.html" aria-current="page"' in sidebar
+    assert 'href="https://example.com"' in sidebar
+    for summary in re.findall(
+        r'<summary class="sidebar-group-title">(.*?)</summary>',
+        sidebar,
+        re.DOTALL,
+    ):
+        assert '<a ' not in summary
