@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+# [1.4.0](https://github.com/arxlang/doukimd/compare/1.3.0...1.4.0) (2026-10-30)
+
+
+### Features
+
+* use a stable module accordion for API navigation ([#13](https://github.com/arxlang/doukimd/issues/13)) ([fb57719](https://github.com/arxlang/doukimd/commit/fb5771977b7d36a93e4c49511cf8c76e248a41cf))
+
 # [1.3.0](https://github.com/arxlang/doukimd/compare/1.2.0...1.3.0) (2026-10-30)
 
 
