@@ -27,7 +27,7 @@
       <a class="site-brand" href="../../index.html">
         <span class="brand-mark" aria-hidden="true">D</span>
         <span class="brand-name">DoukiMD</span>
-        <span class="version badge rounded-pill">1.4.0</span>
+        <span class="version badge rounded-pill">1.4.1</span>
       </a>
       
       <nav class="site-navbar" aria-label="Primary">
@@ -251,6 +251,14 @@
           </details>
           
           <details class="api-module" name="doukimd-api-sidebar-2">
+            <summary><span class="nav-label">indexes</span></summary>
+            <ul class="api-members">
+              <li class="api-overview"><a href="doukimd.indexes.html" aria-label="indexes module overview">Module overview</a></li>
+              
+            </ul>
+          </details>
+          
+          <details class="api-module" name="doukimd-api-sidebar-2">
             <summary><span class="nav-label">markdown</span></summary>
             <ul class="api-members">
               <li class="api-overview"><a href="doukimd.markdown.html" aria-label="markdown module overview">Module overview</a></li>
@@ -318,6 +326,14 @@
               <li><a href="doukimd.navigation.build_navigation.html"><span class="nav-label">build_navigation</span><span class="api-kind api-kind--function">function</span></a></li>
               
               <li><a href="doukimd.navigation.sidebar_for_page.html"><span class="nav-label">sidebar_for_page</span><span class="api-kind api-kind--function">function</span></a></li>
+              
+            </ul>
+          </details>
+          
+          <details class="api-module" name="doukimd-api-sidebar-2">
+            <summary><span class="nav-label">navigation_plan</span></summary>
+            <ul class="api-members">
+              <li class="api-overview"><a href="doukimd.navigation_plan.html" aria-label="navigation_plan module overview">Module overview</a></li>
               
             </ul>
           </details>
@@ -461,7 +477,7 @@
         <h1 id="plan-_pages"><span class="api-kind api-kind--function">function</span> plan_pages</h1>
 <pre class="highlight"><code><span class="n">plan_pages</span><span class="p">(</span><span class="n">pages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Page</span><span class="p">],</span> <span class="n">inventory</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ApiSymbol</span><span class="p">],</span> <span class="n">config</span><span class="p">:</span> <span class="n">Config</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
 </code></pre>
-<p>Source: src/doukimd/content.py:237</p>
+<p>Source: src/doukimd/content.py:238</p>
 <p>Add virtual API pages and reject duplicate routes.</p>
 <h3 id="parameters">Parameters</h3>
 <ul>
