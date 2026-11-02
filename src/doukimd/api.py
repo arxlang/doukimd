@@ -7,6 +7,7 @@ from __future__ import annotations
 import json
 import re
 
+from functools import lru_cache
 from importlib.resources import files
 from pathlib import Path
 from typing import cast
@@ -21,6 +22,21 @@ from doukimd.config import project_path, read_yaml
 from doukimd.errors import BuildError
 from doukimd.models import ApiSymbol, Config
 from doukimd.runtime import typechecked
+
+
+@private
+@lru_cache(maxsize=1)
+@typechecked
+def documentation_validator() -> Draft202012Validator:
+    """
+    title: Reuse the validator for the installed Douki schema.
+    returns:
+      type: Draft202012Validator
+    """
+    schema = json.loads(
+        files('douki').joinpath('schema.json').read_text(encoding='utf-8')
+    )
+    return Draft202012Validator(schema)
 
 
 @private
@@ -61,11 +77,8 @@ def documentation(node: griffe.Object, root: Path) -> dict[str, object]:
             'douki', f'Missing Douki docstring: {node.path}', path
         )
     data = read_yaml(node.docstring.value, path)
-    schema = json.loads(
-        files('douki').joinpath('schema.json').read_text(encoding='utf-8')
-    )
     errors = sorted(
-        Draft202012Validator(schema).iter_errors(data),
+        documentation_validator().iter_errors(data),
         key=lambda error: str(list(error.path)),
     )
     if errors:

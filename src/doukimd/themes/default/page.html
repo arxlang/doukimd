@@ -17,20 +17,23 @@
           {% endfor %}
         </ul>
         {% endmacro %}
+        {% macro api_module(module, group_id, opened, attribute) %}
+          <details class="api-module" name="doukimd-api-{{ group_id }}"{% if opened %} open{% endif %}>
+            <summary><span class="nav-label">{{ module.title }}</span></summary>
+            <ul class="api-members">
+              <li class="api-overview"><a href="{{ module.url }}" aria-label="{{ module.title }} module overview"{{ attribute(module, false) }}>Module overview</a></li>
+              {% for member in module.children %}
+              <li><a href="{{ member.url }}"{{ attribute(member, true) }}>{{ label(member) }}</a></li>
+              {% endfor %}
+            </ul>
+          </details>
+        {% endmacro %}
         {% macro api_menu(item, group_id) %}
         <section class="api-navigation" aria-label="{{ item.title }}">
           {% if item.url %}<a class="api-home" href="{{ item.url }}"{% if item.current %} aria-current="page"{% endif %}><span class="nav-label">{{ item.title }}</span></a>{% else %}<p class="api-menu-title">{{ item.title }}</p>{% endif %}
           {% set active_modules = item.children | selectattr('active') | list %}
           {% for module in item.children %}
-          <details class="api-module" name="doukimd-api-{{ group_id }}"{% if module.active or (loop.first and not active_modules) %} open{% endif %}>
-            <summary><span class="nav-label">{{ module.title }}</span></summary>
-            <ul class="api-members">
-              <li class="api-overview"><a href="{{ module.url }}" aria-label="{{ module.title }} module overview"{% if module.current %} aria-current="page"{% endif %}>Module overview</a></li>
-              {% for member in module.children %}
-              <li><a href="{{ member.url }}"{% if member.current %} aria-current="page"{% elif member.active %} aria-current="location"{% endif %}>{{ label(member) }}</a></li>
-              {% endfor %}
-            </ul>
-          </details>
+          {{ navigation_fragment(api_module, module, group_id, module.active or (loop.first and not active_modules)) }}
           {% endfor %}
         </section>
         {% endmacro %}

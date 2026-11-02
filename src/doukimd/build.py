@@ -52,7 +52,7 @@ from doukimd.notebook_rendering import render_notebook
 from doukimd.plugins import plugin_context
 from doukimd.runtime import typechecked
 from doukimd.search import search_records
-from doukimd.theme import palette_colors, theme_assets
+from doukimd.theme import NavigationFragments, palette_colors, theme_assets
 
 MANIFEST = '.doukimd-manifest.json'
 
@@ -343,6 +343,7 @@ def compile_site(config_path: Path) -> SiteBuild:
         undefined=StrictUndefined,
         autoescape=True,
     )
+    environment.globals['navigation_fragment'] = NavigationFragments().render
     bundled = theme_assets(config.theme)
     if not config.search.enabled:
         bundled.pop('search.js')

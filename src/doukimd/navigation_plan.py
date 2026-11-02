@@ -107,6 +107,8 @@ class PreparedMenu:
         type: tuple[int, Ellipsis]
       relative_urls:
         type: dict[str, Mapping[int, str | None]]
+      inactive_views:
+        type: dict[str, dict[int, NavigationView]]
     """
 
     roots: tuple[MenuNode, ...]
@@ -118,6 +120,7 @@ class PreparedMenu:
     prefixes: Mapping[str, tuple[int, ...]]
     api_nodes: tuple[int, ...]
     relative_urls: dict[str, Mapping[int, str | None]]
+    inactive_views: dict[str, dict[int, NavigationView]]
 
     def __init__(
         self,
@@ -229,6 +232,7 @@ class PreparedMenu:
         )
         self.api_nodes = tuple(api_nodes)
         self.relative_urls = {}
+        self.inactive_views = {}
 
     def select(self, page: Page, api: ApiIndex) -> tuple[NavigationView, ...]:
         """
@@ -244,7 +248,7 @@ class PreparedMenu:
         if not self.roots:
             return ()
         selection = MenuSelection(self, page, api)
-        return tuple(NavigationView(node, selection) for node in self.roots)
+        return tuple(selection.view(node) for node in self.roots)
 
 
 @private
@@ -260,11 +264,14 @@ class MenuSelection:
         type: frozenset[int]
       urls:
         type: Mapping[int, str | None]
+      inactive_views:
+        type: dict[int, NavigationView]
     """
 
     current: frozenset[int]
     active: frozenset[int]
     urls: Mapping[int, str | None]
+    inactive_views: dict[int, NavigationView]
 
     def __init__(self, menu: PreparedMenu, page: Page, api: ApiIndex) -> None:
         """
@@ -311,6 +318,26 @@ class MenuSelection:
         object.__setattr__(self, 'current', current)
         object.__setattr__(self, 'active', frozenset(active))
         object.__setattr__(self, 'urls', urls)
+        object.__setattr__(
+            self,
+            'inactive_views',
+            menu.inactive_views.setdefault(directory, {}),
+        )
+
+    def view(self, node: MenuNode) -> NavigationView:
+        """
+        title: Share views only for branches with no selected descendants.
+        parameters:
+          node:
+            type: MenuNode
+        returns:
+          type: NavigationView
+        """
+        if node.identifier in self.active:
+            return NavigationView(node, self)
+        if node.identifier not in self.inactive_views:
+            self.inactive_views[node.identifier] = NavigationView(node, self)
+        return self.inactive_views[node.identifier]
 
 
 @private
@@ -392,8 +419,7 @@ class NavigationView:
           type: tuple[NavigationView, Ellipsis]
         """
         return tuple(
-            NavigationView(child, self.selection)
-            for child in self.node.children
+            self.selection.view(child) for child in self.node.children
         )
 
 
