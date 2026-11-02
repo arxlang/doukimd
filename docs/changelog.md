@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+## [1.4.2](https://github.com/arxlang/doukimd/compare/1.4.1...1.4.2) (2026-11-02)
+
+
+### Bug Fixes
+
+* cache API navigation fragments and pin Douki 0.13.0 ([#16](https://github.com/arxlang/doukimd/issues/16)) ([12f31db](https://github.com/arxlang/doukimd/commit/12f31dbe1784eb22650654ceca8e857615a68fe9))
+
 ## [1.4.1](https://github.com/arxlang/doukimd/compare/1.4.0...1.4.1) (2026-10-30)
 
 
