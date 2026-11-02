@@ -15,6 +15,8 @@ from doukimd.errors import BuildError
 from doukimd.models import Config
 from doukimd.runtime import typechecked
 
+JSON_MAPPING = TypeAdapter(dict[str, JsonValue])
+
 
 @private
 class UniqueLoader(yaml.SafeLoader):
@@ -65,9 +67,7 @@ def read_yaml(text: str, source: Path) -> dict[str, object]:
     """
     try:
         raw = yaml.load(text, Loader=UniqueLoader)
-        validated = TypeAdapter(dict[str, JsonValue]).validate_python(
-            raw, strict=True
-        )
+        validated = JSON_MAPPING.validate_python(raw, strict=True)
         return dict(validated)
     except (yaml.YAMLError, ValidationError) as error:
         raise BuildError('metadata', str(error), source) from error

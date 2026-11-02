@@ -26,6 +26,37 @@ The Makim groups, hooks, and release configuration are adapted from
 The BSD license and upstream attribution are retained. Documentation is built
 with DoukiMD. Publication is never triggered by pull requests.
 
+## Benchmark builds
+
+Measure complete in-memory compilation, including API collection, link
+validation, HTML rendering, and search indexing:
+
+```console
+poetry run python scripts/benchmark_build.py
+poetry run python scripts/benchmark_build.py /path/to/arx/doukimd.yaml
+```
+
+The default workload generates 40 modules with 20 callables each in a
+temporary directory. Each command reports three timings, their running
+median, page count, output size, Python version, and Douki version as JSON.
+It does not write site output. Compare the same workload and dependency
+environment; keep Douki pinned to `0.13.0` in both runs.
+
+To compare an older source revision without changing the working checkout:
+
+```console
+snapshot=$(mktemp -d)
+git archive <revision> src/doukimd | tar -x -C "$snapshot"
+PYTHONPATH="$snapshot/src" poetry run python scripts/benchmark_build.py
+```
+
+On Python 3.12.14, the 843-page default workload took 105.1 seconds with
+DoukiMD 1.4.0 (one run), versus a 4.6-second median here (three runs).
+The full Arx site at `e05b7d59409c47c993b5ac878578568bfa86789c` generated
+8,526 pages: upstream `fecab8b` took 221.6 seconds, versus 85.4 seconds here
+(one run each). These are local compilation measurements, excluding process
+startup and disk publication, rather than a CI timing guarantee.
+
 ## Publish the documentation
 
 After a successful package release, the **Release** workflow calls the
