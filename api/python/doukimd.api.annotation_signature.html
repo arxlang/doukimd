@@ -28,7 +28,7 @@
       <a class="site-brand" href="../../index.html">
         <span class="brand-mark" aria-hidden="true">D</span>
         <span class="brand-name">DoukiMD</span>
-        <span class="version badge rounded-pill">1.4.3</span>
+        <span class="version badge rounded-pill">1.4.4</span>
       </a>
       
       <nav class="site-navbar" aria-label="Primary">
@@ -529,22 +529,22 @@
         
         <h1 id="annotation-_signature"><span class="api-kind api-kind--function">function</span> annotation_signature</h1>
 <h3 id="variant-1">Variant 1</h3>
-<pre class="highlight"><code><span class="n">annotation_signature</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">griffe</span><span class="o">.</span><span class="n">Module</span> <span class="o">|</span> <span class="n">griffe</span><span class="o">.</span><span class="n">Attribute</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DocumentationSignature</span>
+<pre class="highlight"><code><span class="n">annotation_signature</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">griffe</span><span class="o">.</span><span class="n">Attribute</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DocumentationSignature</span>
 </code></pre>
 <p>Retain property return annotations without inspecting values.</p>
 <h3 id="parameters">Parameters</h3>
 <ul>
-<li><strong>node</strong> — Module or data declaration being documented.; <strong>Type:</strong> griffe.Module | griffe.Attribute</li>
+<li><strong>node</strong> — Property or data declaration being documented.; <strong>Type:</strong> griffe.Attribute</li>
 </ul>
 <h3 id="returns">Returns</h3>
 <p>Property return annotation or empty non-callable metadata.; <strong>Type:</strong> DocumentationSignature</p>
 <h3 id="variant-2">Variant 2</h3>
-<pre class="highlight"><code><span class="n">annotation_signature</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">griffe</span><span class="o">.</span><span class="n">Class</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DocumentationSignature</span>
+<pre class="highlight"><code><span class="n">annotation_signature</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">griffe</span><span class="o">.</span><span class="n">Module</span> <span class="o">|</span> <span class="n">griffe</span><span class="o">.</span><span class="n">Class</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DocumentationSignature</span>
 </code></pre>
-<p>Supply class field annotations without evaluating their values.</p>
+<p>Supply module and class annotations without evaluating values.</p>
 <h3 id="parameters-1">Parameters</h3>
 <ul>
-<li><strong>node</strong> — Class whose locally declared attributes are being documented.; <strong>Type:</strong> griffe.Class</li>
+<li><strong>node</strong> — Module or class whose locally declared fields are documented.; <strong>Type:</strong> griffe.Module | griffe.Class</li>
 </ul>
 <h3 id="returns-1">Returns</h3>
 <p>Annotated fields available for documentation enrichment.; <strong>Type:</strong> DocumentationSignature</p>
