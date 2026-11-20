@@ -30,7 +30,7 @@ def test_bundled_bootstrap_is_default_and_offline(example: Path) -> None:
     title: Ship pinned local CSS with its license and nested-page URLs.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
     """
     assert ThemeSettings().framework == 'bootstrap'
     result = compile_site(example / 'doukimd.yaml')
@@ -60,9 +60,9 @@ def test_framework_none_and_color_defaults(project: Path, mode: str) -> None:
     title: Preserve the bundled layout and controls without Bootstrap.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
       mode:
-        type: str
+        description: Selected rendering or appearance mode.
     """
     path = project / 'doukimd.yaml'
     path.write_text(
@@ -97,9 +97,9 @@ def test_unknown_theme_options_fail(project: Path, setting: str) -> None:
     title: Reject unsupported frontend frameworks and invalid color modes.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
       setting:
-        type: str
+        description: Configuration setting varied by the test.
     """
     path = project / 'doukimd.yaml'
     path.write_text(
@@ -115,7 +115,7 @@ def test_class_methods_have_distinct_labels(example: Path) -> None:
     title: Classify methods by their actual parent and retain summary links.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
     """
     source = example / 'src/example.py'
     source.write_text(
@@ -179,11 +179,11 @@ def test_palette_output(project: Path, palette: str, mode: str) -> None:
     title: Ship every preset offline with configuration and reader choices.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
       palette:
-        type: str
+        description: Selected semantic color palette.
       mode:
-        type: str
+        description: Selected rendering or appearance mode.
     """
     path = project / 'doukimd.yaml'
     path.write_text(
@@ -246,9 +246,9 @@ def relative_luminance(color: str) -> float:
     title: Compute WCAG sRGB relative luminance for a bundled hex color.
     parameters:
       color:
-        type: str
+        description: Hexadecimal color to inspect.
     returns:
-      type: float
+      description: Relative luminance of the supplied sRGB color.
     """
     channels = [int(color[index : index + 2], 16) / 255 for index in (1, 3, 5)]
     linear = [

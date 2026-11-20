@@ -23,13 +23,13 @@ def resolve_symbol(
     title: Resolve exact or source-relative names and reject ambiguity.
     parameters:
       reference:
-        type: str
+        description: Symbol reference to resolve within the page source scope.
       source:
-        type: str | None
+        description: Source content or configured API source name.
       inventory:
-        type: ApiIndex | dict[str, ApiSymbol]
+        description: Collected API declarations keyed by symbol identity.
     returns:
-      type: str
+      description: Unique API declaration matching the scoped reference.
     """
     api = api_index(inventory)
     if reference.count(':') >= 2:

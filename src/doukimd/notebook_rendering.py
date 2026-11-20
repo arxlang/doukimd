@@ -63,9 +63,9 @@ def mime_text(value: object) -> str:
     title: Decode textual MIME values without coercing arbitrary JSON objects.
     parameters:
       value:
-        type: object
+        description: Input value to validate or render.
     returns:
-      type: str
+      description: Decoded text from a supported saved MIME value.
     """
     if isinstance(value, str):
         return value
@@ -83,11 +83,11 @@ def image_url(mime: str, value: object) -> str:
     title: Embed SVG only in image context and validate raster base64 data.
     parameters:
       mime:
-        type: str
+        description: MIME type of the saved notebook output.
       value:
-        type: object
+        description: Input value to validate or render.
     returns:
-      type: str
+      description: Validated image data URL.
     """
     text = mime_text(value)
     if mime == 'image/svg+xml':
@@ -110,11 +110,11 @@ def output_token(content: str, text: str = '') -> Token:
     title: Keep generated output markup separate from authored HTML processing.
     parameters:
       content:
-        type: str
+        description: Content to parse or render.
       text:
-        type: str
+        description: Text content to process.
     returns:
-      type: Token
+      description: Token containing generated output markup.
     """
     token = Token('html_block', '', 0)
     token.content = content + '\n'
@@ -129,11 +129,11 @@ def literal_output(text: str, kind: str = 'text') -> list[Token]:
     title: Escape terminal text and remove nonportable ANSI escape sequences.
     parameters:
       text:
-        type: str
+        description: Text content to process.
       kind:
-        type: str
+        description: Declaration, navigation, or output kind.
     returns:
-      type: list[Token]
+      description: Escaped terminal output without ANSI control sequences.
     """
     text = re.sub(
         r'\x1b(?:\[[0-?]*[ -/]*[@-~]|\][^\x07]*(?:\x07|\x1b\\))', '', text
@@ -154,21 +154,21 @@ class NotebookRenderer:
     title: Visit supported cells and outputs with a fail-closed fallback.
     attributes:
       page:
-        type: Page
+        description: Page being compiled or used to resolve links.
       root:
-        type: Path
+        description: Project root used to resolve relative paths.
       config:
-        type: Config
+        description: Validated project settings or their configuration file.
       context:
-        type: dict[str, object]
+        description: Template variables available for the current page.
       parser:
-        type: MarkdownIt
+        description: Parser used to process the document content.
       inventory:
-        type: ApiIndex | dict[str, ApiSymbol]
+        description: Collected API declarations keyed by symbol identity.
       language:
-        type: str
+        description: Source language used for highlighting or collection.
       footnotes:
-        type: int
+        description: Parsed footnote definitions and references.
     """
 
     def __init__(
@@ -185,19 +185,20 @@ class NotebookRenderer:
         title: Share the page's normal expansion and reference pipeline.
         parameters:
           page:
-            type: Page
+            description: Page being compiled or used to resolve links.
           root:
-            type: Path
+            description: Project root used to resolve relative paths.
           config:
-            type: Config
+            description: Validated project settings or their configuration
+              file.
           context:
-            type: dict[str, object]
+            description: Template variables available for the current page.
           parser:
-            type: MarkdownIt
+            description: Parser used to process the document content.
           inventory:
-            type: ApiIndex | dict[str, ApiSymbol]
+            description: Collected API declarations keyed by symbol identity.
           language:
-            type: str
+            description: Source language used for highlighting or collection.
         """
         self.page: Page = page
         self.root: Path = root
@@ -214,9 +215,9 @@ class NotebookRenderer:
         title: Reject unknown cell and output models explicitly.
         parameters:
           value:
-            type: object
+            description: Input value to validate or render.
         returns:
-          type: list[Token]
+          description: Processed declarations or document tokens.
         """
         raise BuildError(
             'notebook', f'Unsupported notebook node: {type(value)}'
@@ -228,9 +229,9 @@ class NotebookRenderer:
         title: Expand only Markdown sources with the existing page settings.
         parameters:
           value:
-            type: MarkdownCell
+            description: Input value to validate or render.
         returns:
-          type: list[Token]
+          description: Processed declarations or document tokens.
         """
         page = replace(
             self.page, body=notebook_text(value.source), notebook=None
@@ -287,9 +288,9 @@ class NotebookRenderer:
         title: Render literal inputs and saved outputs in order.
         parameters:
           value:
-            type: CodeCell
+            description: Input value to validate or render.
         returns:
-          type: list[Token]
+          description: Processed declarations or document tokens.
         """
         tokens = [
             output_token('<div class="notebook-cell notebook-cell--code">')
@@ -321,9 +322,9 @@ class NotebookRenderer:
         title: Preserve raw cells as literal text without markup evaluation.
         parameters:
           value:
-            type: RawCell
+            description: Input value to validate or render.
         returns:
-          type: list[Token]
+          description: Processed declarations or document tokens.
         """
         return literal_output(notebook_text(value.source), 'raw')
 
@@ -333,9 +334,9 @@ class NotebookRenderer:
         title: Preserve recorded stdout and stderr without interpretation.
         parameters:
           value:
-            type: StreamOutput
+            description: Input value to validate or render.
         returns:
-          type: list[Token]
+          description: Processed declarations or document tokens.
         """
         return literal_output(notebook_text(value.text), value.name)
 
@@ -345,9 +346,9 @@ class NotebookRenderer:
         title: Render a saved traceback or its recorded exception summary.
         parameters:
           value:
-            type: ErrorOutput
+            description: Input value to validate or render.
         returns:
-          type: list[Token]
+          description: Processed declarations or document tokens.
         """
         text = '\n'.join(value.traceback) or f'{value.ename}: {value.evalue}'
         return literal_output(text, 'error')
@@ -358,9 +359,9 @@ class NotebookRenderer:
         title: Select a static MIME alternative or reject the bundle.
         parameters:
           value:
-            type: RichOutput
+            description: Input value to validate or render.
         returns:
-          type: list[Token]
+          description: Processed declarations or document tokens.
         """
         mime = next((mime for mime in PRIORITY if mime in value.data), None)
         if mime is None:
@@ -427,19 +428,19 @@ def render_notebook(
     title: Expand saved notebook content before anchors and links are resolved.
     parameters:
       page:
-        type: Page
+        description: Page being compiled or used to resolve links.
       root:
-        type: Path
+        description: Project root used to resolve relative paths.
       config:
-        type: Config
+        description: Validated project settings or their configuration file.
       context:
-        type: dict[str, object]
+        description: Template variables available for the current page.
       parser:
-        type: MarkdownIt
+        description: Parser used to process the document content.
       inventory:
-        type: ApiIndex | dict[str, ApiSymbol]
+        description: Collected API declarations keyed by symbol identity.
     returns:
-      type: list[Token]
+      description: Document tokens for saved notebook content.
     """
     notebook = page.notebook
     if notebook is None:

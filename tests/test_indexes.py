@@ -27,13 +27,13 @@ def symbol(
     title: Create a declaration with a stable named-source identity.
     parameters:
       identifier:
-        type: str
+        description: Stable, source-qualified API identity.
       parent:
-        type: str | None
+        description: Parent declaration, navigation entry, or output element.
       canonical:
-        type: str | None
+        description: Identity of the original declaration behind a re-export.
     returns:
-      type: ApiSymbol
+      description: API declaration with stable source-qualified identity.
     """
     return ApiSymbol(
         identifier=identifier,

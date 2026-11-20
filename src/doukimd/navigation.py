@@ -32,13 +32,13 @@ def navigation_item(
     title: Resolve a navigation URL and active state against the current page.
     parameters:
       target:
-        type: Page
+        description: Target name or route to resolve.
       current:
-        type: Page
+        description: Current page route or navigation selection.
       children:
-        type: list[NavigationItem]
+        description: Immediate children in display order.
     returns:
-      type: NavigationItem
+      description: Navigation entry with a relative URL and active state.
     """
     selected = target.route == current.route
     url = posixpath.relpath(
@@ -66,13 +66,13 @@ def automatic_navigation(
     title: Gather generated references under one API Docs menu entry.
     parameters:
       pages:
-        type: SiteIndex | list[Page]
+        description: Pages with their planned output routes.
       current:
-        type: Page
+        description: Current page route or navigation selection.
       inventory:
-        type: ApiIndex | dict[str, ApiSymbol]
+        description: Collected API declarations keyed by symbol identity.
     returns:
-      type: list[NavigationItem]
+      description: Automatically grouped API navigation entries.
     """
     site = site_index(pages)
     api = api_index(inventory)
@@ -90,9 +90,9 @@ def automatic_navigation(
         title: Walk the indexed symbol tree.
         parameters:
           name:
-            type: str
+            description: Name used to identify the requested item.
         returns:
-          type: NavigationItem
+          description: Navigation entries for the indexed symbol tree.
         """
         children = [
             symbol_navigation(child) for child in by_parent.get(name, [])
@@ -133,9 +133,9 @@ def module_navigation(item: NavigationItem) -> NavigationItem:
     title: Keep a stable module list with one level of declaration links.
     parameters:
       item:
-        type: NavigationItem
+        description: Declaration or navigation entry being rendered.
     returns:
-      type: NavigationItem
+      description: Module navigation with immediate declaration links.
     """
     if item.layout != 'modules':
         return item.model_copy(
@@ -153,11 +153,11 @@ def module_navigation(item: NavigationItem) -> NavigationItem:
         title: Flatten submodules while keeping class members in their pages.
         parameters:
           module:
-            type: NavigationItem
+            description: Python import path selected for collection.
           title:
-            type: str
+            description: Display title for the page or navigation entry.
           prefix:
-            type: str
+            description: Route prefix used to select a navigation branch.
         """
         if module.kind != 'module':
             raise BuildError(
@@ -215,15 +215,15 @@ def build_navigation(
     title: Resolve the sidebar and keep API modules in stable accordions.
     parameters:
       pages:
-        type: SiteIndex | list[Page]
+        description: Pages with their planned output routes.
       current:
-        type: Page
+        description: Current page route or navigation selection.
       inventory:
-        type: ApiIndex | dict[str, ApiSymbol]
+        description: Collected API declarations keyed by symbol identity.
       config:
-        type: Config | None
+        description: Validated project settings or their configuration file.
     returns:
-      type: list[NavigationItem]
+      description: Sidebar entries resolved for the current page.
     """
     automatic = automatic_navigation(pages, current, inventory)
     navigation = (
@@ -241,11 +241,11 @@ def local_target(path: str, pages: SiteIndex | list[Page]) -> tuple[Page, str]:
     title: Resolve a docs-root page path and optional heading without guessing.
     parameters:
       path:
-        type: str
+        description: Path or qualified declaration name to resolve.
       pages:
-        type: SiteIndex | list[Page]
+        description: Pages with their planned output routes.
     returns:
-      type: tuple[Page, str]
+      description: Validated page route and optional heading anchor.
     """
     try:
         target = urlsplit(path)
@@ -288,19 +288,19 @@ def configured_items(
     title: Resolve menu entries against planned routes and API sources.
     parameters:
       entries:
-        type: list[NavEntry]
+        description: Ordered navigation or search entries.
       automatic:
-        type: list[NavigationItem]
+        description: Whether to construct navigation from generated API pages.
       pages:
-        type: SiteIndex | list[Page]
+        description: Pages with their planned output routes.
       current:
-        type: Page
+        description: Current page route or navigation selection.
       inventory:
-        type: ApiIndex | dict[str, ApiSymbol]
+        description: Collected API declarations keyed by symbol identity.
       expand_api:
-        type: bool
+        description: Whether to include generated API branches.
     returns:
-      type: list[NavigationItem]
+      description: Resolved configured navigation entries.
     """
     site = site_index(pages)
     api = api_index(inventory)
@@ -412,17 +412,17 @@ def configured_sidebar(
     title: Select one menu by front matter, longest route prefix, or default.
     parameters:
       config:
-        type: Config
+        description: Validated project settings or their configuration file.
       automatic:
-        type: list[NavigationItem]
+        description: Whether to construct navigation from generated API pages.
       pages:
-        type: SiteIndex | list[Page]
+        description: Pages with their planned output routes.
       current:
-        type: Page
+        description: Current page route or navigation selection.
       inventory:
-        type: ApiIndex | dict[str, ApiSymbol]
+        description: Collected API declarations keyed by symbol identity.
     returns:
-      type: list[NavigationItem]
+      description: Sidebar selected by the applicable configuration.
     """
     resolved = {
         sidebar.id: configured_items(
@@ -448,11 +448,11 @@ def sidebar_for_page(config: Config, current: Page) -> SidebarSettings | None:
     title: Validate menu selection and expose the selected sidebar metadata.
     parameters:
       config:
-        type: Config
+        description: Validated project settings or their configuration file.
       current:
-        type: Page
+        description: Current page route or navigation selection.
     returns:
-      type: SidebarSettings | None
+      description: Selected sidebar metadata and resolved entries.
     """
     settings = config.navigation
     sidebars: dict[str, SidebarSettings] = {}
@@ -513,15 +513,15 @@ def build_navbar(
     title: Resolve ordered top-level menus using the same checked page routes.
     parameters:
       config:
-        type: Config
+        description: Validated project settings or their configuration file.
       pages:
-        type: SiteIndex | list[Page]
+        description: Pages with their planned output routes.
       current:
-        type: Page
+        description: Current page route or navigation selection.
       inventory:
-        type: ApiIndex | dict[str, ApiSymbol]
+        description: Collected API declarations keyed by symbol identity.
     returns:
-      type: list[NavigationItem]
+      description: Resolved top-level menus in configured order.
     """
     return configured_items(
         config.navigation.navbar,

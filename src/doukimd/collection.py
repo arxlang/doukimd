@@ -28,7 +28,7 @@ class FunctionCapture(griffe.Extension):
     title: Retain every function instance before Griffe replaces names.
     attributes:
       functions:
-        type: dict[str, list[griffe.Function]]
+        description: Function declarations retained under each qualified name.
     """
 
     def __init__(self) -> None:
@@ -49,14 +49,15 @@ class FunctionCapture(griffe.Extension):
         title: Record source functions without importing project code.
         parameters:
           node:
-            type: object
+            description: Source declaration or parsed document node to process.
           func:
-            type: griffe.Function
+            description: Function instance reported by the static source
+              loader.
           agent:
-            type: object
+            description: Loader agent reporting the declaration.
           kwargs:
-            type: object
             variadic: keyword
+            description: Additional keyword arguments supplied by the caller.
         """
         del agent, kwargs
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
@@ -70,11 +71,11 @@ def identifier(path: str, source: str | None) -> str:
     title: Namespace named sources while preserving unnamed identities.
     parameters:
       path:
-        type: str
+        description: Path or qualified declaration name to resolve.
       source:
-        type: str | None
+        description: Source content or configured API source name.
     returns:
-      type: str
+      description: API identity scoped by the optional source name.
     """
     return f'python:{source}:{path}' if source else f'python:{path}'
 
@@ -88,13 +89,13 @@ def decorated(
     title: Resolve decorator aliases statically.
     parameters:
       node:
-        type: griffe.Function
+        description: Source declaration or parsed document node to process.
       target:
-        type: str
+        description: Target name or route to resolve.
       seen:
-        type: set[str] | None
+        description: Declaration names already visited while resolving aliases.
     returns:
-      type: bool
+      description: Whether the decorator resolves to the requested target.
     """
     seen = set() if seen is None else seen
     if node.path in seen:
@@ -151,17 +152,20 @@ class Collector:
     title: Visit supported declarations with explicit source confinement.
     attributes:
       root:
-        type: Path
+        description: Project root used to resolve relative paths.
       search:
-        type: Path
+        description: Selected source folder that confines API collection.
       source:
-        type: str | None
+        description: Source content or configured API source name.
       capture:
-        type: FunctionCapture
+        description: Per-loader storage retaining repeated function
+          declarations.
       alias_stack:
-        type: set[str]
+        description: Aliases currently being followed to detect export
+          cycles.
       documents:
-        type: dict[int, dict[str, object]]
+        description: Validated documentation cached by declaration
+          identity.
     """
 
     root: Path
@@ -182,13 +186,16 @@ class Collector:
         title: Initialize a collector for one isolated source folder.
         parameters:
           root:
-            type: Path
+            description: Project root used to resolve relative paths.
           search:
-            type: Path
+            description: Selected source folder that confines API
+              collection.
           source:
-            type: str | None
+            description: Source content or configured API source
+              name.
           capture:
-            type: FunctionCapture
+            description: Per-loader storage retaining repeated function
+              declarations.
         """
         self.root = root
         self.search = search
@@ -202,9 +209,11 @@ class Collector:
         title: Validate source prose and distinguish generated members.
         parameters:
           node:
-            type: griffe.Object
+            description: Source declaration or parsed document node
+              to process.
         returns:
-          type: dict[str, object]
+          description: Validated or generated documentation for the
+            declaration.
         """
         if id(node) in self.documents:
             return self.documents[id(node)]
@@ -235,16 +244,20 @@ class Collector:
         variants: list[ApiVariant] | None = None,
     ) -> ApiSymbol:
         """
-        title: Preserve public identity separately from declaration origin.
+        title: Preserve public identity separately from declaration
+          origin.
         parameters:
           node:
-            type: griffe.Object
+            description: Source declaration or parsed document node
+              to process.
           path:
-            type: str
+            description: Path or qualified declaration name to resolve.
           variants:
-            type: list[ApiVariant] | None
+            description: Callable signatures and documentation in
+              declaration order.
         returns:
-          type: ApiSymbol
+          description: API symbol with public identity and declaration
+            provenance.
         """
         location = source_path(node)
         if not location.is_relative_to(self.search):
@@ -293,9 +306,9 @@ class Collector:
         title: Distinguish properties, type aliases, enum values, and fields.
         parameters:
           node:
-            type: griffe.Attribute
+            description: Source declaration or parsed document node to process.
         returns:
-          type: str
+          description: Declaration kind used for rendering and navigation.
         """
         if 'property' in node.labels:
             return 'property'
@@ -332,9 +345,9 @@ class Collector:
         title: Retain dispatch families and declared typing overloads.
         parameters:
           node:
-            type: griffe.Function
+            description: Source declaration or parsed document node to process.
         returns:
-          type: list[ApiVariant]
+          description: Visible callable variants in declaration order.
         """
         definitions = self.capture.functions.get(node.path, [node])
         selected = node.overloads or definitions
@@ -376,11 +389,11 @@ class Collector:
         title: Reject unsupported declarations rather than omitting them.
         parameters:
           node:
-            type: object
+            description: Source declaration or parsed document node to process.
           path:
-            type: str
+            description: Path or qualified declaration name to resolve.
         returns:
-          type: list[ApiSymbol]
+          description: Processed declarations or document tokens.
         """
         raise BuildError(
             'api', f'Unsupported declaration: {type(node).__name__}'
@@ -393,11 +406,11 @@ class Collector:
         title: Follow explicitly exported aliases without runtime imports.
         parameters:
           node:
-            type: griffe.Alias
+            description: Source declaration or parsed document node to process.
           path:
-            type: str
+            description: Path or qualified declaration name to resolve.
         returns:
-          type: list[ApiSymbol]
+          description: Processed declarations or document tokens.
         """
         try:
             target = node.final_target
@@ -420,11 +433,11 @@ class Collector:
         title: Collect callable declarations and all statically known variants.
         parameters:
           node:
-            type: griffe.Function
+            description: Source declaration or parsed document node to process.
           path:
-            type: str
+            description: Path or qualified declaration name to resolve.
         returns:
-          type: list[ApiSymbol]
+          description: Processed declarations or document tokens.
         """
         if hidden(node) and all(
             hidden(item)
@@ -440,11 +453,11 @@ class Collector:
         title: Collect documented or explicitly exported data declarations.
         parameters:
           node:
-            type: griffe.Attribute
+            description: Source declaration or parsed document node to process.
           path:
-            type: str
+            description: Path or qualified declaration name to resolve.
         returns:
-          type: list[ApiSymbol]
+          description: Processed declarations or document tokens.
         """
         return [] if hidden(node) else [self.make(node, path)]
 
@@ -457,11 +470,11 @@ class Collector:
         title: Collect exported members and configured package submodules.
         parameters:
           node:
-            type: griffe.Module | griffe.Class
+            description: Source declaration or parsed document node to process.
           path:
-            type: str
+            description: Path or qualified declaration name to resolve.
         returns:
-          type: list[ApiSymbol]
+          description: Processed declarations or document tokens.
         """
         if hidden(node):
             return []

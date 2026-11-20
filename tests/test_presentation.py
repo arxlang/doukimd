@@ -24,11 +24,11 @@ def configure(project: Path, settings: dict[str, object]) -> Path:
     title: Extend a fixture configuration with literal settings.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
       settings:
-        type: dict[str, object]
+        description: Validated settings controlling the current operation.
     returns:
-      type: Path
+      description: Path to the updated fixture configuration.
     """
     path = project / 'doukimd.yaml'
     current = cast(dict[str, object], yaml.safe_load(path.read_text()))
@@ -43,7 +43,7 @@ def test_product_navigation_and_source_scope(example: Path) -> None:
     title: Select product menus for authored and generated pages.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
     """
     shutil.copytree(example / 'src', example / 'other-src')
     (example / 'docs/product').mkdir()
@@ -134,7 +134,7 @@ def test_layout_branding_html_and_template_blocks(project: Path) -> None:
     title: Render a landing page with local branding and reusable theme.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
     """
     (project / 'docs/images').mkdir()
     (project / 'docs/images/logo.svg').write_text('<svg></svg>')
@@ -208,7 +208,7 @@ def test_authored_html_does_not_enable_docstring_html(example: Path) -> None:
     title: Keep docstring HTML escaped even inside an HTML-enabled page.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
     """
     source = example / 'src/example.py'
     source.write_text(
@@ -316,11 +316,11 @@ def test_invalid_navigation(
     title: Fail at configuration or route resolution for unusable menus.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
       settings:
-        type: dict[str, object]
+        description: Validated settings controlling the current operation.
       message:
-        type: str
+        description: Diagnostic expected or reported for the failure.
     """
     config = configure(project, {'navigation': settings})
     with pytest.raises(BuildError, match=message):
@@ -357,11 +357,11 @@ def test_invalid_presentation(project: Path, text: str, message: str) -> None:
     title: Reject unknown menus, templates, HTML links, and duplicate anchors.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
       text:
-        type: str
+        description: Text content to process.
       message:
-        type: str
+        description: Diagnostic expected or reported for the failure.
     """
     (project / 'docs/index.md').write_text(text)
     with pytest.raises(BuildError, match=message):
@@ -386,11 +386,11 @@ def test_invalid_branding(
     title: Require branding assets to exist and be explicitly included.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
       settings:
-        type: dict[str, object]
+        description: Validated settings controlling the current operation.
       message:
-        type: str
+        description: Diagnostic expected or reported for the failure.
     """
     config = configure(project, settings)
     with pytest.raises(BuildError, match=message):
@@ -415,9 +415,9 @@ def test_asset_output_collisions(project: Path, name: str) -> None:
     title: Reject assets that would overwrite theme, metadata, or page outputs.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
       name:
-        type: str
+        description: Name used to identify the requested item.
     """
     (project / 'docs' / name).write_text('collision')
     config = configure(project, {'assets': [name]})
@@ -431,7 +431,7 @@ def test_source_scope_and_longest_sidebar_prefix(example: Path) -> None:
     title: Choose the most specific menu and reject unavailable source names.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
     """
     (example / 'docs/index.md').write_text('# Home')
     settings: dict[str, object] = {
@@ -469,7 +469,7 @@ def test_file_directory_and_asset_case_collisions(project: Path) -> None:
     title: Reject conflicts that would fail or lose files during publication.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
     """
     with pytest.raises(BuildError, match='collides'):
         check_output_routes(['assets/logo.svg', 'assets/LOGO.svg'])
@@ -486,7 +486,7 @@ def test_encoded_navigation_assets_and_html_anchors(project: Path) -> None:
     title: Preserve URL semantics for filenames containing spaces and hashes.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
     """
     (project / 'docs/assets').mkdir()
     (project / 'docs/assets/logo #1.svg').write_text('<svg></svg>')
@@ -521,7 +521,7 @@ def test_header_does_not_duplicate_active_sidebar_tree(example: Path) -> None:
     title: Keep API declarations in the sidebar and active header menus closed.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
     """
     config = configure(
         example,
@@ -577,9 +577,9 @@ def test_header_scoped_api_uses_package_entry_points(
     title: Preserve named-source routing without recursive header API menus.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
       roots:
-        type: int
+        description: Top-level entries in the selected hierarchy.
     """
     if roots == 2:
         (example / 'src/extra.py').write_text('"""title: Extra API."""')
@@ -620,9 +620,9 @@ def test_api_module_accordion_keeps_class_members_in_content(
     title: Keep one module group and flat class links on every member page.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
       framework:
-        type: str
+        description: Selected bundled CSS framework.
     """
     source = example / 'src/example.py'
     source.write_text(
@@ -690,7 +690,7 @@ def test_nested_page_accordions_and_overview_links(project: Path) -> None:
     title: Give nested page groups separate toggles and navigable overviews.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
     """
     (project / 'docs/deep.md').write_text('# Deep page')
     config = configure(
@@ -762,9 +762,9 @@ def test_scoped_api_accordions_keep_package_switching(
     title: Keep multi-root source choices local and ignore other source paths.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
       current_source:
-        type: str
+        description: Source scope of the page being processed.
     """
     (example / 'src/extra.py').write_text('"""title: Another package."""')
     shutil.copytree(example / 'src', example / 'other-src')
@@ -821,7 +821,7 @@ def test_separate_api_menus_have_independent_accordion_names(
     title: Scope native accordion grouping independently for nested API menus.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
     """
     (example / 'src/extra.py').write_text('"""title: Extra module."""')
     config = configure(

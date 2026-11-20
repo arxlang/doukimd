@@ -36,7 +36,7 @@ def test_api_index_and_member_summaries(example: Path) -> None:
     title: Link API roots and immediate children through the generated index.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
     """
     source = example / 'src/example.py'
     source.write_text(
@@ -47,7 +47,6 @@ def test_api_index_and_member_summaries(example: Path) -> None:
         '        title: Increment the counter.\n'
         '        parameters:\n'
         '          amount:\n'
-        '            type: int\n'
         '            default: 1\n'
         '            description: How many.\n'
         '        """\n'
@@ -84,7 +83,7 @@ def test_navigation_groups_symbols_and_uses_routes(example: Path) -> None:
     title: Keep titles distinct inside a stable module accordion.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
     """
     (example / 'docs/duplicate.md').write_text(
         '---\ntitle: add\n---\nAn unrelated page.', encoding='utf-8'
@@ -128,7 +127,7 @@ def test_api_directory_links(example: Path) -> None:
     title: Serve and link the generated reference at the API directory URL.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
     """
     (example / 'docs/index.md').write_text(
         '# Home\n\n[Reference](api/#modules)', encoding='utf-8'
@@ -145,7 +144,7 @@ def test_selected_submodule_is_an_api_root(example: Path) -> None:
     title: Preserve nested modules when their package is not selected.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
     """
     package = example / 'src/package'
     package.mkdir()
@@ -175,9 +174,9 @@ def test_api_index_collisions_fail(example: Path, route: str) -> None:
     title: Reject authored collisions with the reserved generated API index.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
       route:
-        type: str
+        description: Planned output path relative to the site root.
     """
     (example / 'docs/api').mkdir()
     (example / 'docs/api' / route).write_text('# Mine', encoding='utf-8')
@@ -191,7 +190,7 @@ def test_no_generated_api_menu_without_pages(example: Path) -> None:
     title: Omit the generated entry point when page generation is disabled.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
     """
     config = example / 'doukimd.yaml'
     config.write_text(
@@ -212,7 +211,7 @@ def test_flat_api_navigation_reaches_all_nested_pages(example: Path) -> None:
     title: Keep module order stable and reach members through class pages.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
     """
     package = example / 'src/package'
     package.mkdir()
@@ -288,7 +287,7 @@ def test_empty_api_owner_retains_location(example: Path) -> None:
     title: Keep an empty module's overview accessible inside its accordion.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
     """
     (example / 'src/empty.py').write_text('"""title: Empty module."""')
     (example / 'docs/index.md').write_text('# Home')
@@ -315,9 +314,9 @@ def test_unknown_api_navigation_kind_fails(example: Path, symbol: str) -> None:
     title: Reject an unsupported declaration kind instead of losing its link.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
       symbol:
-        type: str
+        description: API declaration to resolve or render.
     """
     config = load_config(example / 'doukimd.yaml')
     inventory = collect_api(example, config)
@@ -337,7 +336,7 @@ def test_selected_nested_roots_have_distinct_module_names(
     title: Distinguish same-named nested modules selected as separate roots.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
     """
     for name in ['first', 'second']:
         package = example / 'src' / name
@@ -378,9 +377,9 @@ def navigation_data(
     title: Compare every documented theme field across both navigation paths.
     parameters:
       items:
-        type: list[NavigationItem] | tuple[NavigationView, Ellipsis]
+        description: Entries to process in display order.
     returns:
-      type: list[dict[str, object]]
+      description: Comparable navigation fields for the selected view.
     """
     return [
         {
@@ -405,7 +404,7 @@ def test_prepared_navigation_matches_standalone_helpers(
     title: Preserve links and flags across directories and source scopes.
     parameters:
       configured:
-        type: bool
+        description: Navigation entries explicitly selected by configuration.
     """
     names = [
         ('one', 'one', 'module', None),
@@ -548,9 +547,9 @@ def test_menu_preparation_is_scoped_to_each_build(
     title: Prepare navigation once per build and refresh after source changes.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
       monkeypatch:
-        type: pytest.MonkeyPatch
+        description: Fixture for restoring patched objects after the test.
     """
     import doukimd.navigation_plan as planning
 
@@ -567,13 +566,13 @@ def test_menu_preparation_is_scoped_to_each_build(
         title: Count full hierarchy preparation independently of page count.
         parameters:
           pages:
-            type: SiteIndex | list[Page]
+            description: Pages with their planned output routes.
           current:
-            type: Page
+            description: Current page route or navigation selection.
           inventory:
-            type: ApiIndex | dict[str, ApiSymbol]
+            description: Collected API declarations keyed by symbol identity.
         returns:
-          type: list[NavigationItem]
+          description: Prepared navigation result from the original helper.
         """
         nonlocal calls
         calls += 1

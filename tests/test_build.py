@@ -24,7 +24,7 @@ def test_full_example_and_repeatability(example: Path) -> None:
     title: Build APIs, templates, references, and stable repeat output.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
     """
     path = example / 'doukimd.yaml'
     first = build_site(path)
@@ -58,7 +58,7 @@ def test_check_does_not_write(project: Path) -> None:
     title: Validate all output without creating the target directory.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
     """
     result = compile_site(project / 'doukimd.yaml')
     assert result.page_count == 1
@@ -76,7 +76,7 @@ def test_cli_error_and_version(project: Path) -> None:
     title: Surface build diagnostics and command help without tracebacks.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
     """
     runner = CliRunner()
     assert runner.invoke(main, ['--help']).exit_code == 0
@@ -120,11 +120,11 @@ def test_build_failures_preserve_previous_output(
     title: Never replace the last successful site after invalid input.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
       body:
-        type: str
+        description: Page body before final HTML rendering.
       message:
-        type: str
+        description: Diagnostic expected or reported for the failure.
     """
     config = project / 'doukimd.yaml'
     before = build_site(config)
@@ -142,7 +142,7 @@ def test_metadata_templates_and_escaping(project: Path) -> None:
     title: Separate metadata, Markdown composition, and HTML escaping.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
     """
     (project / 'doukimd.yaml').write_text(
         'site:\n  title: "<Docs>"\nproject:\n  name: test\n'
@@ -181,7 +181,7 @@ def test_links_anchors_assets_and_highlighting(project: Path) -> None:
     title: Resolve forward page links and preserve literal fenced directives.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
     """
     (project / 'docs/assets').mkdir()
     (project / 'docs/assets/logo.txt').write_text('asset', encoding='utf-8')
@@ -215,7 +215,7 @@ def test_custom_theme_and_strict_failure(project: Path) -> None:
     title: Let themes change presentation without changing API identities.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
     """
     config = project / 'doukimd.yaml'
     config.write_text(
@@ -245,9 +245,9 @@ def test_output_cannot_overlap_inputs(project: Path, output: str) -> None:
     title: Reject output destinations that could overwrite project sources.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
       output:
-        type: str
+        description: Saved output representation or expected destination.
     """
     config = project / 'doukimd.yaml'
     config.write_text(
@@ -263,7 +263,7 @@ def test_unmanaged_output_is_preserved(project: Path) -> None:
     title: Refuse replacement of existing user-owned files.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
     """
     target = project / 'build'
     target.mkdir()
@@ -279,7 +279,7 @@ def test_removed_pages_do_not_leave_stale_output(project: Path) -> None:
     title: Replace the complete managed site after successful compilation.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
     """
     extra = project / 'docs/extra.md'
     extra.write_text('# Extra', encoding='utf-8')

@@ -24,9 +24,9 @@ def test_plugin_context(
     title: Expose validated plugin data only under its own namespace.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
       monkeypatch:
-        type: pytest.MonkeyPatch
+        description: Fixture for restoring patched objects after the test.
     """
 
     class Provider:
@@ -41,9 +41,10 @@ def test_plugin_context(
             title: Return project-specific template data.
             parameters:
               config:
-                type: Config
+                description: Validated project settings or their configuration
+                  file.
             returns:
-              type: dict[str, object]
+              description: Plugin-specific template data.
             """
             return {'message': config.project.name}
 
@@ -73,11 +74,11 @@ def test_plugin_failures(
     title: Reject unavailable plugins and invalid extension results.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
       monkeypatch:
-        type: pytest.MonkeyPatch
+        description: Fixture for restoring patched objects after the test.
       mode:
-        type: str
+        description: Selected rendering or appearance mode.
     """
 
     class InvalidProvider:
@@ -92,9 +93,10 @@ def test_plugin_failures(
             title: Supply deliberately unsupported data.
             parameters:
               config:
-                type: Config
+                description: Validated project settings or their configuration
+                  file.
             returns:
-              type: dict[str, object]
+              description: Plugin-specific template data.
             """
             return {'path': Path('not-json')}
 

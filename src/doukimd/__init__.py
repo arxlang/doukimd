@@ -17,7 +17,7 @@ def get_version() -> str:
     """
     title: Return the installed version or the source-tree fallback.
     returns:
-      type: str
+      description: Installed package version or the source fallback.
     """
     try:
         return version('doukimd')

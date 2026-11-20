@@ -27,9 +27,9 @@ def synthetic_project(root: Path) -> Path:
     title: Generate forty modules with twenty public callables each.
     parameters:
       root:
-        type: Path
+        description: Project root used to resolve relative paths.
     returns:
-      type: Path
+      description: Path to the generated benchmark configuration.
     """
     docs = root / 'docs'
     docs.mkdir()
@@ -88,9 +88,9 @@ def measure(config: Path, repeat: int) -> None:
     title: Time the same complete workload repeatedly without retaining output.
     parameters:
       config:
-        type: Path
+        description: Validated project settings or their configuration file.
       repeat:
-        type: int
+        description: Number of complete build measurements to run.
     """
     timings: list[float] = []
     for _ in range(repeat):

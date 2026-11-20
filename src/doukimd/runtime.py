@@ -21,9 +21,9 @@ def typechecked(function: T) -> T:
     title: Check package boundaries without changing global Typeguard settings.
     parameters:
       function:
-        type: T
+        description: Callable whose argument and result types are checked.
     returns:
-      type: T
+      description: Callable or class with runtime argument and result checks.
     """
     if isinstance(function, type):
         for name, member in list(vars(function).items()):
@@ -43,13 +43,15 @@ def typechecked(function: T) -> T:
         title: Validate all bound arguments and the return value.
         parameters:
           args:
-            type: object
             variadic: positional
+            description: Positional arguments supplied by the caller.
           kwargs:
-            type: object
             variadic: keyword
+            description: Additional keyword arguments supplied by
+              the caller.
         returns:
-          type: object
+          description: Callable result after argument and result
+            type validation.
         """
         nonlocal annotations
         if annotations is None:

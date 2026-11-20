@@ -64,11 +64,11 @@ def output_path(root: Path, config: Config) -> Path:
     title: Reject output paths that overlap any project input.
     parameters:
       root:
-        type: Path
+        description: Project root used to resolve relative paths.
       config:
-        type: Config
+        description: Validated project settings or their configuration file.
     returns:
-      type: Path
+      description: Resolved output directory confined to the project.
     """
     output = project_path(root, config.output_dir)
     protected = [
@@ -119,13 +119,13 @@ def highlight_code(code: str, language: str, attrs: str) -> str:
     title: Highlight code with a plain-text fallback for unknown languages.
     parameters:
       code:
-        type: str
+        description: Source code to highlight.
       language:
-        type: str
+        description: Source language used for highlighting or collection.
       attrs:
-        type: str
+        description: Attributes attached to the generated element.
     returns:
-      type: str
+      description: Highlighted code or escaped plain text.
     """
     del attrs
     try:
@@ -148,13 +148,13 @@ def validate_links(
     title: Rewrite Markdown links and validate local files and anchors.
     parameters:
       tokens:
-        type: list[Token]
+        description: Parsed document tokens in rendering order.
       page:
-        type: Page
+        description: Page being compiled or used to resolve links.
       pages:
-        type: SiteIndex | dict[str, Page]
+        description: Pages with their planned output routes.
       assets:
-        type: dict[str, bytes]
+        description: Asset destinations and bytes included in the build.
     """
 
     planned = pages.by_route if isinstance(pages, SiteIndex) else pages
@@ -165,9 +165,9 @@ def validate_links(
         title: Validate and rewrite one Markdown or authored HTML URL.
         parameters:
           value:
-            type: str
+            description: Input value to validate or render.
         returns:
-          type: str
+          description: Validated link rewritten for the current output page.
         """
         try:
             target = urlsplit(value)
@@ -234,7 +234,7 @@ def check_output_routes(routes: list[str]) -> None:
     title: Reject case-insensitive file and directory collisions before output.
     parameters:
       routes:
-        type: list[str]
+        description: Planned output routes used to validate destinations.
     """
     seen: set[str] = set()
     for route in routes:
@@ -255,9 +255,9 @@ def compile_site(config_path: Path) -> SiteBuild:
     title: Compile all pages and references without writing output.
     parameters:
       config_path:
-        type: Path
+        description: Path to the project configuration file.
     returns:
-      type: SiteBuild
+      description: Complete generated files and page count.
     """
     config_path = config_path.resolve()
     root = config_path.parent
@@ -480,9 +480,9 @@ def build_site(config_path: Path) -> SiteBuild:
     title: Replace managed output only after the entire build succeeds.
     parameters:
       config_path:
-        type: Path
+        description: Path to the project configuration file.
     returns:
-      type: SiteBuild
+      description: Successfully published files and page count.
     """
     config_path = config_path.resolve()
     result = compile_site(config_path)

@@ -27,9 +27,9 @@ def test_wrapper_shares_annotations_with_original() -> None:
         title: Return typed collection items unchanged.
         parameters:
           paths:
-            type: list[Path]
+            description: Paths selected for processing.
         returns:
-          type: list[Path]
+          description: The supplied collection unchanged.
         """
         return paths
 
@@ -60,12 +60,13 @@ def test_dispatch_resolves_wrapped_postponed_annotations() -> None:
         title: Reject unsupported values through the dispatch fallback.
         parameters:
           value:
-            type: object
+            description: Input value to validate or render.
           suffix:
-            type: str
             default: .html
+            description: Suffix appended to the generated route or fixture
+              content.
         returns:
-          type: str
+          description: Classification for a supported input value.
         """
         raise TypeError('Unsupported value')
 
@@ -75,12 +76,13 @@ def test_dispatch_resolves_wrapped_postponed_annotations() -> None:
         title: Classify a path with a typed keyword argument.
         parameters:
           value:
-            type: Path
+            description: Input value to validate or render.
           suffix:
-            type: str
             default: .html
+            description: Suffix appended to the generated route or fixture
+              content.
         returns:
-          type: str
+          description: Classification of the supplied path.
         """
         return value.name + suffix
 

@@ -32,11 +32,11 @@ class UniqueLoader(yaml.SafeLoader):
         title: Construct a mapping after checking its keys.
         parameters:
           node:
-            type: yaml.MappingNode
+            description: Source declaration or parsed document node to process.
           deep:
-            type: bool
+            description: Whether to process nested mapping values.
         returns:
-          type: dict[object, object]
+          description: Mapping whose keys have been checked for duplicates.
         """
         self.flatten_mapping(node)
         result: dict[object, object] = {}
@@ -59,11 +59,11 @@ def read_yaml(text: str, source: Path) -> dict[str, object]:
     title: Read a YAML mapping containing JSON-compatible values.
     parameters:
       text:
-        type: str
+        description: Text content to process.
       source:
-        type: Path
+        description: Source content or configured API source name.
     returns:
-      type: dict[str, object]
+      description: Validated YAML mapping containing JSON-compatible values.
     """
     try:
         raw = yaml.load(text, Loader=UniqueLoader)
@@ -82,11 +82,11 @@ def project_path(root: Path, value: str) -> Path:
     title: Resolve a relative project path without following outside symlinks.
     parameters:
       root:
-        type: Path
+        description: Project root used to resolve relative paths.
       value:
-        type: str
+        description: Input value to validate or render.
     returns:
-      type: Path
+      description: Resolved path confined to the project root.
     """
     relative = Path(value)
     if relative.is_absolute() or '..' in relative.parts:
@@ -106,9 +106,9 @@ def load_config(path: Path) -> Config:
     title: Load and validate a DoukiMD project configuration.
     parameters:
       path:
-        type: Path
+        description: Path or qualified declaration name to resolve.
     returns:
-      type: Config
+      description: Validated project configuration.
     """
     try:
         raw = read_yaml(path.read_text(encoding='utf-8'), path)
@@ -132,11 +132,11 @@ def load_data(root: Path, config: Config) -> dict[str, object]:
     title: Load explicitly configured data mappings.
     parameters:
       root:
-        type: Path
+        description: Project root used to resolve relative paths.
       config:
-        type: Config
+        description: Validated project settings or their configuration file.
     returns:
-      type: dict[str, object]
+      description: Configured data mappings keyed by template namespace.
     """
     result: dict[str, object] = {}
     for name, value in config.data.items():

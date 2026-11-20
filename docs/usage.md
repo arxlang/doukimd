@@ -48,6 +48,15 @@ the build. Re-exports retain their public names and original declaration
 identity and location. Exported aliases must resolve within the selected
 source folder; runtime inspection and external dependency imports are disabled.
 
+Douki 0.14 and later keep types in Python annotations. Authored YAML contains
+descriptions and metadata; `type` fields are rejected by the shipped schema.
+Use `parameters: {value: Description of the value.}` and
+`returns: Description of the result.`. Write exceptions and warnings as
+mappings, such as `warnings: {UserWarning: Explanation of the warning.}`.
+Generated signatures and documentation fields retain source annotations through
+Douki's public enrichment API. Callable parameters and returns, and documented
+class fields, require annotations. Builds never rewrite source docstrings.
+
 Properties, enum values, fields, constants, and annotated type aliases have
 reference pages. Data declarations can rely on their source annotations and
 values without an invented docstring; class field descriptions are reused

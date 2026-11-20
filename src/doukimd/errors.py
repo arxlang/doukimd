@@ -18,11 +18,11 @@ class BuildError(Exception):
     title: Describe a failure in a named documentation phase.
     attributes:
       phase:
-        type: str
+        description: Build phase associated with this diagnostic.
       message:
-        type: str
+        description: Diagnostic expected or reported for the failure.
       source:
-        type: Path | None
+        description: Source content or configured API source name.
     """
 
     phase: str
@@ -36,11 +36,11 @@ class BuildError(Exception):
         title: Initialize a diagnostic without inventing a source location.
         parameters:
           phase:
-            type: str
+            description: Build phase associated with this diagnostic.
           message:
-            type: str
+            description: Diagnostic expected or reported for the failure.
           source:
-            type: Path | None
+            description: Source content or configured API source name.
         """
         self.phase = phase
         self.message = message

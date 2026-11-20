@@ -20,22 +20,25 @@ from doukimd.runtime import typechecked
 @dataclass(frozen=True, init=False)
 class ApiIndex:
     """
-    title: >-
-      Validate symbol and route collections once and index their relations.
-    summary: Copies prevent callers from replacing entries after validation.
+    title: Validate symbol and route collections once and index their
+      relations.
+    summary: Copies prevent callers from replacing entries after
+      validation.
     attributes:
       symbols:
-        type: Mapping[str, ApiSymbol]
+        description: API declarations keyed by stable identity.
       routes:
-        type: Mapping[str, str]
+        description: Planned output routes used to validate destinations.
       children:
-        type: Mapping[str | None, tuple[ApiSymbol, Ellipsis]]
+        description: Immediate children in display order.
       roots:
-        type: Mapping[str | None, tuple[str, Ellipsis]]
+        description: Top-level entries in the selected hierarchy.
       exact_names:
-        type: Mapping[tuple[str | None, str], tuple[str, Ellipsis]]
+        description: Symbols indexed by their fully qualified public
+          names.
       canonical_names:
-        type: Mapping[tuple[str | None, str], tuple[str, Ellipsis]]
+        description: Symbols indexed by their original declaration
+          names.
     """
 
     symbols: Mapping[str, ApiSymbol]
@@ -51,13 +54,13 @@ class ApiIndex:
         routes: dict[str, str] | None = None,
     ) -> None:
         """
-        title: >-
-          Capture checked inputs independently of their mutable containers.
+        title: Capture checked inputs independently of their mutable
+          containers.
         parameters:
           symbols:
-            type: dict[str, ApiSymbol]
+            description: API declarations keyed by stable identity.
           routes:
-            type: dict[str, str] | None
+            description: Planned output routes used to validate destinations.
         """
         captured = dict(symbols)
         children: dict[str | None, list[ApiSymbol]] = {}
@@ -112,9 +115,9 @@ class ApiIndex:
         title: Follow one symbol's ancestry without traversing unrelated APIs.
         parameters:
           identifier:
-            type: str
+            description: Stable, source-qualified API identity.
         returns:
-          type: tuple[ApiSymbol, Ellipsis]
+          description: Ancestor identities for the requested declaration.
         """
         result: list[ApiSymbol] = []
         seen: set[str] = set()
@@ -135,17 +138,17 @@ class ApiIndex:
 @dataclass(frozen=True, init=False)
 class SiteIndex:
     """
-    title: >-
-      Snapshot planned page membership while anchors are populated in place.
+    title: Snapshot planned page membership while anchors are populated in
+      place.
     attributes:
       pages:
-        type: tuple[Page, Ellipsis]
+        description: Pages with their planned output routes.
       by_route:
-        type: Mapping[str, Page]
+        description: Pages indexed by output route.
       by_symbol:
-        type: Mapping[str, Page]
+        description: Generated pages indexed by API identity.
       api_page:
-        type: Page | None
+        description: Generated page associated with the requested API symbol.
     """
 
     pages: tuple[Page, ...]
@@ -158,7 +161,7 @@ class SiteIndex:
         title: Capture checked pages after route planning has completed.
         parameters:
           pages:
-            type: list[Page]
+            description: Pages with their planned output routes.
         """
         captured = tuple(pages)
         object.__setattr__(self, 'pages', captured)
@@ -199,9 +202,9 @@ def api_index(inventory: ApiIndex | dict[str, ApiSymbol]) -> ApiIndex:
     title: Reuse a snapshot or validate a standalone helper's dictionary input.
     parameters:
       inventory:
-        type: ApiIndex | dict[str, ApiSymbol]
+        description: Collected API declarations keyed by symbol identity.
     returns:
-      type: ApiIndex
+      description: Validated API index shared by subsequent lookups.
     """
     return (
         inventory if isinstance(inventory, ApiIndex) else ApiIndex(inventory)
@@ -215,8 +218,8 @@ def site_index(pages: SiteIndex | list[Page]) -> SiteIndex:
     title: Reuse a snapshot or validate a standalone helper's page list.
     parameters:
       pages:
-        type: SiteIndex | list[Page]
+        description: Pages with their planned output routes.
     returns:
-      type: SiteIndex
+      description: Validated site index shared by subsequent lookups.
     """
     return pages if isinstance(pages, SiteIndex) else SiteIndex(pages)

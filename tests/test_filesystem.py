@@ -23,9 +23,9 @@ def test_commit_failure_restores_previous_site(
     title: Restore the old site if publishing the staged build fails.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
       monkeypatch:
-        type: pytest.MonkeyPatch
+        description: Fixture for restoring patched objects after the test.
     """
     config = project / 'doukimd.yaml'
     before = build_site(config)
@@ -38,11 +38,11 @@ def test_commit_failure_restores_previous_site(
         title: Simulate a filesystem failure during publication.
         parameters:
           path:
-            type: Path
+            description: Path or qualified declaration name to resolve.
           target:
-            type: Path
+            description: Target name or route to resolve.
         returns:
-          type: Path
+          description: Unreachable result when the simulated failure is raised.
         """
         if path.name == 'site' and target.name == 'build':
             raise OSError('simulated publication failure')
@@ -63,9 +63,9 @@ def test_invalid_output_manifest(project: Path, manifest: str) -> None:
     title: Treat malformed ownership metadata as a build error.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
       manifest:
-        type: str
+        description: Build manifest describing managed output files.
     """
     (project / 'build').mkdir()
     (project / 'build' / MANIFEST).write_text(manifest, encoding='utf-8')
@@ -79,7 +79,7 @@ def test_missing_directories_and_empty_site(project: Path) -> None:
     title: Report missing inputs and sites with no renderable pages.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
     """
     config = project / 'doukimd.yaml'
     (project / 'docs/index.md').unlink()
@@ -104,7 +104,7 @@ def test_output_file_is_not_a_directory(project: Path) -> None:
     title: Preserve an output path already occupied by a file.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
     """
     target = project / 'build'
     target.write_text('keep', encoding='utf-8')
@@ -119,7 +119,7 @@ def test_case_collisions_are_portable(project: Path) -> None:
     title: Reject routes that collide on case-insensitive filesystems.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
     """
     other = project / 'docs/INDEX.md'
     if other.exists():
@@ -138,9 +138,9 @@ def test_source_symlinks_stay_inside_roots(
     title: Refuse reads through source or include symlinks outside their root.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
       location:
-        type: str
+        description: Source location used in diagnostics.
     """
     outside = project / 'outside.md'
     outside.write_text('must not read', encoding='utf-8')
@@ -170,7 +170,7 @@ def test_invalid_encoding_and_empty_metadata(project: Path) -> None:
     title: Accept empty front matter and diagnose non-UTF-8 content.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
     """
     page = project / 'docs/index.md'
     page.write_text('---\n---\n# Empty metadata', encoding='utf-8')

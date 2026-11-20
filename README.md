@@ -8,7 +8,12 @@ Douki YAML docstrings. This initial version supports Python projects.
 
 ## Run from source
 
+Use Python 3.10–3.14 and install
+[Poetry separately](https://python-poetry.org/docs/#installation) from the
+project environment.
+
 ```console
+poetry env use python3.14
 poetry install
 poetry run doukimd build --config examples/basic/doukimd.yaml
 ```
