@@ -206,7 +206,77 @@ def test_inherited_class_annotations(example: Path) -> None:
         content.replace('    code: int\n', '    code = 1\n'),
         encoding='utf-8',
     )
-    with pytest.raises(BuildError, match="attribute 'code'") as caught:
+    inherited = collect_api(example, load_config(config))
+    assert inherited['python:example.OverriddenError'].documentation[
+        'attributes'
+    ] == {
+        'code': {'description': 'Numeric diagnostic code.', 'type': 'str'},
+        'location': {'description': 'Source position.', 'type': 'int | None'},
+    }
+
+
+@typechecked
+def test_value_only_override_uses_nearest_base_annotation(
+    example: Path,
+) -> None:
+    """
+    title: Preserve C3 inherited types for value-only attribute overrides.
+    parameters:
+      example: Temporary example project for static collection.
+    """
+    source = example / 'src/example.py'
+    content = source.read_text() + (
+        '\nclass BinaryOp:\n'
+        '    """title: Base operator."""\n'
+        '    op_code: str\n'
+        '\nclass BoolBinaryOp(BinaryOp):\n'
+        '    """title: Boolean operator."""\n'
+        '    op_code = "boolean"\n'
+        '\nclass AndOp(BoolBinaryOp):\n'
+        '    """\n'
+        '    title: Logical AND operation.\n'
+        '    attributes:\n'
+        '      op_code: Operator spelling.\n'
+        '    """\n'
+        '    op_code = "and"\n'
+        '\nclass TypedOp(BoolBinaryOp):\n'
+        '    """title: Explicit type override."""\n'
+        '    op_code: bytes = b"typed"\n'
+        '\nclass NearestOp(TypedOp):\n'
+        '    """\n'
+        '    title: Nearest inherited annotation.\n'
+        '    attributes:\n'
+        '      op_code: Operator spelling.\n'
+        '    """\n'
+        '    op_code = "nearest"\n'
+        '\nraise RuntimeError("Never import documented source")\n'
+    )
+    source.write_text(content, encoding='utf-8')
+    config = example / 'doukimd.yaml'
+    inventory = collect_api(example, load_config(config))
+    assert inventory['python:example.AndOp'].documentation['attributes'] == {
+        'op_code': {'description': 'Operator spelling.', 'type': 'str'},
+    }
+    assert inventory['python:example.NearestOp'].documentation[
+        'attributes'
+    ] == {
+        'op_code': {'description': 'Operator spelling.', 'type': 'bytes'},
+    }
+    site = compile_site(config)
+    assert b'Operator spelling.' in site.files['api/python/example.AndOp.html']
+    assert source.read_text() == content
+
+    source.write_text(
+        content + '\nclass MissingType:\n'
+        '    """\n'
+        '    title: Missing standalone annotation.\n'
+        '    attributes:\n'
+        '      op_code: Operator spelling.\n'
+        '    """\n'
+        '    op_code = "unknown"\n',
+        encoding='utf-8',
+    )
+    with pytest.raises(BuildError, match="attribute 'op_code'") as caught:
         collect_api(example, load_config(config))
     assert caught.value.phase == 'douki'
     assert 'annotations' in str(caught.value)
