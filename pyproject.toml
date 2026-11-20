@@ -9,7 +9,7 @@ requires-python = ">=3.10,<4"
 dependencies = [
   "atpublic>=5,<6",
   "click>=8.1,<9",
-  "douki==0.13.0",
+  "douki==0.14.0",
   "griffe>=1.15,<2",
   "Jinja2>=3.1.6,<4",
   "jsonschema>=4.23,<5",
