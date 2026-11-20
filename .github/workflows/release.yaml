@@ -2,9 +2,19 @@ name: Release
 
 on:
   workflow_dispatch:
+    inputs:
+      resume_tag:
+        description: Existing stable tag to finish publishing after a failed release
+        required: false
+        default: ""
+        type: string
 
 permissions:
   contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
 
 jobs:
   release:
@@ -12,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     outputs:
-      source_ref: ${{ steps.release.outputs.source_ref }}
+      source_ref: ${{ steps.release.outputs.source_ref || steps.resume.outputs.source_ref }}
     permissions:
       contents: write
       issues: write
@@ -30,15 +40,27 @@ jobs:
       - run: python -m pip install poetry==2.2.1
       - run: poetry install
       - run: poetry run makim tests.unit
+      - name: Retry failed release notes pushes
+        run: |
+          echo "DOUKIMD_RELEASE_GIT=$(command -v git)" >> "$GITHUB_ENV"
+          echo "$GITHUB_WORKSPACE/.github/scripts/release-bin" >> "$GITHUB_PATH"
       - name: Configure package publication
         env:
           PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
         run: poetry config pypi-token.pypi "$PYPI_TOKEN"
       - name: Publish semantic release
+        if: inputs.resume_tag == ''
         id: release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: poetry run makim release.ci
+      - name: Resume publication of an existing release tag
+        if: inputs.resume_tag != ''
+        id: resume
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RESUME_TAG: ${{ inputs.resume_tag }}
+        run: bash .github/scripts/resume-release.sh "$RESUME_TAG"
 
   documentation:
     needs: release

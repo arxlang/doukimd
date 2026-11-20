@@ -62,6 +62,15 @@ startup and disk publication, rather than a CI timing guarantee.
 
 ## Publish the documentation
 
+Run **Release** manually from upstream `main` to publish a package. Git-notes
+pushes retry up to three times, and release runs are serialized. If a failed
+run has already pushed its version tag, run **Release** again with `resume_tag`
+set to that version (for example, `1.4.8`). Recovery validates that the tag
+belongs to `main` and matches the package version, repairs its release notes,
+and builds the tagged source. It skips existing PyPI files and GitHub assets,
+then deploys documentation only after publication succeeds. Leave `resume_tag`
+empty for a new semantic release.
+
 After a successful package release, the **Release** workflow calls the
 **Documentation** workflow with the exact release commit. The site is built
 after publication, so its version badge and changelog match the released
