@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+## [1.4.3](https://github.com/arxlang/doukimd/compare/1.4.2...1.4.3) (2026-11-20)
+
+
+### Bug Fixes
+
+* Remove support for Python 3.10 ([#18](https://github.com/arxlang/doukimd/issues/18)) ([57427a5](https://github.com/arxlang/doukimd/commit/57427a5ee25fb43363c59b64032ba73a2977eafe))
+
 ## [1.4.2](https://github.com/arxlang/doukimd/compare/1.4.1...1.4.2) (2026-11-02)
 
 
