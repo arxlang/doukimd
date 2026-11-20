@@ -341,23 +341,91 @@ def visit(node: object, root: Path) -> list[ApiSymbol]:
     )
 
 
+@private
+@typechecked
+def resolve_configured_aliases(
+    groups: list[list[griffe.Object | griffe.Alias]],
+) -> None:
+    """
+    title: Link exported aliases across configured static source graphs.
+    summary: No source outside the loaded graphs is inspected or imported.
+    parameters:
+      groups: Loaded declarations for each configured API source.
+    """
+    names: dict[str, list[tuple[int, griffe.Object | griffe.Alias]]] = {}
+    graph_ids: dict[int, int] = {}
+    exported: list[griffe.Alias] = []
+    for graph, roots in enumerate(groups):
+        pending = list(roots)
+        visited: set[int] = set()
+        while pending:
+            node = pending.pop()
+            if id(node) in visited:
+                continue
+            visited.add(id(node))
+            names.setdefault(node.path, []).append((graph, node))
+            if isinstance(node, griffe.Alias):
+                graph_ids[id(node)] = graph
+                if node.is_exported:
+                    exported.append(node)
+            elif isinstance(node, (griffe.Module, griffe.Class)):
+                pending.extend(node.members.values())
+
+    for alias in exported:
+        chain: list[griffe.Alias] = [alias]
+        seen: set[int] = set()
+        while chain:
+            current = chain[-1]
+            if current.resolved:
+                target = current.final_target
+                chain.pop()
+                if chain:
+                    chain[-1].target = target
+                continue
+            if id(current) in seen:
+                raise BuildError('api', f'Cyclic re-export: {current.path}')
+            seen.add(id(current))
+            candidates = names.get(current.target_path, [])
+            local = [
+                item
+                for item in candidates
+                if item[0] == graph_ids[id(current)]
+            ]
+            matches = local or candidates
+            if not matches:
+                # The regular collector reports unresolved exported aliases.
+                break
+            if len(matches) != 1:
+                raise BuildError('api', f'Ambiguous re-export: {current.path}')
+            candidate = matches[0][1]
+            if isinstance(candidate, griffe.Alias):
+                chain.append(candidate)
+            else:
+                current.target = candidate
+
+
 @public
 @typechecked
 def collect_api(root: Path, config: Config) -> dict[str, ApiSymbol]:
     """
-    title: Collect isolated source folders without importing project code.
+    title: Collect APIs after resolving aliases across configured sources.
     parameters:
-      root:
-        description: Project root used to resolve relative paths.
-      config:
-        description: Validated project settings or their configuration file.
-    returns:
-      description: Collected declarations keyed by stable API identity.
+      root: Root directory for the complete documentation project.
+      config: Validated project settings and configured source roots.
+    returns: Collected declarations keyed by stable API identity.
     """
     from doukimd.collection import Collector, FunctionCapture
 
-    inventory: dict[str, ApiSymbol] = {}
     names: set[str] = set()
+    loaded: list[
+        tuple[
+            Path,
+            str | None,
+            FunctionCapture,
+            griffe.GriffeLoader,
+            list[griffe.Object | griffe.Alias],
+        ]
+    ] = []
     for source in config.api.sources:
         if source.name is not None:
             if source.name in names:
@@ -416,15 +484,6 @@ def collect_api(root: Path, config: Config) -> dict[str, ApiSymbol]:
                 ):
                     raise BuildError('api', f'Invalid module name: {module}')
                 nodes.append(loader.load(module))
-            loader.resolve_aliases(external=False)
-            collector = Collector(root, search, source.name, capture)
-            for node in nodes:
-                for item in collector.visit(node, node.path):
-                    if item.identifier in inventory:
-                        raise BuildError(
-                            'api', f'Duplicate API symbol: {item.identifier}'
-                        )
-                    inventory[item.identifier] = item
         except (
             griffe.LoadingError,
             griffe.NameResolutionError,
@@ -436,4 +495,29 @@ def collect_api(root: Path, config: Config) -> dict[str, ApiSymbol]:
             SyntaxError,
         ) as error:
             raise BuildError('api', str(error), search) from error
+        loaded.append((search, source.name, capture, loader, nodes))
+
+    for search, _, _, loader, _ in loaded:
+        try:
+            loader.resolve_aliases(external=False)
+        except (griffe.AliasResolutionError, griffe.CyclicAliasError) as error:
+            raise BuildError('api', str(error), search) from error
+    resolve_configured_aliases([entry[4] for entry in loaded])
+
+    owners: dict[int, Collector] = {}
+    collectors: list[tuple[Collector, list[griffe.Object | griffe.Alias]]] = []
+    for search, name, capture, loader, nodes in loaded:
+        collector = Collector(root, search, name, capture, owners)
+        owners[id(loader.modules_collection)] = collector
+        collectors.append((collector, nodes))
+
+    inventory: dict[str, ApiSymbol] = {}
+    for collector, nodes in collectors:
+        for node in nodes:
+            for item in collector.visit(node, node.path):
+                if item.identifier in inventory:
+                    raise BuildError(
+                        'api', f'Duplicate API symbol: {item.identifier}'
+                    )
+                inventory[item.identifier] = item
     return inventory

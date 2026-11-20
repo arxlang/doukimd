@@ -160,6 +160,7 @@ class Collector:
       capture:
         description: Per-loader storage retaining repeated function
           declarations.
+      owners: Registered owners keyed by the Griffe source graph.
       alias_stack:
         description: Aliases currently being followed to detect export
           cycles.
@@ -172,6 +173,7 @@ class Collector:
     search: Path
     source: str | None
     capture: FunctionCapture
+    owners: dict[int, Collector]
     alias_stack: set[str]
     documents: dict[int, dict[str, object]]
 
@@ -181,6 +183,7 @@ class Collector:
         search: Path,
         source: str | None,
         capture: FunctionCapture,
+        owners: dict[int, Collector] | None = None,
     ) -> None:
         """
         title: Initialize a collector for one isolated source folder.
@@ -196,11 +199,13 @@ class Collector:
           capture:
             description: Per-loader storage retaining repeated function
               declarations.
+          owners: Owners of other explicitly configured source graphs.
         """
         self.root = root
         self.search = search
         self.source = source
         self.capture = capture
+        self.owners = owners if owners is not None else {}
         self.alias_stack: set[str] = set()
         self.documents: dict[int, dict[str, object]] = {}
 
@@ -237,6 +242,25 @@ class Collector:
         self.documents[id(node)] = data
         return data
 
+    @typechecked
+    def owner_for(self, node: griffe.Object) -> Collector:
+        """
+        title: Find the owning source graph without widening source access.
+        parameters:
+          node: Original declaration, including cross-source re-exports.
+        returns: Collector that owns the declaration and its metadata.
+        """
+        location = source_path(node)
+        if self.owners:
+            owner = self.owners.get(id(node.modules_collection))
+        else:
+            owner = self
+        if owner is None or not location.is_relative_to(owner.search):
+            raise BuildError(
+                'api', 'Re-export escapes configured API sources', location
+            )
+        return owner
+
     def make(
         self,
         node: griffe.Object,
@@ -259,11 +283,8 @@ class Collector:
           description: API symbol with public identity and declaration
             provenance.
         """
+        origin = self.owner_for(node)
         location = source_path(node)
-        if not location.is_relative_to(self.search):
-            raise BuildError(
-                'api', 'Re-export escapes API source folder', location
-            )
         kind = node.kind.value
         if isinstance(node, griffe.Function) and isinstance(
             node.parent, griffe.Class
@@ -291,11 +312,11 @@ class Collector:
             documentation=(
                 variants[0].documentation
                 if variants
-                else cast(dict[str, JsonValue], self.data(node))
+                else cast(dict[str, JsonValue], origin.data(node))
             ),
             parent=identifier(parent, self.source) if parent else None,
             source_name=self.source,
-            canonical=identifier(node.path, self.source),
+            canonical=identifier(node.path, origin.source),
             generated=isinstance(node, griffe.Function)
             and not bool(node.lineno),
             variants=variants or [],
@@ -439,12 +460,13 @@ class Collector:
         returns:
           description: Processed declarations or document tokens.
         """
+        origin = self.owner_for(node)
         if hidden(node) and all(
             hidden(item)
-            for item in self.capture.functions.get(node.path, [node])
+            for item in origin.capture.functions.get(node.path, [node])
         ):
             return []
-        return [self.make(node, path, self.callable_variants(node))]
+        return [self.make(node, path, origin.callable_variants(node))]
 
     @dispatch
     @typechecked
