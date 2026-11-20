@@ -12,7 +12,7 @@ import pytest
 
 from click.testing import CliRunner
 
-from doukimd.build import MANIFEST, build_site, compile_site
+from doukimd.build import MANIFEST, build_site, check_site, compile_site
 from doukimd.cli import main
 from doukimd.errors import BuildError
 from doukimd.runtime import typechecked
@@ -28,8 +28,9 @@ def test_full_example_and_repeatability(example: Path) -> None:
     """
     path = example / 'doukimd.yaml'
     first = build_site(path)
+    first_files = dict(first.files)
     second = build_site(path)
-    assert first.files == second.files
+    assert first_files == second.files
     assert first.page_count == 5
     index = first.files['index.html'].decode()
     assert 'Python 3.10\u20133.14' in index
@@ -46,6 +47,7 @@ def test_full_example_and_repeatability(example: Path) -> None:
     source = (example / 'src/example.py').read_text().splitlines()
     assert source[line - 1].strip() == '@public'
     assert json.loads(first.files[MANIFEST])['generator'] == 'doukimd'
+    assert dict(first.files) == compile_site(path).files
     entries = json.loads(first.files['search.json'])
     assert {entry['url'].split('#')[0] for entry in entries} == {
         route for route in first.files if route.endswith('.html')
@@ -60,8 +62,9 @@ def test_check_does_not_write(project: Path) -> None:
       project:
         description: Project configuration or temporary project directory.
     """
-    result = compile_site(project / 'doukimd.yaml')
+    result = check_site(project / 'doukimd.yaml')
     assert result.page_count == 1
+    assert result.files == {}
     assert not (project / 'build').exists()
     checked = CliRunner().invoke(
         main, ['check', '--config', str(project / 'doukimd.yaml')]
@@ -128,12 +131,11 @@ def test_build_failures_preserve_previous_output(
     """
     config = project / 'doukimd.yaml'
     before = build_site(config)
+    previous_html = before.files['index.html']
     (project / 'docs/index.md').write_text(body, encoding='utf-8')
     with pytest.raises(BuildError, match=message):
         build_site(config)
-    assert (project / 'build/index.html').read_bytes() == before.files[
-        'index.html'
-    ]
+    assert (project / 'build/index.html').read_bytes() == previous_html
 
 
 @typechecked

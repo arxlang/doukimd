@@ -8,6 +8,7 @@ import json
 import posixpath
 import shutil
 
+from collections.abc import Callable
 from pathlib import Path, PurePosixPath
 from tempfile import TemporaryDirectory
 from urllib.parse import quote, unquote, urlsplit
@@ -49,6 +50,7 @@ from doukimd.models import Config, Page, SiteBuild
 from doukimd.navigation import sidebar_for_page
 from doukimd.navigation_plan import NavigationPlan
 from doukimd.notebook_rendering import render_notebook
+from doukimd.output import PublishedFiles
 from doukimd.plugins import plugin_context
 from doukimd.runtime import typechecked
 from doukimd.search import search_records
@@ -248,21 +250,23 @@ def check_output_routes(routes: list[str]) -> None:
                 raise BuildError('planning', f'Output collides with {route}')
 
 
-@public
+@private
 @typechecked
-def compile_site(config_path: Path) -> SiteBuild:
+def render_site(
+    root: Path, config: Config, emit: Callable[[str, bytes], None]
+) -> int:
     """
-    title: Compile all pages and references without writing output.
+    title: Validate a complete site and emit each artifact as it is rendered.
     parameters:
-      config_path:
-        description: Path to the project configuration file.
+      root:
+        description: Project root used to resolve relative paths.
+      config:
+        description: Validated project configuration.
+      emit:
+        description: Sink that writes, retains, or discards one artifact.
     returns:
-      description: Complete generated files and page count.
+      description: Number of successfully rendered pages.
     """
-    config_path = config_path.resolve()
-    root = config_path.parent
-    config = load_config(config_path)
-    output_path(root, config)
     inventory = collect_api(root, config)
     pages = discover_pages(root, config)
     source_names = {source.name for source in config.api.sources}
@@ -347,18 +351,17 @@ def compile_site(config_path: Path) -> SiteBuild:
     bundled = theme_assets(config.theme)
     if not config.search.enabled:
         bundled.pop('search.js')
-    check_output_routes(
-        [
-            *assets,
-            *bundled,
-            *by_route,
-            *(['search.json'] if config.search.enabled else []),
-            'symbols.json',
-            MANIFEST,
-        ]
-    )
+    output_routes = [
+        *assets,
+        *bundled,
+        *by_route,
+        *(['search.json'] if config.search.enabled else []),
+        'symbols.json',
+    ]
+    check_output_routes([*output_routes, MANIFEST])
     navigation = NavigationPlan(site, api, config)
-    artifacts = {**assets, **bundled}
+    for route, data in (*assets.items(), *bundled.items()):
+        emit(route, data)
     search: list[dict[str, str]] = []
     for page in pages:
         tokens = documents[page.route]
@@ -432,45 +435,108 @@ def compile_site(config_path: Path) -> SiteBuild:
             )
         except TemplateError as error:
             raise BuildError('theme', str(error), page.source) from error
-        artifacts[page.route] = html.encode('utf-8')
+        emit(page.route, html.encode('utf-8'))
+        del html
         if config.search.enabled:
             search.extend(search_records(page, tokens))
     if config.search.enabled:
-        artifacts['search.json'] = json.dumps(
-            search, ensure_ascii=False, sort_keys=True
-        ).encode('utf-8')
-    artifacts['symbols.json'] = json.dumps(
-        {
-            'schema_version': 1,
-            'symbols': {
-                name: {
-                    'url': routes.get(name),
-                    'kind': item.kind,
-                    'signature': item.signature,
-                    'source': item.source,
-                    'line': item.line,
-                    'canonical': item.canonical,
-                    'source_name': item.source_name,
-                    'generated': item.generated,
-                    'variants': [
-                        {'signature': variant.signature, 'line': variant.line}
-                        for variant in item.variants
-                    ],
-                }
-                for name, item in sorted(inventory.items())
+        emit(
+            'search.json',
+            json.dumps(search, ensure_ascii=False, sort_keys=True).encode(
+                'utf-8'
+            ),
+        )
+    emit(
+        'symbols.json',
+        json.dumps(
+            {
+                'schema_version': 1,
+                'symbols': {
+                    name: {
+                        'url': routes.get(name),
+                        'kind': item.kind,
+                        'signature': item.signature,
+                        'source': item.source,
+                        'line': item.line,
+                        'canonical': item.canonical,
+                        'source_name': item.source_name,
+                        'generated': item.generated,
+                        'variants': [
+                            {
+                                'signature': variant.signature,
+                                'line': variant.line,
+                            }
+                            for variant in item.variants
+                        ],
+                    }
+                    for name, item in sorted(inventory.items())
+                },
             },
-        },
-        sort_keys=True,
-    ).encode('utf-8')
-    artifacts[MANIFEST] = json.dumps(
-        {
-            'schema_version': 1,
-            'generator': 'doukimd',
-            'files': sorted(artifacts),
-        },
-        sort_keys=True,
-    ).encode('utf-8')
-    return SiteBuild(artifacts, len(pages))
+            sort_keys=True,
+        ).encode('utf-8'),
+    )
+    emit(
+        MANIFEST,
+        json.dumps(
+            {
+                'schema_version': 1,
+                'generator': 'doukimd',
+                'files': sorted(output_routes),
+            },
+            sort_keys=True,
+        ).encode('utf-8'),
+    )
+    return len(pages)
+
+
+@public
+@typechecked
+def compile_site(config_path: Path) -> SiteBuild:
+    """
+    title: Compile a complete site into an explicitly requested memory buffer.
+    parameters:
+      config_path:
+        description: Path to the project configuration file.
+    returns:
+      description: All generated bytes and page count; use check_site to
+        validate or build_site to publish without buffering the output.
+    """
+    config_path = config_path.resolve()
+    config = load_config(config_path)
+    output_path(config_path.parent, config)
+    artifacts: dict[str, bytes] = {}
+    count = render_site(config_path.parent, config, artifacts.__setitem__)
+    return SiteBuild(artifacts, count)
+
+
+@public
+@typechecked
+def check_site(config_path: Path) -> SiteBuild:
+    """
+    title: Validate and render every page while discarding generated output.
+    parameters:
+      config_path:
+        description: Path to the project configuration file.
+    returns:
+      description: Validated page count and an empty artifact dictionary.
+    """
+    config_path = config_path.resolve()
+    config = load_config(config_path)
+    output_path(config_path.parent, config)
+
+    @typechecked
+    def discard(route: str, data: bytes) -> None:
+        """
+        title: Release an artifact after rendering and validation.
+        parameters:
+          route:
+            description: Validated output destination.
+          data:
+            description: Generated bytes to discard.
+        """
+
+    count = render_site(config_path.parent, config, discard)
+    return SiteBuild({}, count)
 
 
 @public
@@ -482,10 +548,9 @@ def build_site(config_path: Path) -> SiteBuild:
       config_path:
         description: Path to the project configuration file.
     returns:
-      description: Successfully published files and page count.
+      description: Published files read on demand and page count.
     """
     config_path = config_path.resolve()
-    result = compile_site(config_path)
     config = load_config(config_path)
     output = output_path(config_path.parent, config)
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -494,10 +559,24 @@ def build_site(config_path: Path) -> SiteBuild:
     ) as temporary:
         staging = Path(temporary) / 'site'
         staging.mkdir()
-        for route, content in result.files.items():
+        routes: list[str] = []
+
+        @typechecked
+        def write(route: str, content: bytes) -> None:
+            """
+            title: Write one artifact to staging before rendering the next.
+            parameters:
+              route:
+                description: Validated relative output destination.
+              content:
+                description: Generated artifact bytes.
+            """
             target = staging.joinpath(*PurePosixPath(route).parts)
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(content)
+            routes.append(route)
+
+        count = render_site(config_path.parent, config, write)
         previous = Path(temporary) / 'previous'
         if output.exists():
             output.rename(previous)
@@ -509,4 +588,4 @@ def build_site(config_path: Path) -> SiteBuild:
             raise
         if previous.exists():
             shutil.rmtree(previous)
-    return result
+    return SiteBuild(PublishedFiles(output, tuple(routes)), count)
