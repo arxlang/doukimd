@@ -1,0 +1,28 @@
+name: Temporary DoukiMD Poetry Lock Refresh
+
+on:
+  push:
+    branches:
+      - chore/bump-douki-0.14.0
+
+permissions:
+  contents: read
+
+jobs:
+  lock:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install poetry==2.2.1
+      - name: Generate Poetry lockfile
+        run: |
+          poetry lock
+          echo DOUKIMD_LOCK_START
+          base64 poetry.lock
+          echo DOUKIMD_LOCK_END
