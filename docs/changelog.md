@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+## [1.4.4](https://github.com/arxlang/doukimd/compare/1.4.3...1.4.4) (2026-11-20)
+
+
+### Bug Fixes
+
+* **api:** enrich annotated module attributes ([#19](https://github.com/arxlang/doukimd/issues/19)) ([9705542](https://github.com/arxlang/doukimd/commit/97055420d8e2245e39df80aab2d73ce9f1f0c705))
+
 ## [1.4.3](https://github.com/arxlang/doukimd/compare/1.4.2...1.4.3) (2026-11-20)
 
 
