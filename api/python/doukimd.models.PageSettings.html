@@ -28,7 +28,7 @@
       <a class="site-brand" href="../../index.html">
         <span class="brand-mark" aria-hidden="true">D</span>
         <span class="brand-name">DoukiMD</span>
-        <span class="version badge rounded-pill">1.4.2</span>
+        <span class="version badge rounded-pill">1.4.3</span>
       </a>
       
       <nav class="site-navbar" aria-label="Primary">
@@ -146,6 +146,8 @@
             <summary><span class="nav-label">api</span></summary>
             <ul class="api-members">
               <li class="api-overview"><a href="doukimd.api.html" aria-label="api module overview">Module overview</a></li>
+              
+              <li><a href="doukimd.api.annotation_signature.html"><span class="nav-label">annotation_signature</span><span class="api-kind api-kind--function">function</span></a></li>
               
               <li><a href="doukimd.api.collect_api.html"><span class="nav-label">collect_api</span><span class="api-kind api-kind--function">function</span></a></li>
               
@@ -531,37 +533,37 @@
 <h3 id="attributes">Attributes</h3>
 <ul>
 <li>
-<p><strong>title</strong> — <strong>Type:</strong> str | None</p>
+<p><strong>title</strong> — Display title for the page or navigation entry.; <strong>Type:</strong> str | None</p>
 </li>
 <li>
-<p><strong>render</strong> — <strong>Type:</strong> Literal[markdown, jinja]</p>
+<p><strong>render</strong> — Whether the page body uses Markdown alone or enabled Jinja.; <strong>Type:</strong> Literal['markdown', 'jinja']</p>
 </li>
 <li>
-<p><strong>meta</strong> — <strong>Type:</strong> dict[str, JsonValue]</p>
+<p><strong>meta</strong> — Literal page metadata exposed to templates.; <strong>Type:</strong> dict[str, JsonValue]</p>
 </li>
 <li>
-<p><strong>api_source</strong> — <strong>Type:</strong> str | None</p>
+<p><strong>api_source</strong> — Default named API source for page references.; <strong>Type:</strong> str | None</p>
 </li>
 <li>
-<p><strong>layout</strong> — <strong>Type:</strong> Literal[docs, full, landing]</p>
+<p><strong>layout</strong> — Presentation layout used for this menu or page.; <strong>Type:</strong> Literal['docs', 'full', 'landing']</p>
 </li>
 <li>
-<p><strong>sidebar</strong> — <strong>Type:</strong> str | bool</p>
+<p><strong>sidebar</strong> — Sidebar selected for this page.; <strong>Type:</strong> str | bool</p>
 </li>
 <li>
-<p><strong>toc</strong> — <strong>Type:</strong> bool</p>
+<p><strong>toc</strong> — Whether to display page section links.; <strong>Type:</strong> bool</p>
 </li>
 <li>
-<p><strong>show_title</strong> — <strong>Type:</strong> bool</p>
+<p><strong>show_title</strong> — Whether to display the page title.; <strong>Type:</strong> bool</p>
 </li>
 <li>
-<p><strong>html</strong> — <strong>Type:</strong> bool</p>
+<p><strong>html</strong> — Whether authored page HTML is enabled, or rendered HTML content.; <strong>Type:</strong> bool</p>
 </li>
 <li>
-<p><strong>template</strong> — <strong>Type:</strong> str</p>
+<p><strong>template</strong> — Template or macro used to render the current content.; <strong>Type:</strong> str</p>
 </li>
 <li>
-<p><strong>search</strong> — <strong>Type:</strong> bool</p>
+<p><strong>search</strong> — Selected source folder that confines API collection.; <strong>Type:</strong> bool</p>
 </li>
 </ul>
 <h2 id="attributes-1">Attributes</h2>

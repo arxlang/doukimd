@@ -28,7 +28,7 @@
       <a class="site-brand" href="../../index.html">
         <span class="brand-mark" aria-hidden="true">D</span>
         <span class="brand-name">DoukiMD</span>
-        <span class="version badge rounded-pill">1.4.2</span>
+        <span class="version badge rounded-pill">1.4.3</span>
       </a>
       
       <nav class="site-navbar" aria-label="Primary">
@@ -146,6 +146,8 @@
             <summary><span class="nav-label">api</span></summary>
             <ul class="api-members">
               <li class="api-overview"><a href="doukimd.api.html" aria-label="api module overview">Module overview</a></li>
+              
+              <li><a href="doukimd.api.annotation_signature.html"><span class="nav-label">annotation_signature</span><span class="api-kind api-kind--function">function</span></a></li>
               
               <li><a href="doukimd.api.collect_api.html"><span class="nav-label">collect_api</span><span class="api-kind api-kind--function">function</span></a></li>
               
@@ -532,31 +534,31 @@
 <p>Display a module name.</p>
 <h3 id="parameters">Parameters</h3>
 <ul>
-<li><strong>node</strong> — <strong>Type:</strong> griffe.Module</li>
+<li><strong>node</strong> — Source declaration or parsed document node to process.; <strong>Type:</strong> griffe.Module</li>
 </ul>
 <h3 id="returns">Returns</h3>
-<p><strong>Type:</strong> str</p>
+<p>Display signature preserving source annotations.; <strong>Type:</strong> str</p>
 <h3 id="variant-2">Variant 2</h3>
 <pre class="highlight"><code><span class="n">signature</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">griffe</span><span class="o">.</span><span class="n">Class</span> <span class="o">|</span> <span class="n">griffe</span><span class="o">.</span><span class="n">Function</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span>
 </code></pre>
 <p>Preserve the source signature through Griffe.</p>
 <h3 id="parameters-1">Parameters</h3>
 <ul>
-<li><strong>node</strong> — <strong>Type:</strong> griffe.Class | griffe.Function</li>
+<li><strong>node</strong> — Source declaration or parsed document node to process.; <strong>Type:</strong> griffe.Class | griffe.Function</li>
 </ul>
 <h3 id="returns-1">Returns</h3>
-<p><strong>Type:</strong> str</p>
+<p>Display signature preserving source annotations.; <strong>Type:</strong> str</p>
 <h3 id="variant-3">Variant 3</h3>
 <pre class="highlight"><code><span class="n">signature</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">griffe</span><span class="o">.</span><span class="n">Attribute</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span>
 </code></pre>
 <p>Display a data declaration without evaluating its value.</p>
 <h3 id="parameters-2">Parameters</h3>
 <ul>
-<li><strong>node</strong> — <strong>Type:</strong> griffe.Attribute</li>
+<li><strong>node</strong> — Source declaration or parsed document node to process.; <strong>Type:</strong> griffe.Attribute</li>
 </ul>
 <h3 id="returns-2">Returns</h3>
-<p><strong>Type:</strong> str</p>
-<p>Source: src/doukimd/api.py:126</p>
+<p>Display signature preserving source annotations.; <strong>Type:</strong> str</p>
+<p>Source: src/doukimd/api.py:229</p>
 
       </main>
       

@@ -28,7 +28,7 @@
       <a class="site-brand" href="index.html">
         <span class="brand-mark" aria-hidden="true">D</span>
         <span class="brand-name">DoukiMD</span>
-        <span class="version badge rounded-pill">1.4.2</span>
+        <span class="version badge rounded-pill">1.4.3</span>
       </a>
       
       <nav class="site-navbar" aria-label="Primary">
@@ -153,6 +153,8 @@
             <summary><span class="nav-label">api</span></summary>
             <ul class="api-members">
               <li class="api-overview"><a href="api/python/doukimd.api.html" aria-label="api module overview">Module overview</a></li>
+              
+              <li><a href="api/python/doukimd.api.annotation_signature.html"><span class="nav-label">annotation_signature</span><span class="api-kind api-kind--function">function</span></a></li>
               
               <li><a href="api/python/doukimd.api.collect_api.html"><span class="nav-label">collect_api</span><span class="api-kind api-kind--function">function</span></a></li>
               
@@ -571,6 +573,14 @@ are followed only when explicitly exported. Unresolved or cyclic exports fail
 the build. Re-exports retain their public names and original declaration
 identity and location. Exported aliases must resolve within the selected
 source folder; runtime inspection and external dependency imports are disabled.</p>
+<p>Douki 0.14 and later keep types in Python annotations. Authored YAML contains
+descriptions and metadata; <code>type</code> fields are rejected by the shipped schema.
+Use <code>parameters: {value: Description of the value.}</code> and
+<code>returns: Description of the result.</code>. Write exceptions and warnings as
+mappings, such as <code>warnings: {UserWarning: Explanation of the warning.}</code>.
+Generated signatures and documentation fields retain source annotations through
+Douki's public enrichment API. Callable parameters and returns, and documented
+class fields, require annotations. Builds never rewrite source docstrings.</p>
 <p>Properties, enum values, fields, constants, and annotated type aliases have
 reference pages. Data declarations can rely on their source annotations and
 values without an invented docstring; class field descriptions are reused

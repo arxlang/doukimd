@@ -28,7 +28,7 @@
       <a class="site-brand" href="../../index.html">
         <span class="brand-mark" aria-hidden="true">D</span>
         <span class="brand-name">DoukiMD</span>
-        <span class="version badge rounded-pill">1.4.2</span>
+        <span class="version badge rounded-pill">1.4.3</span>
       </a>
       
       <nav class="site-navbar" aria-label="Primary">
@@ -146,6 +146,8 @@
             <summary><span class="nav-label">api</span></summary>
             <ul class="api-members">
               <li class="api-overview"><a href="doukimd.api.html" aria-label="api module overview">Module overview</a></li>
+              
+              <li><a href="doukimd.api.annotation_signature.html"><span class="nav-label">annotation_signature</span><span class="api-kind api-kind--function">function</span></a></li>
               
               <li><a href="doukimd.api.collect_api.html" aria-current="page"><span class="nav-label">collect_api</span><span class="api-kind api-kind--function">function</span></a></li>
               
@@ -528,19 +530,19 @@
         <h1 id="collect-_api"><span class="api-kind api-kind--function">function</span> collect_api</h1>
 <pre class="highlight"><code><span class="n">collect_api</span><span class="p">(</span><span class="n">root</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Config</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ApiSymbol</span><span class="p">]</span>
 </code></pre>
-<p>Source: src/doukimd/api.py:218</p>
+<p>Source: src/doukimd/api.py:321</p>
 <p>Collect isolated source folders without importing project code.</p>
 <h3 id="parameters">Parameters</h3>
 <ul>
 <li>
-<p><strong>root</strong> — <strong>Type:</strong> Path</p>
+<p><strong>root</strong> — Project root used to resolve relative paths.; <strong>Type:</strong> Path</p>
 </li>
 <li>
-<p><strong>config</strong> — <strong>Type:</strong> Config</p>
+<p><strong>config</strong> — Validated project settings or their configuration file.; <strong>Type:</strong> Config</p>
 </li>
 </ul>
 <h3 id="returns">Returns</h3>
-<p><strong>Type:</strong> dict[str, ApiSymbol]</p>
+<p>Collected declarations keyed by stable API identity.; <strong>Type:</strong> dict[str, ApiSymbol]</p>
 
       </main>
       

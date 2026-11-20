@@ -28,7 +28,7 @@
       <a class="site-brand" href="../../index.html">
         <span class="brand-mark" aria-hidden="true">D</span>
         <span class="brand-name">DoukiMD</span>
-        <span class="version badge rounded-pill">1.4.2</span>
+        <span class="version badge rounded-pill">1.4.3</span>
       </a>
       
       <nav class="site-navbar" aria-label="Primary">
@@ -146,6 +146,8 @@
             <summary><span class="nav-label">api</span></summary>
             <ul class="api-members">
               <li class="api-overview"><a href="doukimd.api.html" aria-label="api module overview">Module overview</a></li>
+              
+              <li><a href="doukimd.api.annotation_signature.html"><span class="nav-label">annotation_signature</span><span class="api-kind api-kind--function">function</span></a></li>
               
               <li><a href="doukimd.api.collect_api.html"><span class="nav-label">collect_api</span><span class="api-kind api-kind--function">function</span></a></li>
               
@@ -526,33 +528,33 @@
         
         
         <h1 id="page"><span class="api-kind api-kind--class">class</span> Page</h1>
-<p>Source: src/doukimd/models.py:387</p>
+<p>Source: src/doukimd/models.py:391</p>
 <p>An authored or virtual page.</p>
 <h3 id="attributes">Attributes</h3>
 <ul>
 <li>
-<p><strong>route</strong> — <strong>Type:</strong> str</p>
+<p><strong>route</strong> — Planned output path relative to the site root.; <strong>Type:</strong> str</p>
 </li>
 <li>
-<p><strong>title</strong> — <strong>Type:</strong> str</p>
+<p><strong>title</strong> — Display title for the page or navigation entry.; <strong>Type:</strong> str</p>
 </li>
 <li>
-<p><strong>body</strong> — <strong>Type:</strong> str</p>
+<p><strong>body</strong> — Page body before final HTML rendering.; <strong>Type:</strong> str</p>
 </li>
 <li>
-<p><strong>settings</strong> — <strong>Type:</strong> PageSettings</p>
+<p><strong>settings</strong> — Validated settings controlling the current operation.; <strong>Type:</strong> PageSettings</p>
 </li>
 <li>
-<p><strong>source</strong> — <strong>Type:</strong> Path | None</p>
+<p><strong>source</strong> — Source content or configured API source name.; <strong>Type:</strong> Path | None</p>
 </li>
 <li>
-<p><strong>symbol</strong> — <strong>Type:</strong> str | None</p>
+<p><strong>symbol</strong> — API declaration to resolve or render.; <strong>Type:</strong> str | None</p>
 </li>
 <li>
-<p><strong>anchors</strong> — <strong>Type:</strong> set[str]</p>
+<p><strong>anchors</strong> — Document heading anchors available for link validation.; <strong>Type:</strong> set[str]</p>
 </li>
 <li>
-<p><strong>notebook</strong> — <strong>Type:</strong> Notebook | None</p>
+<p><strong>notebook</strong> — Validated notebook content associated with the page.; <strong>Type:</strong> Notebook | None</p>
 </li>
 </ul>
 <h2 id="attributes-1">Attributes</h2>

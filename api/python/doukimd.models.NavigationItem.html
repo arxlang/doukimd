@@ -28,7 +28,7 @@
       <a class="site-brand" href="../../index.html">
         <span class="brand-mark" aria-hidden="true">D</span>
         <span class="brand-name">DoukiMD</span>
-        <span class="version badge rounded-pill">1.4.2</span>
+        <span class="version badge rounded-pill">1.4.3</span>
       </a>
       
       <nav class="site-navbar" aria-label="Primary">
@@ -146,6 +146,8 @@
             <summary><span class="nav-label">api</span></summary>
             <ul class="api-members">
               <li class="api-overview"><a href="doukimd.api.html" aria-label="api module overview">Module overview</a></li>
+              
+              <li><a href="doukimd.api.annotation_signature.html"><span class="nav-label">annotation_signature</span><span class="api-kind api-kind--function">function</span></a></li>
               
               <li><a href="doukimd.api.collect_api.html"><span class="nav-label">collect_api</span><span class="api-kind api-kind--function">function</span></a></li>
               
@@ -526,30 +528,30 @@
         
         
         <h1 id="navigationitem"><span class="api-kind api-kind--class">class</span> NavigationItem</h1>
-<p>Source: src/doukimd/models.py:439</p>
+<p>Source: src/doukimd/models.py:443</p>
 <p>A route-aware menu entry with nested pages or module accordions.</p>
 <h3 id="attributes">Attributes</h3>
 <ul>
 <li>
-<p><strong>title</strong> — <strong>Type:</strong> str</p>
+<p><strong>title</strong> — Display title for the page or navigation entry.; <strong>Type:</strong> str</p>
 </li>
 <li>
-<p><strong>url</strong> — <strong>Type:</strong> str | None</p>
+<p><strong>url</strong> — Link destination to validate or rebase.; <strong>Type:</strong> str | None</p>
 </li>
 <li>
-<p><strong>current</strong> — <strong>Type:</strong> bool</p>
+<p><strong>current</strong> — Current page route or navigation selection.; <strong>Type:</strong> bool</p>
 </li>
 <li>
-<p><strong>active</strong> — <strong>Type:</strong> bool</p>
+<p><strong>active</strong> — Whether this entry belongs to the selected navigation branch.; <strong>Type:</strong> bool</p>
 </li>
 <li>
-<p><strong>children</strong> — <strong>Type:</strong> list[NavigationItem]</p>
+<p><strong>children</strong> — Immediate children in display order.; <strong>Type:</strong> list[NavigationItem]</p>
 </li>
 <li>
-<p><strong>kind</strong> — <strong>Type:</strong> str | None</p>
+<p><strong>kind</strong> — Declaration, navigation, or output kind.; <strong>Type:</strong> str | None</p>
 </li>
 <li>
-<p><strong>layout</strong> — <strong>Type:</strong> Literal[nested, modules]</p>
+<p><strong>layout</strong> — Presentation layout used for this menu or page.; <strong>Type:</strong> Literal['nested', 'modules']</p>
 </li>
 </ul>
 <h2 id="attributes-1">Attributes</h2>

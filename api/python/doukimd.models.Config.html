@@ -28,7 +28,7 @@
       <a class="site-brand" href="../../index.html">
         <span class="brand-mark" aria-hidden="true">D</span>
         <span class="brand-name">DoukiMD</span>
-        <span class="version badge rounded-pill">1.4.2</span>
+        <span class="version badge rounded-pill">1.4.3</span>
       </a>
       
       <nav class="site-navbar" aria-label="Primary">
@@ -146,6 +146,8 @@
             <summary><span class="nav-label">api</span></summary>
             <ul class="api-members">
               <li class="api-overview"><a href="doukimd.api.html" aria-label="api module overview">Module overview</a></li>
+              
+              <li><a href="doukimd.api.annotation_signature.html"><span class="nav-label">annotation_signature</span><span class="api-kind api-kind--function">function</span></a></li>
               
               <li><a href="doukimd.api.collect_api.html"><span class="nav-label">collect_api</span><span class="api-kind api-kind--function">function</span></a></li>
               
@@ -531,43 +533,43 @@
 <h3 id="attributes">Attributes</h3>
 <ul>
 <li>
-<p><strong>schema_version</strong> — <strong>Type:</strong> Literal[1]</p>
+<p><strong>schema_version</strong> — Configuration schema revision.; <strong>Type:</strong> Literal[1]</p>
 </li>
 <li>
-<p><strong>site</strong> — <strong>Type:</strong> SiteSettings</p>
+<p><strong>site</strong> — Indexed site pages and output destinations.; <strong>Type:</strong> SiteSettings</p>
 </li>
 <li>
-<p><strong>project</strong> — <strong>Type:</strong> ProjectSettings</p>
+<p><strong>project</strong> — Project configuration or temporary project directory.; <strong>Type:</strong> ProjectSettings</p>
 </li>
 <li>
-<p><strong>docs_dir</strong> — <strong>Type:</strong> str</p>
+<p><strong>docs_dir</strong> — Project-relative directory containing authored pages.; <strong>Type:</strong> str</p>
 </li>
 <li>
-<p><strong>output_dir</strong> — <strong>Type:</strong> str</p>
+<p><strong>output_dir</strong> — Project-relative directory for generated site output.; <strong>Type:</strong> str</p>
 </li>
 <li>
-<p><strong>includes_dir</strong> — <strong>Type:</strong> str</p>
+<p><strong>includes_dir</strong> — Project-relative directory containing content templates.; <strong>Type:</strong> str</p>
 </li>
 <li>
-<p><strong>data</strong> — <strong>Type:</strong> dict[str, str]</p>
+<p><strong>data</strong> — Structured content or template data to process.; <strong>Type:</strong> dict[str, str]</p>
 </li>
 <li>
-<p><strong>api</strong> — <strong>Type:</strong> ApiSettings</p>
+<p><strong>api</strong> — Indexed API declarations used for symbol lookup.; <strong>Type:</strong> ApiSettings</p>
 </li>
 <li>
-<p><strong>theme</strong> — <strong>Type:</strong> ThemeSettings</p>
+<p><strong>theme</strong> — Theme settings controlling HTML presentation.; <strong>Type:</strong> ThemeSettings</p>
 </li>
 <li>
-<p><strong>plugins</strong> — <strong>Type:</strong> list[str]</p>
+<p><strong>plugins</strong> — Explicitly enabled plugin entry points.; <strong>Type:</strong> list[str]</p>
 </li>
 <li>
-<p><strong>assets</strong> — <strong>Type:</strong> list[str]</p>
+<p><strong>assets</strong> — Asset destinations and bytes included in the build.; <strong>Type:</strong> list[str]</p>
 </li>
 <li>
-<p><strong>navigation</strong> — <strong>Type:</strong> NavigationSettings</p>
+<p><strong>navigation</strong> — Navigation configuration or selected sidebar entries.; <strong>Type:</strong> NavigationSettings</p>
 </li>
 <li>
-<p><strong>search</strong> — <strong>Type:</strong> SearchSettings</p>
+<p><strong>search</strong> — Selected source folder that confines API collection.; <strong>Type:</strong> SearchSettings</p>
 </li>
 </ul>
 <h2 id="attributes-1">Attributes</h2>
