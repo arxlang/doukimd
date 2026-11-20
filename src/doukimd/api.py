@@ -73,16 +73,14 @@ def annotation_signature(node: object) -> DocumentationSignature:
 
 @dispatch
 @typechecked
-def annotation_signature(
-    node: griffe.Module | griffe.Attribute,
-) -> DocumentationSignature:
+def annotation_signature(node: griffe.Attribute) -> DocumentationSignature:
     """
     title: Retain property return annotations without inspecting values.
     parameters:
-      node: Module or data declaration being documented.
+      node: Property or data declaration being documented.
     returns: Property return annotation or empty non-callable metadata.
     """
-    if isinstance(node, griffe.Attribute) and 'property' in node.labels:
+    if 'property' in node.labels:
         return DocumentationSignature(
             parameters=(),
             returns=str(node.annotation)
@@ -94,11 +92,13 @@ def annotation_signature(
 
 @dispatch
 @typechecked
-def annotation_signature(node: griffe.Class) -> DocumentationSignature:
+def annotation_signature(
+    node: griffe.Module | griffe.Class,
+) -> DocumentationSignature:
     """
-    title: Supply class field annotations without evaluating their values.
+    title: Supply module and class annotations without evaluating values.
     parameters:
-      node: Class whose locally declared attributes are being documented.
+      node: Module or class whose locally declared fields are documented.
     returns: Annotated fields available for documentation enrichment.
     """
     return DocumentationSignature(

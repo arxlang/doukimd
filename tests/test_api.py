@@ -106,6 +106,51 @@ def test_static_parameter_kinds(example: Path) -> None:
     assert data['returns'] == {'type': 'list[str]'}
 
 
+@typechecked
+def test_module_attributes_use_static_annotations(example: Path) -> None:
+    """
+    title: Enrich module attributes without importing the documented source.
+    parameters:
+      example: Copy of the complete example project.
+    """
+    source = example / 'src/example.py'
+    original = source.read_text()
+    summary = 'summary: A small project documented with Douki.\n'
+    assert summary in original
+    content = original.replace(
+        summary,
+        summary + 'attributes:\n  timeout: Request timeout in seconds.\n',
+    )
+    content += (
+        '\ntimeout: int = 30\n'
+        'raise RuntimeError("Do not import documentation sources")\n'
+    )
+    source.write_text(content, encoding='utf-8')
+
+    config = example / 'doukimd.yaml'
+    module = collect_api(example, load_config(config))['python:example']
+    assert module.documentation['attributes'] == {
+        'timeout': {
+            'description': 'Request timeout in seconds.',
+            'type': 'int',
+        },
+    }
+    site = compile_site(config)
+    assert (
+        b'Request timeout in seconds.' in site.files['api/python/example.html']
+    )
+    assert source.read_text() == content
+
+    source.write_text(
+        content.replace('timeout: int = 30', 'timeout = 30'),
+        encoding='utf-8',
+    )
+    with pytest.raises(BuildError, match="attribute 'timeout'") as caught:
+        collect_api(example, load_config(config))
+    assert caught.value.phase == 'douki'
+    assert 'annotations' in str(caught.value)
+
+
 @pytest.mark.parametrize(
     ('original', 'replacement', 'message'),
     [
