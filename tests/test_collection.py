@@ -478,3 +478,198 @@ __all__ = ["VALUE"]
             pytest.skip('Symlink creation unavailable')
     with pytest.raises(BuildError):
         collect_api(project, load_config(path))
+
+
+@typechecked
+def cross_source_project(
+    project: Path, order: tuple[str, str] = ('alpha', 'beta')
+) -> Path:
+    """
+    title: Create two independently loaded static API sources.
+    parameters:
+      project: Temporary documentation project.
+      order: Configuration order for the named sources.
+    returns: Updated configuration file for the project.
+    """
+    alpha = project / 'alpha/src/alpha'
+    beta = project / 'beta/src/beta'
+    alpha.mkdir(parents=True)
+    beta.mkdir(parents=True)
+    (alpha / '__init__.py').write_text(
+        '"""title: Alpha package."""\n', encoding='utf-8'
+    )
+    (alpha / 'impl.py').write_text(
+        '''"""title: Declaring module."""
+from plum import dispatch
+@dispatch
+def run(value: int) -> int:
+    """
+    title: Run integers.
+    parameters:
+      value: Integer to process.
+    returns: Integer result.
+    """
+    return value
+@dispatch
+def run(value: str) -> str:
+    """
+    title: Run strings.
+    parameters:
+      value: String to process.
+    returns: String result.
+    """
+    return value
+raise RuntimeError("Must not execute documentation sources")
+''',
+        encoding='utf-8',
+    )
+    (beta / '__init__.py').write_text(
+        '"""title: Beta package."""\n'
+        'from .bridge import exported as public_func\n'
+        '__all__ = ["public_func"]\n',
+        encoding='utf-8',
+    )
+    (beta / 'bridge.py').write_text(
+        '"""title: Cross-source bridge."""\n'
+        'from alpha.impl import run as exported\n'
+        '__all__ = ["exported"]\n'
+        'raise RuntimeError("Must not import the bridge")\n',
+        encoding='utf-8',
+    )
+    sources = {
+        'alpha': '    - name: alpha\n'
+        '      root: alpha/src\n'
+        '      modules: [alpha]\n',
+        'beta': '    - name: beta\n'
+        '      root: beta/src\n'
+        '      modules: [beta]\n',
+    }
+    config = project / 'doukimd.yaml'
+    config.write_text(
+        config.read_text()
+        + 'api:\n  sources:\n'
+        + ''.join(sources[name] for name in order),
+        encoding='utf-8',
+    )
+    return config
+
+
+@pytest.mark.parametrize('reverse', [False, True])
+@typechecked
+def test_cross_source_reexports_retain_owner(
+    project: Path, reverse: bool
+) -> None:
+    """
+    title: Retain declaration metadata across renamed multi-hop exports.
+    parameters:
+      project: Temporary documentation project.
+      reverse: Whether to reverse configured source order.
+    """
+    order = ('beta', 'alpha') if reverse else ('alpha', 'beta')
+    config = cross_source_project(project, order)
+    inventory = collect_api(project, load_config(config))
+    alias = inventory['python:beta:beta.public_func']
+    assert alias.identifier == 'python:beta:beta.public_func'
+    assert alias.canonical == 'python:alpha:alpha.impl.run'
+    assert alias.source == 'alpha/src/alpha/impl.py'
+    assert alias.source_name == 'beta'
+    assert len(alias.variants) == 2
+    assert alias.variants[0].documentation['title'] == 'Run integers.'
+    assert alias.variants[1].documentation['title'] == 'Run strings.'
+    assert alias.variants[0].documentation['parameters'] == {
+        'value': {'description': 'Integer to process.', 'type': 'int'}
+    }
+    site = compile_site(config)
+    symbols = json.loads(site.files['symbols.json'])['symbols']
+    assert symbols[alias.identifier]['canonical'] == alias.canonical
+    assert symbols[alias.identifier]['source'] == alias.source
+    assert (
+        'Integer to process.'
+        in site.files['api/python/beta/beta.public_func.html'].decode()
+    )
+
+
+@typechecked
+def test_cross_source_reexports_reject_ambiguous_targets(
+    project: Path,
+) -> None:
+    """
+    title: Reject identical target paths in different configured graphs.
+    parameters:
+      project: Temporary documentation project.
+    """
+    config = cross_source_project(project)
+    duplicate = project / 'duplicate/src/alpha'
+    duplicate.mkdir(parents=True)
+    (duplicate / '__init__.py').write_text(
+        '"""title: Duplicate alpha."""\n', encoding='utf-8'
+    )
+    (duplicate / 'impl.py').write_text(
+        '"""title: Duplicate implementation."""\n'
+        'def run(value: int) -> int:\n'
+        '    """title: Duplicate function."""\n'
+        '    return value\n',
+        encoding='utf-8',
+    )
+    config.write_text(
+        config.read_text() + '    - name: duplicate\n'
+        '      root: duplicate/src\n'
+        '      modules: [alpha]\n',
+        encoding='utf-8',
+    )
+    with pytest.raises(BuildError, match='Ambiguous re-export'):
+        collect_api(project, load_config(config))
+
+
+@typechecked
+def test_cross_source_reexports_reject_cycles(
+    project: Path,
+) -> None:
+    """
+    title: Stop cyclic cross-source import aliases without executing them.
+    parameters:
+      project: Temporary documentation project.
+    """
+    config = cross_source_project(project)
+    (project / 'alpha/src/alpha/impl.py').write_text(
+        '"""title: Cyclic source."""\n'
+        'from beta.bridge import exported as run\n'
+        '__all__ = ["run"]\n',
+        encoding='utf-8',
+    )
+    with pytest.raises(BuildError, match='Cyclic re-export'):
+        collect_api(project, load_config(config))
+
+
+@typechecked
+def test_cross_source_reexports_reject_external_targets(
+    project: Path,
+) -> None:
+    """
+    title: Never load unconfigured sources to satisfy a public export.
+    parameters:
+      project: Temporary documentation project.
+    """
+    config = cross_source_project(project)
+    foreign = project / 'external/src/external'
+    foreign.mkdir(parents=True)
+    (foreign / '__init__.py').write_text(
+        '"""title: Not configured."""\n', encoding='utf-8'
+    )
+    (foreign / 'impl.py').write_text(
+        '"""title: Out-of-scope implementation."""\n'
+        'def run(value: int) -> int:\n'
+        '    """title: External function."""\n'
+        '    return value\n',
+        encoding='utf-8',
+    )
+    bridge = project / 'beta/src/beta/bridge.py'
+    bridge.write_text(
+        bridge.read_text().replace(
+            'from alpha.impl import run as exported',
+            'from external.impl import run as exported',
+        ),
+        encoding='utf-8',
+    )
+    with pytest.raises(BuildError, match='Unresolved re-export'):
+        collect_api(project, load_config(config))
