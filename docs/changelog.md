@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+## [1.4.6](https://github.com/arxlang/doukimd/compare/1.4.5...1.4.6) (2026-11-20)
+
+
+### Bug Fixes
+
+* **api:** inherit annotations for value-only overrides ([#21](https://github.com/arxlang/doukimd/issues/21)) ([f9a840f](https://github.com/arxlang/doukimd/commit/f9a840fac804c6e833fb988e615c65ad21064bd0))
+
 ## [1.4.5](https://github.com/arxlang/doukimd/compare/1.4.4...1.4.5) (2026-11-20)
 
 
