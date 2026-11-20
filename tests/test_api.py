@@ -151,6 +151,67 @@ def test_module_attributes_use_static_annotations(example: Path) -> None:
     assert 'annotations' in str(caught.value)
 
 
+@typechecked
+def test_inherited_class_annotations(example: Path) -> None:
+    """
+    title: Enrich inherited fields and honor subclass overrides statically.
+    parameters:
+      example: Copy of the complete example project.
+    """
+    source = example / 'src/example.py'
+    content = source.read_text() + (
+        '\nclass BaseError(Exception):\n'
+        '    """title: Base diagnostic."""\n'
+        '    code: str\n'
+        '    location: int | None\n'
+        '\nclass CodeGenException(BaseError):\n'
+        '    """\n'
+        '    title: Code generation error.\n'
+        '    attributes:\n'
+        '      code: Stable diagnostic code.\n'
+        '      location: Source position.\n'
+        '    """\n'
+        '\nclass OverriddenError(CodeGenException):\n'
+        '    """\n'
+        '    title: Override a code annotation.\n'
+        '    attributes:\n'
+        '      code: Numeric diagnostic code.\n'
+        '      location: Source position.\n'
+        '    """\n'
+        '    code: int\n'
+        '\nraise RuntimeError("Never import documented code")\n'
+    )
+    source.write_text(content, encoding='utf-8')
+    config = example / 'doukimd.yaml'
+    inventory = collect_api(example, load_config(config))
+    assert inventory['python:example.CodeGenException'].documentation[
+        'attributes'
+    ] == {
+        'code': {'description': 'Stable diagnostic code.', 'type': 'str'},
+        'location': {'description': 'Source position.', 'type': 'int | None'},
+    }
+    assert inventory['python:example.OverriddenError'].documentation[
+        'attributes'
+    ] == {
+        'code': {'description': 'Numeric diagnostic code.', 'type': 'int'},
+        'location': {'description': 'Source position.', 'type': 'int | None'},
+    }
+    site = compile_site(config)
+    html = site.files['api/python/example.CodeGenException.html'].decode()
+    assert 'Stable diagnostic code.' in html
+    assert 'int | None' in html
+    assert source.read_text() == content
+
+    source.write_text(
+        content.replace('    code: int\n', '    code = 1\n'),
+        encoding='utf-8',
+    )
+    with pytest.raises(BuildError, match="attribute 'code'") as caught:
+        collect_api(example, load_config(config))
+    assert caught.value.phase == 'douki'
+    assert 'annotations' in str(caught.value)
+
+
 @pytest.mark.parametrize(
     ('original', 'replacement', 'message'),
     [
