@@ -21,9 +21,9 @@ class TextContent(HTMLParser):
     title: Extract visible text without indexing scripts or styles.
     attributes:
       parts:
-        type: list[str]
+        description: Document fragments in their intended output order.
       hidden:
-        type: list[str]
+        description: Whether the configured navigation entry is hidden.
     """
 
     def __init__(self) -> None:
@@ -41,9 +41,9 @@ class TextContent(HTMLParser):
         title: Skip scripts and styles while retaining image labels.
         parameters:
           tag:
-            type: str
+            description: HTML or SVG element name.
           attrs:
-            type: list[tuple[str, str | None]]
+            description: Attributes attached to the generated element.
         """
         if tag in {'script', 'style'}:
             self.hidden.append(tag)
@@ -61,7 +61,7 @@ class TextContent(HTMLParser):
         title: Resume visible text after ignored markup.
         parameters:
           tag:
-            type: str
+            description: HTML or SVG element name.
         """
         if self.hidden and tag == self.hidden[-1]:
             self.hidden.pop()
@@ -73,7 +73,7 @@ class TextContent(HTMLParser):
         title: Collect text only when it is visible document content.
         parameters:
           data:
-            type: str
+            description: Structured content or template data to process.
         """
         if not self.hidden:
             self.parts.append(data)
@@ -86,9 +86,9 @@ def html_text(value: str) -> str:
     title: Normalize visible HTML into plain search text.
     parameters:
       value:
-        type: str
+        description: Input value to validate or render.
     returns:
-      type: str
+      description: Normalized visible text extracted from the HTML.
     """
     parser = TextContent()
     parser.feed(value)
@@ -103,9 +103,9 @@ def document_text(tokens: list[Token]) -> str:
     title: Index prose, code, literal outputs, and rich output fallback text.
     parameters:
       tokens:
-        type: list[Token]
+        description: Parsed document tokens in rendering order.
     returns:
-      type: str
+      description: Searchable text from prose, code, and saved outputs.
     """
     reader = TextContent()
     for token in tokens:
@@ -132,11 +132,11 @@ def search_records(page: Page, tokens: list[Token]) -> list[dict[str, str]]:
     title: Emit a page record plus independently linkable Markdown sections.
     parameters:
       page:
-        type: Page
+        description: Page being compiled or used to resolve links.
       tokens:
-        type: list[Token]
+        description: Parsed document tokens in rendering order.
     returns:
-      type: list[dict[str, str]]
+      description: Search records for the page and its Markdown sections.
     """
     if not page.settings.search:
         return []

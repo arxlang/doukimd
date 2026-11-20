@@ -24,11 +24,11 @@ def copy_assets(root: Path, config: Config) -> dict[str, bytes]:
     title: Copy matched docs-relative files and reject unsafe patterns.
     parameters:
       root:
-        type: Path
+        description: Project root used to resolve relative paths.
       config:
-        type: Config
+        description: Validated project settings or their configuration file.
     returns:
-      type: dict[str, bytes]
+      description: Output destinations mapped to their asset bytes.
     """
     docs = project_path(root, config.docs_dir)
     result: dict[str, bytes] = {}
@@ -75,13 +75,13 @@ def asset_url(
     title: Resolve a configured docs-root asset relative to a planned page.
     parameters:
       value:
-        type: str | None
+        description: Input value to validate or render.
       route:
-        type: str
+        description: Planned output path relative to the site root.
       assets:
-        type: dict[str, bytes]
+        description: Asset destinations and bytes included in the build.
     returns:
-      type: str | None
+      description: Validated asset link relative to the current page.
     """
     if value is None:
         return None

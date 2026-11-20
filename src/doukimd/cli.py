@@ -41,7 +41,7 @@ def build(config_path: Path) -> None:
     title: Build a static HTML documentation site.
     parameters:
       config_path:
-        type: Path
+        description: Path to the project configuration file.
     """
     try:
         result = build_site(config_path)
@@ -65,7 +65,7 @@ def check(config_path: Path) -> None:
     title: Validate a complete site without writing output.
     parameters:
       config_path:
-        type: Path
+        description: Path to the project configuration file.
     """
     try:
         result = compile_site(config_path)

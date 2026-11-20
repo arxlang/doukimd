@@ -220,6 +220,6 @@ __marimo__/
 .streamlit/secrets.toml
 
 # Local validation environments and sandbox pytest temporary files
-pytest-of-root/
+pytest-*/
 wheel-check/
 /tmp*.makim

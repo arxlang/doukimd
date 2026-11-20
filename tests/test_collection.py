@@ -23,7 +23,7 @@ def write_package(project: Path) -> None:
     title: Create a static-only package with common public declaration kinds.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
     """
     package = project / 'src/sample'
     package.mkdir(parents=True)
@@ -52,7 +52,6 @@ class Widget:
     title: Widget declaration.
     attributes:
       value:
-        type: int
         description: The stored value.
     """
     value: int = 1
@@ -65,7 +64,7 @@ class Widget:
         """
         title: Handle integers.
         parameters:
-          value: int
+          value: Integer to process.
         """
         return value
     @specialize
@@ -73,7 +72,7 @@ class Widget:
         """
         title: Handle strings.
         parameters:
-          value: str
+          value: String to process.
         """
         return value
 raise RuntimeError("Importing documentation sources is forbidden")
@@ -99,7 +98,7 @@ def test_public_declarations_and_variants(project: Path) -> None:
     title: Render re-exports, generated constructors, fields, and dispatch.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
     """
     write_package(project)
     config = load_config(project / 'doukimd.yaml')
@@ -108,6 +107,10 @@ def test_public_declarations_and_variants(project: Path) -> None:
     assert widget.canonical == 'python:models:sample.model.Widget'
     assert widget.source == 'src/sample/model.py'
     assert widget.signature.startswith('PublicWidget(')
+    assert widget.documentation['attributes'] == {
+        'value': {'description': 'The stored value.', 'type': 'int'},
+        'doubled': {'type': 'int'},
+    }
     assert (
         inventory['python:models:sample.PublicWidget.value'].documentation[
             'summary'
@@ -123,6 +126,9 @@ def test_public_declarations_and_variants(project: Path) -> None:
         inventory['python:models:sample.PublicWidget.doubled'].kind
         == 'property'
     )
+    assert inventory[
+        'python:models:sample.PublicWidget.doubled'
+    ].documentation['returns'] == {'type': 'int'}
     assert inventory['python:models:sample.Color.RED'].kind == 'enum-member'
     assert inventory['python:models:sample.Alias'].kind == 'type-alias'
     assert (
@@ -133,6 +139,9 @@ def test_public_declarations_and_variants(project: Path) -> None:
     assert 'int' in method.variants[0].signature
     assert 'str' in method.variants[1].signature
     assert method.variants[0].documentation['title'] == 'Handle integers.'
+    assert method.variants[0].documentation['parameters'] == {
+        'value': {'description': 'Integer to process.', 'type': 'int'}
+    }
     (project / 'docs/index.md').write_text(
         """---
 api_source: models
@@ -161,7 +170,7 @@ def test_folder_selection_and_ambiguous_references(project: Path) -> None:
     title: Isolate identically named modules in two configured source roots.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
     """
     for name, value in [('one', 1), ('two', 2)]:
         folder = project / name
@@ -223,7 +232,7 @@ def test_handwritten_missing_docs_still_fail(project: Path) -> None:
     title: Require authored docstrings even for dataclass constructors.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
     """
     write_package(project)
     source = project / 'src/sample/model.py'
@@ -245,7 +254,7 @@ def test_non_dispatch_repetition_fails(project: Path) -> None:
     title: Reject repeated definitions with no recognized overload semantics.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
     """
     write_package(project)
     source = project / 'src/sample/model.py'
@@ -263,9 +272,9 @@ def test_source_folder_discovery(project: Path, folder: str) -> None:
     title: Select either a source tree or a package folder without modules.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
       folder:
-        type: str
+        description: Source folder selected for API discovery.
     """
     write_package(project)
     config = project / 'doukimd.yaml'
@@ -286,7 +295,7 @@ def test_case_insensitive_export_routes(project: Path) -> None:
     title: Keep public classes and similarly named modules on distinct routes.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
     """
     write_package(project)
     source = project / 'src/sample/__init__.py'
@@ -327,9 +336,9 @@ def test_variant_forms(project: Path, variant: str) -> None:
     title: Preserve imported registrations, local dispatch, and overloads.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
       variant:
-        type: str
+        description: Declaration variant exercised by the test.
     """
     write_package(project)
     source = project / 'src/sample/model.py'
@@ -406,9 +415,9 @@ def test_source_errors(project: Path, case: str) -> None:
     title: Fail closed on invalid source selection and invalid exports.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
       case:
-        type: str
+        description: Failure scenario exercised by the test.
     """
     write_package(project)
     path = project / 'doukimd.yaml'

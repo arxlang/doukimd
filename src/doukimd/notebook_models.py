@@ -25,7 +25,7 @@ class CellMetadata(NotebookValue):
     title: Standard cell tags that control published input and output.
     attributes:
       tags:
-        type: list[str]
+        description: Notebook tags controlling cell presentation.
     """
 
     tags: list[str] = Field(default_factory=list)
@@ -37,11 +37,11 @@ class StreamOutput(NotebookValue):
     title: Saved stdout or stderr from a code cell.
     attributes:
       output_type:
-        type: Literal[stream]
+        description: Notebook output representation to validate.
       name:
-        type: Literal[stdout, stderr]
+        description: Name used to identify the requested item.
       text:
-        type: str | list[str]
+        description: Text content to process.
     """
 
     output_type: Literal['stream']
@@ -55,13 +55,13 @@ class ErrorOutput(NotebookValue):
     title: A recorded exception rendered without executing its traceback.
     attributes:
       output_type:
-        type: Literal[error]
+        description: Notebook output representation to validate.
       ename:
-        type: str
+        description: Recorded notebook exception class name.
       evalue:
-        type: str
+        description: Recorded notebook exception message.
       traceback:
-        type: list[str]
+        description: Saved traceback lines from notebook execution.
     """
 
     output_type: Literal['error']
@@ -76,9 +76,9 @@ class RichOutput(NotebookValue):
     title: A display or expression result containing alternative MIME formats.
     attributes:
       output_type:
-        type: Literal[display_data, execute_result]
+        description: Notebook output representation to validate.
       data:
-        type: dict[str, JsonValue]
+        description: Structured content or template data to process.
     """
 
     output_type: Literal['display_data', 'execute_result']
@@ -96,13 +96,13 @@ class MarkdownCell(NotebookValue):
     title: Markdown prose with optional embedded image attachments.
     attributes:
       cell_type:
-        type: Literal[markdown]
+        description: Notebook cell representation to validate.
       source:
-        type: str | list[str]
+        description: Source content or configured API source name.
       metadata:
-        type: CellMetadata
+        description: Literal metadata associated with this document.
       attachments:
-        type: dict[str, dict[str, JsonValue]]
+        description: Inline notebook attachments keyed by their local names.
     """
 
     cell_type: Literal['markdown']
@@ -117,15 +117,15 @@ class CodeCell(NotebookValue):
     title: Literal code and its existing outputs.
     attributes:
       cell_type:
-        type: Literal[code]
+        description: Notebook cell representation to validate.
       source:
-        type: str | list[str]
+        description: Source content or configured API source name.
       metadata:
-        type: CellMetadata
+        description: Literal metadata associated with this document.
       execution_count:
-        type: int | None
+        description: Saved notebook execution count; no code is executed.
       outputs:
-        type: list[NotebookOutput]
+        description: Saved notebook outputs in their recorded order.
     """
 
     cell_type: Literal['code']
@@ -141,11 +141,11 @@ class RawCell(NotebookValue):
     title: Raw notebook cells retained as escaped text.
     attributes:
       cell_type:
-        type: Literal[raw]
+        description: Notebook cell representation to validate.
       source:
-        type: str | list[str]
+        description: Source content or configured API source name.
       metadata:
-        type: CellMetadata
+        description: Literal metadata associated with this document.
     """
 
     cell_type: Literal['raw']
@@ -164,13 +164,13 @@ class Notebook(NotebookValue):
     title: A nonexecuting projection of a version four notebook.
     attributes:
       nbformat:
-        type: Literal[4]
+        description: Notebook format major version.
       nbformat_minor:
-        type: int
+        description: Notebook format minor version.
       metadata:
-        type: dict[str, JsonValue]
+        description: Literal metadata associated with this document.
       cells:
-        type: list[NotebookCell]
+        description: Notebook cells in their original order.
     """
 
     nbformat: Literal[4]

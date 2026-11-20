@@ -26,9 +26,9 @@ def notebook_text(value: str | list[str]) -> str:
     title: Join the two multiline string encodings allowed by nbformat.
     parameters:
       value:
-        type: str | list[str]
+        description: Input value to validate or render.
     returns:
-      type: str
+      description: Notebook text joined without altering its content.
     """
     return value if isinstance(value, str) else ''.join(value)
 
@@ -40,9 +40,9 @@ def load_notebook(path: Path) -> Notebook:
     title: Validate the original document before projecting rendering fields.
     parameters:
       path:
-        type: Path
+        description: Path or qualified declaration name to resolve.
     returns:
-      type: Notebook
+      description: Validated notebook projected into rendering models.
     """
     try:
         raw: object = json.loads(path.read_text(encoding='utf-8'))

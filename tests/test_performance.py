@@ -26,9 +26,9 @@ def test_fragment_cache_preserves_every_page(
     title: Compare cached and uncached HTML across modules and directories.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
       monkeypatch:
-        type: pytest.MonkeyPatch
+        description: Fixture for restoring patched objects after the test.
     """
     config = example / 'doukimd.yaml'
     config.write_text(
@@ -53,20 +53,24 @@ def test_fragment_cache_preserves_every_page(
         opened: bool,
     ) -> str:
         """
-        title: Verify each cached fragment against a fresh macro invocation.
+        title: Verify each cached fragment against a fresh macro
+          invocation.
         parameters:
           self:
-            type: NavigationFragments
+            description: Instance bound to the patched helper.
           macro:
-            type: Macro
+            description: Theme macro used to render a navigation
+              fragment.
           item:
-            type: NavigationView
+            description: Declaration or navigation entry being rendered.
           group_id:
-            type: str
+            description: Identifier that keeps separate accordion
+              menus independent.
           opened:
-            type: bool
+            description: Whether the accordion branch is expanded.
         returns:
-          type: str
+          description: Freshly rendered fragment matching the cached
+            output.
         """
         nonlocal hits
         key = (id(item.node), id(item.selection.urls), group_id, opened)
@@ -75,14 +79,17 @@ def test_fragment_cache_preserves_every_page(
         @typechecked
         def attribute(view: NavigationView, location: bool) -> str:
             """
-            title: Render selection attributes directly from the current view.
+            title: Render selection attributes directly from the
+              current view.
             parameters:
               view:
-                type: NavigationView
+                description: Page-specific navigation links and selection
+                  state.
               location:
-                type: bool
+                description: Source location used in diagnostics.
             returns:
-              type: str
+              description: Rendered attribute or registered selection
+                placeholder.
             """
             if view.current:
                 return Markup(' aria-current="page"')
@@ -107,7 +114,7 @@ def test_fragment_cache_is_bounded(example: Path) -> None:
     title: Evict old inactive fragments and bypass selected branches.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
     """
     from doukimd.api import collect_api
     from doukimd.config import load_config

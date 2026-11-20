@@ -21,7 +21,7 @@ def test_search_content_sections_and_exclusions(project: Path) -> None:
     title: Index visible prose and code with page exclusions.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
     """
     (project / 'docs/index.md').write_text(
         '---\nhtml: true\n---\n# Home\n\n'
@@ -70,7 +70,7 @@ def test_search_configuration_and_nested_urls(example: Path) -> None:
     title: Configure search and resolve assets from generated pages.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
     """
     path = example / 'doukimd.yaml'
     original = path.read_text()
@@ -111,9 +111,9 @@ def test_invalid_search_settings(project: Path, setting: str) -> None:
     title: Reject search settings that the frontend cannot use consistently.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
       setting:
-        type: str
+        description: Configuration setting varied by the test.
     """
     path = project / 'doukimd.yaml'
     path.write_text(path.read_text() + f'search:\n  {setting}\n')

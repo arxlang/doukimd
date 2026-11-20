@@ -23,11 +23,11 @@ class HtmlContent(HTMLParser):
     title: Preserve trusted HTML while resolving local links or gathering ids.
     attributes:
       page:
-        type: Page
+        description: Page being compiled or used to resolve links.
       resolve:
-        type: Callable[[str], str] | None
+        description: Callback that validates and rewrites a link destination.
       parts:
-        type: list[str]
+        description: Document fragments in their intended output order.
     """
 
     def __init__(
@@ -37,9 +37,10 @@ class HtmlContent(HTMLParser):
         title: Initialize a token-local HTML reader.
         parameters:
           page:
-            type: Page
+            description: Page being compiled or used to resolve links.
           resolve:
-            type: Callable[[str], str] | None
+            description: Callback that validates and rewrites a link
+              destination.
         """
         super().__init__(convert_charrefs=False)
         self.page: Page = page
@@ -53,9 +54,9 @@ class HtmlContent(HTMLParser):
         title: Collect explicit anchors or rewrite URL-bearing attributes.
         parameters:
           tag:
-            type: str
+            description: HTML or SVG element name.
           attrs:
-            type: list[tuple[str, str | None]]
+            description: Attributes attached to the generated element.
         """
         rendered: list[str] = []
         for name, value in attrs:
@@ -88,9 +89,9 @@ class HtmlContent(HTMLParser):
         title: Preserve self-closing markup after attribute resolution.
         parameters:
           tag:
-            type: str
+            description: HTML or SVG element name.
           attrs:
-            type: list[tuple[str, str | None]]
+            description: Attributes attached to the generated element.
         """
         self.handle_starttag(tag, attrs)
         self.parts[-1] = self.parts[-1][:-1] + ' />'
@@ -100,7 +101,7 @@ class HtmlContent(HTMLParser):
         title: Retain closing tags.
         parameters:
           tag:
-            type: str
+            description: HTML or SVG element name.
         """
         self.parts.append(f'</{tag}>')
 
@@ -109,7 +110,7 @@ class HtmlContent(HTMLParser):
         title: Retain literal text including script and style bodies.
         parameters:
           data:
-            type: str
+            description: Structured content or template data to process.
         """
         self.parts.append(data)
 
@@ -118,7 +119,7 @@ class HtmlContent(HTMLParser):
         title: Retain named character references.
         parameters:
           name:
-            type: str
+            description: Name used to identify the requested item.
         """
         self.parts.append(f'&{name};')
 
@@ -127,7 +128,7 @@ class HtmlContent(HTMLParser):
         title: Retain numeric character references.
         parameters:
           name:
-            type: str
+            description: Name used to identify the requested item.
         """
         self.parts.append(f'&#{name};')
 
@@ -136,7 +137,7 @@ class HtmlContent(HTMLParser):
         title: Preserve authored comments.
         parameters:
           data:
-            type: str
+            description: Structured content or template data to process.
         """
         self.parts.append(f'<!--{data}-->')
 
@@ -145,7 +146,7 @@ class HtmlContent(HTMLParser):
         title: Preserve declarations.
         parameters:
           decl:
-            type: str
+            description: Original declaration being represented by this symbol.
         """
         self.parts.append(f'<!{decl}>')
 
@@ -154,7 +155,7 @@ class HtmlContent(HTMLParser):
         title: Preserve processing instructions.
         parameters:
           data:
-            type: str
+            description: Structured content or template data to process.
         """
         self.parts.append(f'<?{data}>')
 
@@ -170,11 +171,11 @@ def process_html(
     title: Gather raw anchors before Markdown anchors, then resolve HTML URLs.
     parameters:
       tokens:
-        type: list[Token]
+        description: Parsed document tokens in rendering order.
       page:
-        type: Page
+        description: Page being compiled or used to resolve links.
       resolve:
-        type: Callable[[str], str] | None
+        description: Callback that validates and rewrites a link destination.
     """
     if not page.settings.html:
         return

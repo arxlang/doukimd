@@ -35,11 +35,11 @@ class ApiOptions(Settings):
     title: Supported options for an API block.
     attributes:
       members:
-        type: Literal[none, public]
+        description: Whether to include public declaration members.
       show_source:
-        type: bool
+        description: Whether to display the source path and declaration line.
       source:
-        type: str | None
+        description: Source content or configured API source name.
     """
 
     members: Literal['none', 'public'] = 'none'
@@ -54,15 +54,15 @@ def api_block(state: StateBlock, start: int, end: int, silent: bool) -> bool:
     title: Parse API directives only at Markdown block boundaries.
     parameters:
       state:
-        type: StateBlock
+        description: Current Markdown parser state.
       start:
-        type: int
+        description: First document line to inspect.
       end:
-        type: int
+        description: Exclusive final document line to inspect.
       silent:
-        type: bool
+        description: Whether to check syntax without emitting tokens.
     returns:
-      type: bool
+      description: Whether a valid API block was recognized.
     """
     if state.is_code_block(start):
         return False
@@ -105,11 +105,11 @@ def api_reference(state: StateInline, silent: bool) -> bool:
     title: Preserve inline API references as structured tokens.
     parameters:
       state:
-        type: StateInline
+        description: Current Markdown parser state.
       silent:
-        type: bool
+        description: Whether to check syntax without emitting tokens.
     returns:
-      type: bool
+      description: Whether an inline API reference was recognized.
     """
     match = re.match(r'\{@api\s+([^}\s]+)\}', state.src[state.pos :])
     if match is None:
@@ -127,7 +127,7 @@ def markdown_parser() -> MarkdownIt:
     """
     title: Construct the supported Markdown dialect.
     returns:
-      type: MarkdownIt
+      description: Parser configured with the supported Markdown dialect.
     """
     parser = MarkdownIt('commonmark', {'html': False})
     parser.enable('table')
@@ -146,9 +146,9 @@ def describe(value: object) -> str:
     title: Preserve structured Douki fields in readable Markdown.
     parameters:
       value:
-        type: object
+        description: Input value to validate or render.
     returns:
-      type: str
+      description: Markdown representation of the structured field.
     """
     if isinstance(value, str):
         return value
@@ -187,11 +187,11 @@ def api_markdown(item: ApiSymbol, show_source: bool) -> str:
     title: Expand a validated symbol without evaluating its prose as Jinja.
     parameters:
       item:
-        type: ApiSymbol
+        description: Declaration or navigation entry being rendered.
       show_source:
-        type: bool
+        description: Whether to display the source path and declaration line.
     returns:
-      type: str
+      description: Markdown for the declaration and its callable variants.
     """
     fence = '`' * max(
         3,
@@ -226,9 +226,9 @@ def documentation_markdown(data: Mapping[str, object]) -> str:
     title: Format validated fields for one declaration or variant.
     parameters:
       data:
-        type: Mapping[str, object]
+        description: Structured content or template data to process.
     returns:
-      type: str
+      description: Markdown preserving validated documentation.
     """
     parts: list[str] = []
     for name, value in data.items():
@@ -258,9 +258,9 @@ def field_description(value: object) -> str:
     title: Format Douki types, defaults, and prose without JSON wrappers.
     parameters:
       value:
-        type: object
+        description: Input value to validate or render.
     returns:
-      type: str
+      description: Readable field types, defaults, and descriptions.
     """
     if not isinstance(value, dict):
         return describe(value)
@@ -289,15 +289,15 @@ def parse_document(
     title: Expand API nodes into ordinary document tokens before resolution.
     parameters:
       parser:
-        type: MarkdownIt
+        description: Parser used to process the document content.
       text:
-        type: str
+        description: Text content to process.
       page:
-        type: Page
+        description: Page being compiled or used to resolve links.
       inventory:
-        type: ApiIndex | dict[str, ApiSymbol]
+        description: Collected API declarations keyed by symbol identity.
     returns:
-      type: list[Token]
+      description: Parsed document tokens with API blocks expanded.
     """
     api = api_index(inventory)
     try:
@@ -356,9 +356,9 @@ def assign_anchors(tokens: list[Token], page: Page) -> None:
     title: Assign deterministic unique heading anchors before link resolution.
     parameters:
       tokens:
-        type: list[Token]
+        description: Parsed document tokens in rendering order.
       page:
-        type: Page
+        description: Page being compiled or used to resolve links.
     """
     for index, token in enumerate(tokens):
         if token.type != 'heading_open':
@@ -386,13 +386,13 @@ def resolve_references(
     title: Resolve forward API references using the complete site inventory.
     parameters:
       tokens:
-        type: list[Token]
+        description: Parsed document tokens in rendering order.
       page:
-        type: Page
+        description: Page being compiled or used to resolve links.
       inventory:
-        type: ApiIndex | dict[str, ApiSymbol]
+        description: Collected API declarations keyed by symbol identity.
       routes:
-        type: ApiIndex | dict[str, str]
+        description: Planned output routes used to validate destinations.
     """
     api = api_index(inventory)
     planned = routes.routes if isinstance(routes, ApiIndex) else routes

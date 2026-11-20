@@ -38,7 +38,7 @@ class ProjectLoader(FileSystemLoader):
     title: Confine template files to a configured directory.
     attributes:
       directory:
-        type: Path
+        description: Directory containing the selected project resources.
     """
 
     directory: Path
@@ -48,7 +48,7 @@ class ProjectLoader(FileSystemLoader):
         title: Initialize a loader rooted at a resolved directory.
         parameters:
           directory:
-            type: Path
+            description: Directory containing the selected project resources.
         """
         self.directory = directory.resolve()
         super().__init__(str(self.directory))
@@ -60,11 +60,11 @@ class ProjectLoader(FileSystemLoader):
         title: Check template containment before reading content.
         parameters:
           environment:
-            type: Environment
+            description: Jinja environment used to load content templates.
           template:
-            type: str
+            description: Template or macro used to render the current content.
         returns:
-          type: tuple[str, str, Callable[[], bool]]
+          description: Template text, source path, and freshness callback.
         """
         project_path(self.directory, template)
         return super().get_source(environment, template)
@@ -77,11 +77,11 @@ def split_front_matter(text: str, source: Path) -> tuple[PageSettings, str]:
     title: Extract literal front matter before any template evaluation.
     parameters:
       text:
-        type: str
+        description: Text content to process.
       source:
-        type: Path
+        description: Source content or configured API source name.
     returns:
-      type: tuple[PageSettings, str]
+      description: Validated page metadata and remaining page body.
     """
     lines = text.splitlines(keepends=True)
     if not lines or lines[0].strip() != '---':
@@ -106,11 +106,11 @@ def discover_pages(root: Path, config: Config) -> list[Page]:
     title: Discover Markdown and notebook pages with their relative routes.
     parameters:
       root:
-        type: Path
+        description: Project root used to resolve relative paths.
       config:
-        type: Config
+        description: Validated project settings or their configuration file.
     returns:
-      type: list[Page]
+      description: Discovered pages with their planned relative routes.
     """
     docs = project_path(root, config.docs_dir)
     if not docs.is_dir():
@@ -173,9 +173,9 @@ def api_route(identifier: str) -> str:
     title: Assign a stable route that does not depend on source traversal.
     parameters:
       identifier:
-        type: str
+        description: Stable, source-qualified API identity.
     returns:
-      type: str
+      description: Stable output route for the API declaration.
     """
     language, path = identifier.split(':', maxsplit=1)
     return f'api/{language}/{path.replace(":", "/")}.html'
@@ -190,13 +190,13 @@ def api_summary(
     title: Group links to immediate API children by declaration kind.
     parameters:
       items:
-        type: tuple[ApiSymbol, Ellipsis]
+        description: Entries to process in display order.
       route:
-        type: str
+        description: Planned output path relative to the site root.
       api:
-        type: ApiIndex
+        description: Indexed API declarations used for symbol lookup.
     returns:
-      type: str
+      description: Markdown links grouped by immediate declaration kind.
     """
     groups = [
         ('module', 'Modules'),
@@ -244,13 +244,13 @@ def plan_pages(
     title: Add virtual API pages and reject duplicate routes.
     parameters:
       pages:
-        type: list[Page]
+        description: Pages with their planned output routes.
       inventory:
-        type: dict[str, ApiSymbol]
+        description: Collected API declarations keyed by symbol identity.
       config:
-        type: Config
+        description: Validated project settings or their configuration file.
     returns:
-      type: dict[str, str]
+      description: Authored and generated pages with unique output routes.
     """
     routes: dict[str, str] = {}
     if config.api.generate_pages and inventory:
@@ -305,9 +305,9 @@ def md_text(value: str) -> str:
     title: Escape plain text inserted into Markdown templates.
     parameters:
       value:
-        type: str
+        description: Input value to validate or render.
     returns:
-      type: str
+      description: Text escaped for safe insertion into Markdown.
     """
     return re.sub(r'([\\`*_{}\[\]()#+.!<>|~-])', r'\\\1', value)
 
@@ -321,15 +321,15 @@ def expand_page(
     title: Render enabled content templates exactly once.
     parameters:
       page:
-        type: Page
+        description: Page being compiled or used to resolve links.
       root:
-        type: Path
+        description: Project root used to resolve relative paths.
       config:
-        type: Config
+        description: Validated project settings or their configuration file.
       context:
-        type: dict[str, object]
+        description: Template variables available for the current page.
     returns:
-      type: str
+      description: Page body after any explicitly enabled template expansion.
     """
     if page.settings.render != 'jinja':
         return page.body

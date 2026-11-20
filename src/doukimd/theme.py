@@ -25,13 +25,15 @@ from doukimd.runtime import typechecked
 @typechecked
 class NavigationFragments:
     """
-    title: Cache bundled menu markup separately from page selection attributes.
+    title: Cache bundled menu markup separately from page selection
+      attributes.
     attributes:
       fragments:
-        type: OrderedDict[tuple[int, int, str, bool], tuple[str, Ellipsis]]
+        description: Cached HTML fragments for prepared navigation
+          menus.
       slots:
-        type: >-
-          dict[tuple[int, int, str, bool], tuple[tuple[int, bool], Ellipsis]]
+        description: Placeholders filled with page-specific navigation
+          attributes.
     """
 
     def __init__(self) -> None:
@@ -56,15 +58,18 @@ class NavigationFragments:
         title: Fill selection slots without rerendering escaped links.
         parameters:
           macro:
-            type: Macro
+            description: Theme macro used to render a navigation
+              fragment.
           item:
-            type: NavigationView
+            description: Declaration or navigation entry being rendered.
           group_id:
-            type: str
+            description: Identifier that keeps separate accordion
+              menus independent.
           opened:
-            type: bool
+            description: Whether the accordion branch is expanded.
         returns:
-          type: str
+          description: HTML fragment with page-specific selection
+            slots filled.
         """
         key = (id(item.node), id(item.selection.urls), group_id, opened)
         if key not in self.fragments:
@@ -74,14 +79,17 @@ class NavigationFragments:
             @typechecked
             def attribute(view: NavigationView, location: bool) -> str:
                 """
-                title: Register an attribute slot without embedding page state.
+                title: Register an attribute slot without embedding page
+                  state.
                 parameters:
                   view:
-                    type: NavigationView
+                    description: Page-specific navigation links and selection
+                      state.
                   location:
-                    type: bool
+                    description: Source location used in diagnostics.
                 returns:
-                  type: str
+                  description: Rendered attribute or registered selection
+                    placeholder.
                 """
                 slots.append((view.node.identifier, location))
                 return marker
@@ -114,7 +122,7 @@ def palette_colors() -> dict[str, dict[str, dict[str, str]]]:
     """
     title: Read the bundled light and dark semantic color presets.
     returns:
-      type: dict[str, dict[str, dict[str, str]]]
+      description: Bundled semantic colors keyed by palette and mode.
     """
     return cast(
         dict[str, dict[str, dict[str, str]]],
@@ -132,7 +140,7 @@ def palette_styles() -> str:
     """
     title: Emit independent palette and appearance selectors with defaults.
     returns:
-      type: str
+      description: CSS selectors for palette and appearance preferences.
     """
     rules = ['/* Radix Colors 3.0.0 (MIT): _doukimd/radix/LICENSE */']
     for name, modes in palette_colors().items():
@@ -159,9 +167,9 @@ def theme_assets(settings: ThemeSettings) -> dict[str, bytes]:
     title: Select bundled framework assets and adaptive syntax highlighting.
     parameters:
       settings:
-        type: ThemeSettings
+        description: Validated settings controlling the current operation.
     returns:
-      type: dict[str, bytes]
+      description: Bundled theme asset destinations and bytes.
     """
     resources = files('doukimd').joinpath('themes')
     stylesheet = resources.joinpath('default/theme.css').read_bytes()

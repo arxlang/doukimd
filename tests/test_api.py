@@ -11,7 +11,13 @@ from pathlib import Path
 import griffe
 import pytest
 
-from doukimd.api import collect_api, signature, source_path, visit
+from doukimd.api import (
+    annotation_signature,
+    collect_api,
+    signature,
+    source_path,
+    visit,
+)
 from doukimd.build import compile_site
 from doukimd.config import load_config
 from doukimd.errors import BuildError
@@ -24,7 +30,7 @@ def test_collection_never_imports_code(example: Path) -> None:
     title: Extract API data even when importing the module would fail.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
     """
     source = example / 'src/example.py'
     source.write_text(
@@ -36,13 +42,135 @@ def test_collection_never_imports_code(example: Path) -> None:
     assert 'python:example.helper' not in inventory
 
 
+@typechecked
+def test_description_only_docstrings(example: Path) -> None:
+    """
+    title: Collect Douki 0.14 prose and render source types without rewrites.
+    parameters:
+      example: Copy of the complete example project.
+    """
+    source = example / 'src/example.py'
+    source.write_text(
+        source.read_text()
+        .replace(
+            'left:\n        description: First value.', 'left: First value.'
+        )
+        .replace('returns:\n      description: The sum.', 'returns: The sum.'),
+        encoding='utf-8',
+    )
+    original = source.read_bytes()
+    inventory = collect_api(example, load_config(example / 'doukimd.yaml'))
+    item = inventory['python:example.add']
+    assert item.signature == 'add(left: int, right: int = 0) -> int'
+    assert item.documentation['parameters'] == {
+        'left': {'description': 'First value.', 'type': 'int'},
+        'right': {'description': 'Second value.', 'default': 0, 'type': 'int'},
+    }
+    assert item.documentation['returns'] == {
+        'description': 'The sum.',
+        'type': 'int',
+    }
+    result = compile_site(example / 'doukimd.yaml')
+    html = result.files['api/python/example.add.html'].decode()
+    assert 'First value.' in html
+    assert 'Second value.' in html
+    assert 'The sum.' in html
+    symbols = json.loads(result.files['symbols.json'])['symbols']
+    assert symbols[item.identifier]['signature'] == item.signature
+    assert source.read_bytes() == original
+
+
+@typechecked
+def test_static_parameter_kinds(example: Path) -> None:
+    """
+    title: Enrich variadic parameters from static annotations alone.
+    parameters:
+      example: Copy of the complete example project.
+    """
+    source = example / 'src/example.py'
+    source.write_text(
+        source.read_text() + '\ndef variadic(first: int, /, *values: str, '
+        'flag: bool = True, **options: float) -> list[str]:\n'
+        '    """title: Collect values."""\n'
+        '    raise RuntimeError("never execute")\n',
+        encoding='utf-8',
+    )
+    inventory = collect_api(example, load_config(example / 'doukimd.yaml'))
+    data = inventory['python:example.variadic'].documentation
+    assert data['parameters'] == {
+        'first': {'type': 'int'},
+        'values': {'type': 'str', 'variadic': 'positional'},
+        'flag': {'type': 'bool'},
+        'options': {'type': 'float', 'variadic': 'keyword'},
+    }
+    assert data['returns'] == {'type': 'list[str]'}
+
+
+@pytest.mark.parametrize(
+    ('original', 'replacement', 'message'),
+    [
+        ('left: int', 'left', "parameter 'left'"),
+        ('-> int:', ':', 'return value'),
+        (
+            'from public import private, public',
+            'from public import private, public\n'
+            'class Missing:\n'
+            '    """\n    title: Missing annotation.\n'
+            '    attributes:\n      value: Stored value.\n    """\n'
+            '    value = 1\n',
+            "attribute 'value'",
+        ),
+    ],
+)
+@typechecked
+def test_missing_annotations(
+    example: Path, original: str, replacement: str, message: str
+) -> None:
+    """
+    title: Report annotation failures at the static collection boundary.
+    parameters:
+      example: Copy of the complete example project.
+      original: Source fragment containing the annotated declaration.
+      replacement: Source fragment omitting a required annotation.
+      message: Annotation diagnostic expected from Douki.
+    """
+    source = example / 'src/example.py'
+    source.write_text(
+        source.read_text().replace(original, replacement), encoding='utf-8'
+    )
+    with pytest.raises(BuildError, match=message) as caught:
+        collect_api(example, load_config(example / 'doukimd.yaml'))
+    assert caught.value.phase == 'douki'
+    assert 'annotations' in str(caught.value)
+
+
 @pytest.mark.parametrize(
     ('replacement', 'message'),
     [
         ('title: Add two integers.', 'Missing'),
         ('title: Add two integers.\n    unknown: true', 'schema'),
         (
-            'title: Add two integers.\n    parameters:\n      wrong: int',
+            'title: Add two integers.\n    parameters:\n'
+            '      left: {type: int}\n      right: Second value.',
+            'schema',
+        ),
+        (
+            'title: Add two integers.\n    returns: {type: int}',
+            'schema',
+        ),
+        (
+            'title: Add two integers.\n    attributes:\n'
+            '      value: {type: int}',
+            'schema',
+        ),
+        (
+            'title: Add two integers.\n    warnings:\n'
+            '      - type: UserWarning\n        description: Old format.',
+            'schema',
+        ),
+        (
+            'title: Add two integers.\n    parameters:\n'
+            '      wrong: An unknown parameter.',
             'match',
         ),
     ],
@@ -53,11 +181,11 @@ def test_invalid_douki(example: Path, replacement: str, message: str) -> None:
     title: Reject missing docstrings and invalid schema or parameter names.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
       replacement:
-        type: str
+        description: Replacement source content used to exercise validation.
       message:
-        type: str
+        description: Diagnostic expected or reported for the failure.
     """
     source = example / 'src/example.py'
     text = source.read_text()
@@ -82,7 +210,7 @@ def test_explicit_visibility_and_class_members(example: Path) -> None:
     title: Respect aliases of atpublic decorators and retain underscore names.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
     """
     source = example / 'src/example.py'
     source.write_text(
@@ -97,7 +225,7 @@ def test_explicit_visibility_and_class_members(example: Path) -> None:
         '        """\n'
         '        title: Increment the counter.\n'
         '        parameters:\n'
-        '          amount: int\n'
+        '          amount: Increase applied to the counter.\n'
         '        """\n'
         '        return amount\n'
         '\nclass Hidden:\n'
@@ -128,7 +256,7 @@ def test_docstrings_are_never_templates(example: Path) -> None:
     title: Preserve Jinja-looking prose and arbitrary valid Douki fields.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
     """
     source = example / 'src/example.py'
     source.write_text(
@@ -140,8 +268,7 @@ def test_docstrings_are_never_templates(example: Path) -> None:
             '      ValueError: An example exception.\n'
             '    references: [Reference one, Reference two]\n'
             '    warnings:\n'
-            '      - type: UserWarning\n'
-            '        description: Example warning.\n'
+            '      UserWarning: Example warning.\n'
             '    deprecated: Use a newer function.\n',
         ),
         encoding='utf-8',
@@ -160,7 +287,7 @@ def test_docstrings_cannot_expand_api_blocks(example: Path) -> None:
     title: Prevent recursive API expansion through documentation prose.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
     """
     source = example / 'src/example.py'
     source.write_text(
@@ -189,11 +316,11 @@ def test_explicit_exports(
     title: Honor declared exports and reject unsupported exported objects.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
       source:
-        type: str
+        description: Source content or configured API source name.
       message:
-        type: str | None
+        description: Diagnostic expected or reported for the failure.
     """
     path = example / 'src/example.py'
     path.write_text(path.read_text() + '\n' + source, encoding='utf-8')
@@ -214,9 +341,9 @@ def test_bad_modules(example: Path, module: str) -> None:
     title: Report invalid module identifiers and missing source.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
       module:
-        type: str
+        description: Python import path selected for collection.
     """
     path = example / 'doukimd.yaml'
     path.write_text(
@@ -235,7 +362,7 @@ def test_duplicate_sources_and_routes(example: Path) -> None:
     title: Reject duplicate symbols and authored route collisions.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
     """
     path = example / 'doukimd.yaml'
     original = path.read_text()
@@ -259,7 +386,7 @@ def test_disabling_generated_pages(example: Path) -> None:
     title: Support embedded API documentation without virtual pages.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
     """
     path = example / 'doukimd.yaml'
     path.write_text(
@@ -286,10 +413,12 @@ def test_unsupported_nodes_fail_closed(tmp_path: Path) -> None:
     title: Reject unsupported nodes and namespace packages.
     parameters:
       tmp_path:
-        type: Path
+        description: Temporary directory provided by pytest.
     """
     with pytest.raises(BuildError, match='Unsupported declaration'):
         signature(object())
+    with pytest.raises(BuildError, match='Unsupported declaration'):
+        annotation_signature(object())
     with pytest.raises(BuildError, match='Unsupported declaration'):
         visit(object(), tmp_path)
     module = griffe.Module('namespace', filepath=[tmp_path])

@@ -13,18 +13,14 @@ def add(left: int, right: int = 0) -> int:
     summary: Return the sum of the arguments.
     parameters:
       left:
-        type: int
         description: First value.
       right:
-        type: int
         description: Second value.
         default: 0
     returns:
-      type: int
       description: The sum.
     examples:
-      - code: |
-          add(2, 3)
+    - code: add(2, 3)
     """
     return left + right
 

@@ -33,17 +33,17 @@ class MenuNode:
     title: Store a menu entry independently of any current page.
     attributes:
       identifier:
-        type: int
+        description: Stable, source-qualified API identity.
       title:
-        type: str
+        description: Display title for the page or navigation entry.
       url:
-        type: str | None
+        description: Link destination to validate or rebase.
       kind:
-        type: str | None
+        description: Declaration, navigation, or output kind.
       layout:
-        type: Literal[nested, modules]
+        description: Presentation layout used for this menu or page.
       children:
-        type: tuple[MenuNode, Ellipsis]
+        description: Immediate children in display order.
     """
 
     identifier: int
@@ -58,15 +58,15 @@ class MenuNode:
 @typechecked
 def relative_url(url: str | None, directory: str) -> str | None:
     """
-    title: >-
-      Rebase an already validated root-relative URL without losing escaping.
+    title: Rebase an already validated root-relative URL without
+      losing escaping.
     parameters:
       url:
-        type: str | None
+        description: Link destination to validate or rebase.
       directory:
-        type: str
+        description: Directory containing the selected project resources.
     returns:
-      type: str | None
+      description: Escaped URL relative to the current output directory.
     """
     if url is None:
         return None
@@ -90,25 +90,25 @@ class PreparedMenu:
     title: Freeze menu links and index the nodes affected by a page selection.
     attributes:
       roots:
-        type: tuple[MenuNode, Ellipsis]
+        description: Top-level entries in the selected hierarchy.
       nodes:
-        type: Mapping[int, MenuNode]
+        description: Immutable entries in the prepared navigation hierarchy.
       parents:
-        type: Mapping[int, int]
+        description: Parent relationships used to resolve navigation ancestry.
       current_nodes:
-        type: Mapping[str, tuple[int, Ellipsis]]
+        description: Entries matching the selected page exactly.
       ancestor_nodes:
-        type: Mapping[str, tuple[int, Ellipsis]]
+        description: Entries containing the selected page in their branch.
       module_nodes:
-        type: Mapping[str, tuple[int, Ellipsis]]
+        description: API module entries indexed for navigation.
       prefixes:
-        type: Mapping[str, tuple[int, Ellipsis]]
+        description: Route prefixes associated with configured sidebars.
       api_nodes:
-        type: tuple[int, Ellipsis]
+        description: Navigation entries associated with API declarations.
       relative_urls:
-        type: dict[str, Mapping[int, str | None]]
+        description: Cached links relative to the current page directory.
       inactive_views:
-        type: dict[str, dict[int, NavigationView]]
+        description: Reusable views for branches with no selected descendant.
     """
 
     roots: tuple[MenuNode, ...]
@@ -130,17 +130,18 @@ class PreparedMenu:
         configured: bool,
     ) -> None:
         """
-        title: >-
-          Capture checked menu entries without sharing mutable child lists.
+        title: Capture checked menu entries without sharing mutable
+          child lists.
         parameters:
           items:
-            type: list[NavigationItem]
+            description: Entries to process in display order.
           site:
-            type: SiteIndex
+            description: Indexed site pages and output destinations.
           header:
-            type: bool
+            description: Top-level menus shown in the page header.
           configured:
-            type: bool
+            description: Navigation entries explicitly selected by
+              configuration.
         """
         nodes: dict[int, MenuNode] = {}
         parents: dict[int, int] = {}
@@ -157,11 +158,13 @@ class PreparedMenu:
             title: Freeze one entry and register its selection rules.
             parameters:
               item:
-                type: NavigationItem
+                description: Declaration or navigation entry being rendered.
               parent:
-                type: int | None
+                description: Parent declaration, navigation entry, or output
+                  element.
             returns:
-              type: MenuNode
+              description: Immutable entry registered with its navigation
+                selection rules.
             """
             nonlocal next_identifier
             identifier = next_identifier
@@ -239,11 +242,11 @@ class PreparedMenu:
         title: Resolve one page's flags while reusing all stable menu links.
         parameters:
           page:
-            type: Page
+            description: Page being compiled or used to resolve links.
           api:
-            type: ApiIndex
+            description: Indexed API declarations used for symbol lookup.
         returns:
-          type: tuple[NavigationView, Ellipsis]
+          description: Navigation selection for the requested page.
         """
         if not self.roots:
             return ()
@@ -259,13 +262,14 @@ class MenuSelection:
     title: Keep current and active flags isolated to one rendered page.
     attributes:
       current:
-        type: frozenset[int]
+        description: Current page route or navigation selection.
       active:
-        type: frozenset[int]
+        description: Whether this entry belongs to the selected navigation
+          branch.
       urls:
-        type: Mapping[int, str | None]
+        description: Validated links used by the prepared menus.
       inactive_views:
-        type: dict[int, NavigationView]
+        description: Reusable views for branches with no selected descendant.
     """
 
     current: frozenset[int]
@@ -278,11 +282,11 @@ class MenuSelection:
         title: Select route matches, symbol ancestors, and the closest module.
         parameters:
           menu:
-            type: PreparedMenu
+            description: Configured navigation menu to resolve.
           page:
-            type: Page
+            description: Page being compiled or used to resolve links.
           api:
-            type: ApiIndex
+            description: Indexed API declarations used for symbol lookup.
         """
         current = frozenset(menu.current_nodes.get(page.route, ()))
         active = set(current)
@@ -329,9 +333,9 @@ class MenuSelection:
         title: Share views only for branches with no selected descendants.
         parameters:
           node:
-            type: MenuNode
+            description: Source declaration or parsed document node to process.
         returns:
-          type: NavigationView
+          description: Navigation view sharing stable links and menu structure.
         """
         if node.identifier in self.active:
             return NavigationView(node, self)
@@ -345,13 +349,19 @@ class MenuSelection:
 @dataclass(frozen=True)
 class NavigationView:
     """
-    title: >-
-      Expose the theme's existing menu fields through a read-only page view.
+    title: Expose the theme's existing menu fields through a read-only page
+      view.
     attributes:
       node:
-        type: MenuNode
+        description: Source declaration or parsed document node to process.
       selection:
-        type: MenuSelection
+        description: Current page and its active navigation branches.
+      title: Configured display label.
+      url: Link relative to the current output directory.
+      kind: API declaration kind, when present.
+      layout: Rendering strategy selected for the menu.
+      current: Whether this entry matches the current page exactly.
+      active: Whether the selected page belongs to this branch.
     """
 
     node: MenuNode
@@ -362,7 +372,7 @@ class NavigationView:
         """
         title: Return the configured label.
         returns:
-          type: str
+          description: Configured display label.
         """
         return self.node.title
 
@@ -371,7 +381,7 @@ class NavigationView:
         """
         title: Return a link relative to the current output directory.
         returns:
-          type: str | None
+          description: Link relative to the current output directory.
         """
         return self.selection.urls[self.node.identifier]
 
@@ -380,7 +390,8 @@ class NavigationView:
         """
         title: Return the API declaration kind when present.
         returns:
-          type: str | None
+          description: API declaration kind, when this entry represents a
+            symbol.
         """
         return self.node.kind
 
@@ -389,7 +400,7 @@ class NavigationView:
         """
         title: Return the menu's rendering strategy.
         returns:
-          type: Literal[nested, modules]
+          description: Rendering strategy selected for the menu.
         """
         return self.node.layout
 
@@ -398,7 +409,7 @@ class NavigationView:
         """
         title: Identify exact page matches.
         returns:
-          type: bool
+          description: Whether this entry matches the current page exactly.
         """
         return self.node.identifier in self.selection.current
 
@@ -407,7 +418,7 @@ class NavigationView:
         """
         title: Identify the active branch without traversing unrelated nodes.
         returns:
-          type: bool
+          description: Whether the selected page belongs to this branch.
         """
         return self.node.identifier in self.selection.active
 
@@ -416,7 +427,8 @@ class NavigationView:
         """
         title: Materialize immutable children once when the theme needs them.
         returns:
-          type: tuple[NavigationView, Ellipsis]
+          description: Immutable child views with page-specific selection
+            state.
         """
         return tuple(
             self.selection.view(child) for child in self.node.children
@@ -427,25 +439,25 @@ class NavigationView:
 @typechecked
 class NavigationPlan:
     """
-    title: >-
-      Resolve all configured targets once, then prepare only selected menus.
+    title: Resolve all configured targets once, then prepare only selected
+      menus.
     attributes:
       site:
-        type: SiteIndex
+        description: Indexed site pages and output destinations.
       api:
-        type: ApiIndex
+        description: Indexed API declarations used for symbol lookup.
       config:
-        type: Config
+        description: Validated project settings or their configuration file.
       automatic:
-        type: list[NavigationItem]
+        description: Whether to construct navigation from generated API pages.
       sidebars:
-        type: dict[str, list[NavigationItem]]
+        description: Configured sidebar menus.
       menus:
-        type: dict[str | None, PreparedMenu]
+        description: Prepared menus shared across pages in this build.
       origin:
-        type: Page
+        description: Output directory from which relative links are calculated.
       navbar:
-        type: PreparedMenu | None
+        description: Configured top-level navigation menus.
     """
 
     site: SiteIndex
@@ -462,11 +474,12 @@ class NavigationPlan:
         title: Validate hidden menus too, before rendering any page.
         parameters:
           site:
-            type: SiteIndex
+            description: Indexed site pages and output destinations.
           api:
-            type: ApiIndex
+            description: Indexed API declarations used for symbol lookup.
           config:
-            type: Config
+            description: Validated project settings or their configuration
+              file.
         """
         self.site = site
         self.api = api
@@ -489,9 +502,9 @@ class NavigationPlan:
         title: Return the selected sidebar with page-local state.
         parameters:
           page:
-            type: Page
+            description: Page being compiled or used to resolve links.
         returns:
-          type: tuple[NavigationView, Ellipsis]
+          description: Selected sidebar with page-specific links and state.
         """
         selected = sidebar_for_page(self.config, page)
         if page.settings.sidebar is False or page.settings.layout == 'landing':
@@ -512,9 +525,9 @@ class NavigationPlan:
         title: Return top-level menus with page-local links and state.
         parameters:
           page:
-            type: Page
+            description: Page being compiled or used to resolve links.
         returns:
-          type: tuple[NavigationView, Ellipsis]
+          description: Header menus with page-specific links and state.
         """
         if self.navbar is None:
             items = configured_items(

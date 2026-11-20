@@ -37,9 +37,9 @@ def test_invalid_yaml(text: str, tmp_path: Path) -> None:
     title: Reject malformed and ambiguous metadata.
     parameters:
       text:
-        type: str
+        description: Text content to process.
       tmp_path:
-        type: Path
+        description: Temporary directory provided by pytest.
     """
     with pytest.raises(BuildError, match='metadata'):
         read_yaml(text, tmp_path / 'input.yaml')
@@ -64,9 +64,9 @@ def test_invalid_config(project: Path, extra: str) -> None:
     title: Fail closed on unsupported configuration.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
       extra:
-        type: str
+        description: Additional fixture settings or generated output files.
     """
     config = project / 'doukimd.yaml'
     # Replace sections for tests of nested validation.
@@ -86,7 +86,7 @@ def test_missing_config_and_data(project: Path) -> None:
     title: Report missing input files as structured failures.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
     """
     with pytest.raises(BuildError, match='config'):
         load_config(project / 'missing.yaml')
@@ -106,9 +106,9 @@ def test_paths_are_relative(tmp_path: Path, value: str) -> None:
     title: Reject absolute paths and parent traversal.
     parameters:
       tmp_path:
-        type: Path
+        description: Temporary directory provided by pytest.
       value:
-        type: str
+        description: Input value to validate or render.
     """
     with pytest.raises(BuildError, match='relative project path'):
         project_path(tmp_path, value)
@@ -120,7 +120,7 @@ def test_symlink_escape(tmp_path: Path) -> None:
     title: Reject symlinks escaping a configured root.
     parameters:
       tmp_path:
-        type: Path
+        description: Temporary directory provided by pytest.
     """
     root = tmp_path / 'root'
     root.mkdir()

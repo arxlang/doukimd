@@ -31,17 +31,17 @@ class SiteSettings(Settings):
     title: Site presentation settings.
     attributes:
       title:
-        type: str
+        description: Display title for the page or navigation entry.
       base_url:
-        type: str
+        description: Public base URL used for site links.
       description:
-        type: str
+        description: Human-readable description of the site or entry.
       logo:
-        type: str | None
+        description: Docs-relative path to the site logo.
       logo_alt:
-        type: str
+        description: Accessible alternative text for the logo.
       favicon:
-        type: str | None
+        description: Docs-relative path to the favicon.
     """
 
     title: str
@@ -58,9 +58,9 @@ class ProjectSettings(Settings):
     title: Project metadata available to content templates.
     attributes:
       name:
-        type: str
+        description: Name used to identify the requested item.
       version:
-        type: str
+        description: Project version displayed by the theme.
     """
 
     name: str
@@ -73,13 +73,13 @@ class PythonSource(Settings):
     title: Configure static collection of explicitly selected Python modules.
     attributes:
       language:
-        type: Literal[python]
+        description: Source language used for highlighting or collection.
       name:
-        type: str | None
+        description: Name used to identify the requested item.
       root:
-        type: str
+        description: Project root used to resolve relative paths.
       modules:
-        type: list[str]
+        description: Python import paths selected within the source folder.
     """
 
     language: Literal['python'] = 'python'
@@ -94,9 +94,9 @@ class ApiSettings(Settings):
     title: API source discovery and virtual reference pages.
     attributes:
       sources:
-        type: list[PythonSource]
+        description: Isolated source folders selected for API collection.
       generate_pages:
-        type: bool
+        description: Whether to generate standalone API reference pages.
     """
 
     sources: list[PythonSource] = Field(default_factory=list)
@@ -109,15 +109,15 @@ class ThemeSettings(Settings):
     title: Frontend framework, color preference, and local template overrides.
     attributes:
       stylesheets:
-        type: list[str]
+        description: Additional docs-relative stylesheet paths.
       directory:
-        type: str | None
+        description: Directory containing the selected project resources.
       framework:
-        type: Literal[bootstrap, none]
+        description: Selected bundled CSS framework.
       color_mode:
-        type: Literal[auto, light, dark]
+        description: Initial light, dark, or automatic appearance.
       palette:
-        type: Literal[terracotta, ocean, forest, violet, slate]
+        description: Selected semantic color palette.
     """
 
     stylesheets: list[str] = Field(default_factory=list)
@@ -135,15 +135,15 @@ class NavEntry(Settings):
     title: A local page, external URL, nested group, or generated API tree.
     attributes:
       title:
-        type: str
+        description: Display title for the page or navigation entry.
       path:
-        type: str | None
+        description: Path or qualified declaration name to resolve.
       url:
-        type: str | None
+        description: Link destination to validate or rebase.
       api:
-        type: str | None
+        description: Indexed API declarations used for symbol lookup.
       children:
-        type: list[NavEntry]
+        description: Immediate children in display order.
     """
 
     title: str = Field(min_length=1)
@@ -158,7 +158,7 @@ class NavEntry(Settings):
         """
         title: Require one unambiguous navigation target or a nonempty group.
         returns:
-          type: NavEntry
+          description: Validated navigation entry.
         """
         targets = sum(
             value is not None for value in (self.path, self.url, self.api)
@@ -176,13 +176,13 @@ class SidebarSettings(Settings):
     title: A named menu selected by route prefixes or page front matter.
     attributes:
       id:
-        type: str
+        description: Stable identifier for the configured entry.
       title:
-        type: str
+        description: Display title for the page or navigation entry.
       paths:
-        type: list[str]
+        description: Paths selected for processing.
       items:
-        type: list[NavEntry]
+        description: Entries to process in display order.
     """
 
     id: str = Field(min_length=1)
@@ -197,11 +197,11 @@ class NavigationSettings(Settings):
     title: Ordered navbar links and independently scoped documentation menus.
     attributes:
       navbar:
-        type: list[NavEntry]
+        description: Configured top-level navigation menus.
       sidebars:
-        type: list[SidebarSettings]
+        description: Configured sidebar menus.
       default_sidebar:
-        type: str | None
+        description: Sidebar selected when no more specific rule applies.
     """
 
     navbar: list[NavEntry] = Field(default_factory=list)
@@ -215,11 +215,11 @@ class SearchSettings(Settings):
     title: Local full-text search over authored, notebook, and API content.
     attributes:
       enabled:
-        type: bool
+        description: Whether this feature is enabled.
       limit:
-        type: int
+        description: Maximum number of results to display.
       min_length:
-        type: int
+        description: Minimum query length before searching.
     """
 
     enabled: bool = True
@@ -233,31 +233,31 @@ class Config(Settings):
     title: Version one project configuration.
     attributes:
       schema_version:
-        type: Literal[1]
+        description: Configuration schema revision.
       site:
-        type: SiteSettings
+        description: Indexed site pages and output destinations.
       project:
-        type: ProjectSettings
+        description: Project configuration or temporary project directory.
       docs_dir:
-        type: str
+        description: Project-relative directory containing authored pages.
       output_dir:
-        type: str
+        description: Project-relative directory for generated site output.
       includes_dir:
-        type: str
+        description: Project-relative directory containing content templates.
       data:
-        type: dict[str, str]
+        description: Structured content or template data to process.
       api:
-        type: ApiSettings
+        description: Indexed API declarations used for symbol lookup.
       theme:
-        type: ThemeSettings
+        description: Theme settings controlling HTML presentation.
       plugins:
-        type: list[str]
+        description: Explicitly enabled plugin entry points.
       assets:
-        type: list[str]
+        description: Asset destinations and bytes included in the build.
       navigation:
-        type: NavigationSettings
+        description: Navigation configuration or selected sidebar entries.
       search:
-        type: SearchSettings
+        description: Selected source folder that confines API collection.
     """
 
     schema_version: Literal[1] = 1
@@ -281,27 +281,29 @@ class PageSettings(Settings):
     title: Front matter supported on authored Markdown pages.
     attributes:
       title:
-        type: str | None
+        description: Display title for the page or navigation entry.
       render:
-        type: Literal[markdown, jinja]
+        description: Whether the page body uses Markdown alone or enabled
+          Jinja.
       meta:
-        type: dict[str, JsonValue]
+        description: Literal page metadata exposed to templates.
       api_source:
-        type: str | None
+        description: Default named API source for page references.
       layout:
-        type: Literal[docs, full, landing]
+        description: Presentation layout used for this menu or page.
       sidebar:
-        type: str | bool
+        description: Sidebar selected for this page.
       toc:
-        type: bool
+        description: Whether to display page section links.
       show_title:
-        type: bool
+        description: Whether to display the page title.
       html:
-        type: bool
+        description: Whether authored page HTML is enabled, or rendered HTML
+          content.
       template:
-        type: str
+        description: Template or macro used to render the current content.
       search:
-        type: bool
+        description: Selected source folder that confines API collection.
     """
 
     title: str | None = None
@@ -325,11 +327,11 @@ class ApiVariant:
     title: A statically collected callable signature and its own prose.
     attributes:
       signature:
-        type: str
+        description: Display signature derived statically from source.
       documentation:
-        type: dict[str, JsonValue]
+        description: Validated documentation fields for the declaration.
       line:
-        type: int | None
+        description: Source line containing the declaration.
     """
 
     signature: str
@@ -345,29 +347,31 @@ class ApiSymbol:
     title: An API declaration and its validated Douki documentation.
     attributes:
       identifier:
-        type: str
+        description: Stable, source-qualified API identity.
       name:
-        type: str
+        description: Name used to identify the requested item.
       kind:
-        type: str
+        description: Declaration, navigation, or output kind.
       signature:
-        type: str
+        description: Display signature derived statically from source.
       source:
-        type: str
+        description: Source content or configured API source name.
       line:
-        type: int | None
+        description: Source line containing the declaration.
       documentation:
-        type: dict[str, JsonValue]
+        description: Validated documentation fields for the declaration.
       parent:
-        type: str | None
+        description: Parent declaration, navigation entry, or output element.
       source_name:
-        type: str | None
+        description: Configured source name used to scope API identities.
       canonical:
-        type: str | None
+        description: Identity of the original declaration behind a re-export.
       generated:
-        type: bool
+        description: Whether the declaration was generated by the source
+          model.
       variants:
-        type: list[ApiVariant]
+        description: Callable signatures and documentation in declaration
+          order.
     """
 
     identifier: str
@@ -392,21 +396,21 @@ class Page:
     title: An authored or virtual page.
     attributes:
       route:
-        type: str
+        description: Planned output path relative to the site root.
       title:
-        type: str
+        description: Display title for the page or navigation entry.
       body:
-        type: str
+        description: Page body before final HTML rendering.
       settings:
-        type: PageSettings
+        description: Validated settings controlling the current operation.
       source:
-        type: Path | None
+        description: Source content or configured API source name.
       symbol:
-        type: str | None
+        description: API declaration to resolve or render.
       anchors:
-        type: set[str]
+        description: Document heading anchors available for link validation.
       notebook:
-        type: Notebook | None
+        description: Validated notebook content associated with the page.
     """
 
     route: str
@@ -427,9 +431,9 @@ class SiteBuild:
     title: A complete validated site ready to write.
     attributes:
       files:
-        type: dict[str, bytes]
+        description: Generated output bytes keyed by relative destination.
       page_count:
-        type: int
+        description: Number of pages produced by the build.
     """
 
     files: dict[str, bytes]
@@ -442,19 +446,20 @@ class NavigationItem(Settings):
     title: A route-aware menu entry with nested pages or module accordions.
     attributes:
       title:
-        type: str
+        description: Display title for the page or navigation entry.
       url:
-        type: str | None
+        description: Link destination to validate or rebase.
       current:
-        type: bool
+        description: Current page route or navigation selection.
       active:
-        type: bool
+        description: Whether this entry belongs to the selected navigation
+          branch.
       children:
-        type: list[NavigationItem]
+        description: Immediate children in display order.
       kind:
-        type: str | None
+        description: Declaration, navigation, or output kind.
       layout:
-        type: Literal[nested, modules]
+        description: Presentation layout used for this menu or page.
     """
 
     title: str

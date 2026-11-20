@@ -33,9 +33,10 @@ class ContextHooks:
         title: Provide data under the plugin's own template namespace.
         parameters:
           config:
-            type: Config
+            description: Validated project settings or their configuration
+              file.
         returns:
-          type: dict[str, object]
+          description: Plugin-specific template data.
         """
         return {}
 
@@ -47,9 +48,9 @@ def plugin_context(config: Config) -> dict[str, object]:
     title: Load only explicitly configured entry points and validate results.
     parameters:
       config:
-        type: Config
+        description: Validated project settings or their configuration file.
     returns:
-      type: dict[str, object]
+      description: Validated template context for enabled plugins.
     """
     available = {
         entry.name: entry for entry in entry_points(group='doukimd.plugins')

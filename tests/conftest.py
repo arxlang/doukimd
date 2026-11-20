@@ -20,9 +20,9 @@ def project(tmp_path: Path) -> Path:
     title: Create a minimal documentation project.
     parameters:
       tmp_path:
-        type: Path
+        description: Temporary directory provided by pytest.
     returns:
-      type: Path
+      description: Temporary project directory with minimal documentation.
     """
     (tmp_path / 'doukimd.yaml').write_text(
         'site:\n  title: Test docs\nproject:\n  name: test\n',
@@ -40,9 +40,9 @@ def example(tmp_path: Path) -> Path:
     title: Copy the runnable example without build output.
     parameters:
       tmp_path:
-        type: Path
+        description: Temporary directory provided by pytest.
     returns:
-      type: Path
+      description: Temporary copy of the runnable example project.
     """
     source = Path(__file__).parents[1] / 'examples/basic'
     shutil.copytree(

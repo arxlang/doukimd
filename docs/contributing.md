@@ -1,8 +1,11 @@
 # Contributing
 
-Use Python 3.10–3.14 and Poetry 2:
+Use Python 3.10–3.14 and Poetry 2. Install
+[Poetry in its own environment](https://python-poetry.org/docs/#installation)
+so project installs cannot replace Poetry's dependencies:
 
 ```console
+poetry env use python3.14
 poetry install
 poetry run pre-commit install
 poetry run makim all.ci

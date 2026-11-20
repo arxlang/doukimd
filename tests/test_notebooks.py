@@ -33,15 +33,15 @@ def notebook_file(
     title: Write a valid version four notebook without depending on a kernel.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
       cells:
-        type: list[dict[str, object]]
+        description: Notebook cells in their original order.
       metadata:
-        type: dict[str, object] | None
+        description: Literal metadata associated with this document.
       name:
-        type: str
+        description: Name used to identify the requested item.
     returns:
-      type: Path
+      description: Path to the serialized notebook fixture.
     """
     path = project / 'docs' / f'{name}.ipynb'
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -65,12 +65,12 @@ def markdown(source: str, **extra: object) -> dict[str, object]:
     title: Construct one Markdown cell in its serialized representation.
     parameters:
       source:
-        type: str
+        description: Source content or configured API source name.
       extra:
-        type: object
         variadic: keyword
+        description: Additional fixture settings or generated output files.
     returns:
-      type: dict[str, object]
+      description: Serialized Markdown cell.
     """
     return {'cell_type': 'markdown', 'metadata': {}, 'source': source, **extra}
 
@@ -85,13 +85,13 @@ def code(
     title: Construct a recorded code cell that must never execute.
     parameters:
       source:
-        type: str
+        description: Source content or configured API source name.
       outputs:
-        type: list[dict[str, object]]
+        description: Saved notebook outputs in their recorded order.
       tags:
-        type: list[str] | None
+        description: Notebook tags controlling cell presentation.
     returns:
-      type: dict[str, object]
+      description: Serialized code cell with its saved outputs.
     """
     return {
         'cell_type': 'code',
@@ -108,9 +108,9 @@ def rich(data: dict[str, object]) -> dict[str, object]:
     title: Construct one saved display result with alternate formats.
     parameters:
       data:
-        type: dict[str, object]
+        description: Structured content or template data to process.
     returns:
-      type: dict[str, object]
+      description: Serialized display result containing alternate MIME formats.
     """
     return {'output_type': 'display_data', 'data': data, 'metadata': {}}
 
@@ -121,7 +121,7 @@ def test_notebook_pipeline_without_execution(example: Path) -> None:
     title: Share templates, API refs, headings, links, navigation, and search.
     parameters:
       example:
-        type: Path
+        description: Copy of the complete example project.
     """
     lesson = notebook_file(
         example,
@@ -194,7 +194,7 @@ def test_images_html_attachments_and_mime_fallback(project: Path) -> None:
     title: Render static diagrams and HTML without enabling script execution.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
     """
     svg = '<svg xmlns="http://www.w3.org/2000/svg"><text>Diagram</text><script>bad()</script></svg>'
     path = notebook_file(
@@ -275,7 +275,7 @@ def test_removed_content_stays_out_of_page_and_search(project: Path) -> None:
     title: Apply standard removal tags before rendering and search extraction.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
     """
     notebook_file(
         project,
@@ -332,11 +332,11 @@ def test_invalid_notebooks(project: Path, data: str, message: str) -> None:
     title: Reject malformed or unsupported inputs without rewriting source.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
       data:
-        type: str
+        description: Structured content or template data to process.
       message:
-        type: str
+        description: Diagnostic expected or reported for the failure.
     """
     path = project / 'docs/invalid.ipynb'
     path.write_text(data)
@@ -376,11 +376,11 @@ def test_notebook_rendering_failures(
     title: Fail explicitly for unusable MIME bundles, attachments, and links.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
       cells:
-        type: list[dict[str, object]]
+        description: Notebook cells in their original order.
       message:
-        type: str
+        description: Diagnostic expected or reported for the failure.
     """
     notebook_file(project, cells)
     with pytest.raises(BuildError, match=message):
@@ -393,7 +393,7 @@ def test_notebook_route_collisions(project: Path) -> None:
     title: Treat notebooks and Markdown as one output route namespace.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
     """
     notebook_file(project, [markdown('# Notebook')], name='index')
     with pytest.raises(BuildError, match='Duplicate route'):
@@ -403,11 +403,11 @@ def test_notebook_route_collisions(project: Path) -> None:
 @typechecked
 def test_notebook_footnote_ids_and_page_metadata(project: Path) -> None:
     """
-    title: >-
-      Keep cell footnotes distinct and respect notebook-level page metadata.
+    title: Keep cell footnotes distinct and respect notebook-level
+      page metadata.
     parameters:
       project:
-        type: Path
+        description: Project configuration or temporary project directory.
     """
     notebook_file(
         project,

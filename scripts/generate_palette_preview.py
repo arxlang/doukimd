@@ -39,15 +39,15 @@ def element(
     title: Append a namespaced SVG element with safely escaped text.
     parameters:
       parent:
-        type: xml.Element
+        description: Parent declaration, navigation entry, or output element.
       tag:
-        type: str
+        description: HTML or SVG element name.
       attributes:
-        type: dict[str, str]
+        description: Attributes to attach to the generated SVG element.
       text:
-        type: str | None
+        description: Text content to process.
     returns:
-      type: xml.Element
+      description: New element appended to the parent.
     """
     node = xml.SubElement(parent, f'{{{SVG}}}{tag}', attributes)
     node.text = text
@@ -61,9 +61,9 @@ def readable_ink(color: str) -> str:
     title: Choose black or white for the highest swatch-label contrast.
     parameters:
       color:
-        type: str
+        description: Hexadecimal color to inspect.
     returns:
-      type: str
+      description: Black or white, whichever has greater contrast.
     """
     channels = [int(color[index : index + 2], 16) / 255 for index in (1, 3, 5)]
     linear = [
@@ -86,13 +86,13 @@ def swatches(
     title: Draw every semantic color with a role label and its exact hex value.
     parameters:
       parent:
-        type: xml.Element
+        description: Parent declaration, navigation entry, or output element.
       colors:
-        type: dict[str, str]
+        description: Semantic palette colors used to draw swatches.
       x:
-        type: float
+        description: Horizontal position in the preview.
       y:
-        type: float
+        description: Vertical position in the preview.
     """
     if set(colors) != set(ROLES):
         raise ValueError('Update the chart to cover all palette color roles')
@@ -151,7 +151,7 @@ def generate_preview(target: Path) -> None:
     title: Save a responsive, accessible SVG without raster or network deps.
     parameters:
       target:
-        type: Path
+        description: Target name or route to resolve.
     """
     palettes = palette_colors()
     height = 132 + len(palettes) * 298 + (len(palettes) - 1) * 20 + 40
