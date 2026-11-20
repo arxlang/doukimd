@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+## [1.4.7](https://github.com/arxlang/doukimd/compare/1.4.6...1.4.7) (2026-11-20)
+
+
+### Bug Fixes
+
+* **api:** resolve re-exports across configured source graphs ([#22](https://github.com/arxlang/doukimd/issues/22)) ([63c2727](https://github.com/arxlang/doukimd/commit/63c2727c40aef043459b0c269195600f53cf2440))
+
 ## [1.4.6](https://github.com/arxlang/doukimd/compare/1.4.5...1.4.6) (2026-11-20)
 
 
