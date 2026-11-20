@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+## [1.4.5](https://github.com/arxlang/doukimd/compare/1.4.4...1.4.5) (2026-11-20)
+
+
+### Bug Fixes
+
+* **api:** enrich inherited class field annotations ([#20](https://github.com/arxlang/doukimd/issues/20)) ([b1c2477](https://github.com/arxlang/doukimd/commit/b1c2477ed38996642e9851abfc05b0d4a86405f3))
+
 ## [1.4.4](https://github.com/arxlang/doukimd/compare/1.4.3...1.4.4) (2026-11-20)
 
 
