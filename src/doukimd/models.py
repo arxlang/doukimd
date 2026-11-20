@@ -13,6 +13,7 @@ from pydantic import BaseModel, ConfigDict, Field, JsonValue, model_validator
 from pydantic.dataclasses import dataclass
 
 from doukimd.notebook_models import Notebook
+from doukimd.output import PublishedFiles
 from doukimd.runtime import typechecked
 
 
@@ -425,18 +426,23 @@ class Page:
 
 @public
 @typechecked
-@dataclass(frozen=True, config=ConfigDict(strict=True))
+@dataclass(
+    frozen=True, config=ConfigDict(strict=True, arbitrary_types_allowed=True)
+)
 class SiteBuild:
     """
-    title: A complete validated site ready to write.
+    title: A complete validated site and its generated artifacts.
     attributes:
       files:
-        description: Generated output bytes keyed by relative destination.
+        description: Artifacts keyed by relative destination; published builds
+          read bytes on demand from their output directory.
       page_count:
         description: Number of pages produced by the build.
     """
 
-    files: dict[str, bytes]
+    # Check the disk view first: Pydantic's dict validator would otherwise
+    # eagerly read every artifact while selecting the union branch.
+    files: PublishedFiles | dict[str, bytes]
     page_count: int
 
 

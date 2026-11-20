@@ -4,15 +4,19 @@ title: Navigation reuse without stale page state or changed rendered output.
 
 from __future__ import annotations
 
+import tracemalloc
+
 from pathlib import Path
 
 import pytest
 
+from click.testing import CliRunner
 from jinja2 import Environment
 from jinja2.runtime import Macro
 from markupsafe import Markup
 
 from doukimd.build import compile_site
+from doukimd.cli import main
 from doukimd.navigation_plan import NavigationView
 from doukimd.runtime import typechecked
 from doukimd.theme import NavigationFragments
@@ -147,3 +151,49 @@ def test_fragment_cache_is_bounded(example: Path) -> None:
     assert (id(item.node), id(item.selection.urls), '0', False) not in (
         cache.fragments
     )
+
+
+@pytest.mark.parametrize('command', ['build', 'check'])
+@typechecked
+def test_cli_does_not_buffer_rendered_site(
+    project: Path, command: str
+) -> None:
+    """
+    title: Keep peak allocations below the size of a generated site.
+    parameters:
+      project:
+        description: Temporary documentation project.
+      command:
+        description: CLI operation to measure.
+    """
+    # Tiny Markdown pages expand through a real theme to 32 MiB of unique
+    # output. Retaining the encoded pages exceeds this budget by itself.
+    config = project / 'doukimd.yaml'
+    config.write_text(
+        config.read_text()
+        + 'theme:\n  directory: theme\nsearch:\n  enabled: false\n'
+    )
+    (project / 'theme').mkdir()
+    (project / 'theme/page.html').write_text(
+        '{{ page.url }}{{ "x" * 1048576 }}'
+    )
+    for number in range(31):
+        (project / f'docs/page-{number}.md').write_text(f'# Page {number}\n')
+    tracemalloc.start()
+    try:
+        result = CliRunner().invoke(main, [command, '--config', str(config)])
+        _, peak = tracemalloc.get_traced_memory()
+    finally:
+        tracemalloc.stop()
+    assert result.exit_code == 0, result.output
+    assert '32 pages' in result.output
+    assert peak < 16 * 1024**2, f'Peak allocation: {peak / 1024**2:.1f} MiB'
+    if command == 'build':
+        output = project / 'build'
+        assert len(list(output.glob('*.html'))) == 32
+        assert sum(path.stat().st_size for path in output.glob('*.html')) > (
+            32 * 1024**2
+        )
+    else:
+        assert not (project / 'build').exists()
+    assert not list(project.glob('.doukimd-*'))

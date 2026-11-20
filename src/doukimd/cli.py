@@ -11,7 +11,7 @@ import click
 from public import public
 
 from doukimd import get_version
-from doukimd.build import build_site, compile_site
+from doukimd.build import build_site, check_site
 from doukimd.errors import BuildError
 from doukimd.runtime import typechecked
 
@@ -68,7 +68,7 @@ def check(config_path: Path) -> None:
         description: Path to the project configuration file.
     """
     try:
-        result = compile_site(config_path)
+        result = check_site(config_path)
     except (BuildError, OSError) as error:
         raise click.ClickException(str(error)) from error
     click.echo(f'Checked {result.page_count} pages.')

@@ -55,12 +55,20 @@ def test_description_only_docstrings(example: Path) -> None:
         .replace(
             'left:\n        description: First value.', 'left: First value.'
         )
-        .replace('returns:\n      description: The sum.', 'returns: The sum.'),
+        .replace('returns:\n      description: The sum.', 'returns: The sum.')
+        + '\n@public\nclass Temporal:\n'
+        '    """\n'
+        '    title: Base class for temporal data types (date, time,\n'
+        '      timestamp, datetime).\n'
+        '    """\n',
         encoding='utf-8',
     )
     original = source.read_bytes()
     inventory = collect_api(example, load_config(example / 'doukimd.yaml'))
     item = inventory['python:example.add']
+    assert inventory['python:example.Temporal'].documentation['title'] == (
+        'Base class for temporal data types (date, time, timestamp, datetime).'
+    )
     assert item.signature == 'add(left: int, right: int = 0) -> int'
     assert item.documentation['parameters'] == {
         'left': {'description': 'First value.', 'type': 'int'},

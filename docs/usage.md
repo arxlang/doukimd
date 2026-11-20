@@ -1,9 +1,15 @@
 # Authoring and configuration
 
 Run `doukimd build --config doukimd.yaml` or `doukimd check`. The latter
-compiles and validates without writing output. Paths are relative to the
-configuration file; directory traversal and paths escaping the project are
-rejected.
+renders and validates every page, then discards the generated output. Builds
+write each rendered page to temporary storage beside the output directory and
+publish the complete site only after all pages and artifacts succeed. A failed
+render or staging write leaves the previous site intact. Allow disk space for
+both the previous site and its replacement; generated HTML is not retained in
+memory.
+
+Paths are relative to the configuration file; directory traversal and paths
+escaping the project are rejected.
 
 See the runnable project under `examples/basic`.
 
