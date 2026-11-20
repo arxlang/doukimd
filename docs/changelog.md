@@ -1,6 +1,13 @@
 # Release Notes
 ---
 
+## [1.4.8](https://github.com/arxlang/doukimd/compare/1.4.7...1.4.8) (2026-11-20)
+
+
+### Bug Fixes
+
+* **perf:** Improve usage of the data in memory ([#23](https://github.com/arxlang/doukimd/issues/23)) ([64c56e4](https://github.com/arxlang/doukimd/commit/64c56e40927cd1b57b9329d85993efafd1fd0eb0))
+
 ## [1.4.7](https://github.com/arxlang/doukimd/compare/1.4.6...1.4.7) (2026-11-20)
 
 
