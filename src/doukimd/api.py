@@ -96,19 +96,26 @@ def annotation_signature(
     node: griffe.Module | griffe.Class,
 ) -> DocumentationSignature:
     """
-    title: Supply module and class annotations without evaluating values.
+    title: Enrich module and class fields, including inherited annotations.
     parameters:
-      node: Module or class whose locally declared fields are documented.
+      node: Module or class whose fields are being documented.
     returns: Annotated fields available for documentation enrichment.
     """
-    return DocumentationSignature(
-        attributes=tuple(
-            Parameter(name, str(member.annotation))
-            for name, member in node.members.items()
-            if isinstance(member, griffe.Attribute)
-            and member.annotation is not None
-        )
+    members = (
+        node.all_members if isinstance(node, griffe.Class) else node.members
     )
+    attributes: list[Parameter] = []
+    for name, member in members.items():
+        if isinstance(member, griffe.Alias):
+            if not member.inherited:
+                continue
+            member = member.final_target
+        if (
+            isinstance(member, griffe.Attribute)
+            and member.annotation is not None
+        ):
+            attributes.append(Parameter(name, str(member.annotation)))
+    return DocumentationSignature(attributes=tuple(attributes))
 
 
 @dispatch
