@@ -105,16 +105,32 @@ def annotation_signature(
         node.all_members if isinstance(node, griffe.Class) else node.members
     )
     attributes: list[Parameter] = []
+    bases: list[griffe.Class] | None = None
     for name, member in members.items():
         if isinstance(member, griffe.Alias):
             if not member.inherited:
                 continue
             member = member.final_target
-        if (
-            isinstance(member, griffe.Attribute)
-            and member.annotation is not None
-        ):
-            attributes.append(Parameter(name, str(member.annotation)))
+        if not isinstance(member, griffe.Attribute):
+            continue
+        annotation = member.annotation
+        if annotation is None and isinstance(node, griffe.Class):
+            # Value-only overrides retain the nearest inherited annotation.
+            if bases is None:
+                try:
+                    bases = node.mro()
+                except ValueError:
+                    bases = []
+            for base in bases:
+                inherited = base.members.get(name)
+                if (
+                    isinstance(inherited, griffe.Attribute)
+                    and inherited.annotation is not None
+                ):
+                    annotation = inherited.annotation
+                    break
+        if annotation is not None:
+            attributes.append(Parameter(name, str(annotation)))
     return DocumentationSignature(attributes=tuple(attributes))
 
 
