@@ -13,6 +13,7 @@ import sys
 from pathlib import Path
 
 import pytest
+import yaml
 
 from doukimd.runtime import typechecked
 
@@ -188,6 +189,9 @@ def recovery(tmp_path: Path) -> tuple[Path, dict[str, str]]:
     )
     for name in ['poetry', 'gh']:
         executable(commands / name, stub)
+    executable(commands / 'sleep', '')
+    (source / '.github').mkdir()
+    (source / '.github/scripts').symlink_to(SCRIPTS, target_is_directory=True)
     environment = {
         **os.environ,
         'PATH': os.pathsep.join(
@@ -197,9 +201,211 @@ def recovery(tmp_path: Path) -> tuple[Path, dict[str, str]]:
         'RUNNER_TEMP': str(runtime),
         'GITHUB_REPOSITORY': 'arxlang/doukimd',
         'GITHUB_OUTPUT': str(tmp_path / 'output'),
+        'GITHUB_STEP_SUMMARY': str(tmp_path / 'summary'),
         'SERVICE_STATE': str(state),
     }
     return source, environment
+
+
+@typechecked
+def reject_notes(source: Path) -> Path:
+    """
+    title: Persistently reject notes updates on the real fixture remote.
+    parameters:
+      source: Fixture repository whose origin receives pushes.
+    returns: Hook path to remove when the remote is repaired.
+    """
+    remote = Path(git_command(source, 'remote', 'get-url', 'origin'))
+    hook = remote / 'hooks/pre-receive'
+    executable(
+        hook,
+        'import sys\nfrom pathlib import Path\n'
+        'updates = sys.stdin.read()\n'
+        'if "refs/notes/semantic-release-" in updates:\n'
+        ' with (Path(__file__).resolve().parents[1] / "rejections")'
+        '.open("a") as stream: stream.write(updates)\n'
+        ' print("Persistent notes rejection", file=sys.stderr)\n'
+        ' sys.exit(1)\n',
+    )
+    return hook
+
+
+@pytest.mark.parametrize('allow_missing_notes', [False, True])
+@typechecked
+def test_recovery_handles_persistent_notes_rejection(
+    recovery: tuple[Path, dict[str, str]], allow_missing_notes: bool
+) -> None:
+    """
+    title: Require explicit workflow permission to publish with pending notes.
+    parameters:
+      recovery: Local tagged remote and simulated publication services.
+      allow_missing_notes: Whether the workflow permits deferred metadata.
+    """
+    source, environment = recovery
+    hook = reject_notes(source)
+    workflow = yaml.safe_load(
+        (SCRIPTS.parent / 'workflows/release.yaml').read_text()
+    )
+    step = next(
+        step
+        for step in workflow['jobs']['release']['steps']
+        if step.get('id') == 'resume'
+    )
+    result = subprocess.run(
+        ['bash', '-e', '-c', step['run']],
+        cwd=source,
+        env={
+            **environment,
+            'RESUME_TAG': '1.4.8',
+            'ALLOW_MISSING_NOTES': str(allow_missing_notes).lower(),
+            'REPAIR_NOTES_ONLY': 'false',
+        },
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert 'Persistent notes rejection' in result.stderr
+    assert len((hook.parents[1] / 'rejections').read_text().splitlines()) == 3
+    assert git_command(source, 'ls-remote', 'origin', 'refs/notes/*') == ''
+    state = json.loads(Path(environment['SERVICE_STATE']).read_text())
+    output = Path(environment['GITHUB_OUTPUT'])
+    record = Path(environment['RUNNER_TEMP']) / 'doukimd-release-notes.json'
+    assert not list(Path(environment['RUNNER_TEMP']).glob('doukimd-release.*'))
+    if not allow_missing_notes:
+        assert result.returncode != 0
+        assert not state['uploads']
+        assert not state['release']
+        assert not output.exists()
+        assert not record.exists()
+        return
+
+    assert result.returncode == 0, result.stderr
+    assert state['uploads'] == ['wheel', 'sdist']
+    assert len(state['assets']) == 2
+    commit = git_command(source, 'rev-parse', '1.4.8')
+    assert output.read_text().splitlines() == [
+        'notes_pending=true',
+        'source_ref=' + commit,
+    ]
+    assert json.loads(record.read_text()) == {
+        'schema_version': 1,
+        'status': 'pending',
+        'tag': '1.4.8',
+        'commit': commit,
+        'notes_ref': 'refs/notes/semantic-release-1.4.8',
+        'metadata': {'channels': [None]},
+    }
+    summary = Path(environment['GITHUB_STEP_SUMMARY']).read_text()
+    assert commit in summary and 'repair_notes_only: true' in summary
+    assert '::warning::' in result.stderr
+
+    # Repair runs must neither repeat publication nor trigger documentation,
+    # whether the remote still rejects notes or has since recovered.
+    previous_calls = len(state['calls'])
+    output.unlink()
+    for rejected in [True, False]:
+        if not rejected:
+            hook.unlink()
+        repaired = subprocess.run(
+            ['bash', '-e', '-c', step['run']],
+            cwd=source,
+            env={
+                **environment,
+                'RESUME_TAG': '1.4.8',
+                'ALLOW_MISSING_NOTES': 'false',
+                'REPAIR_NOTES_ONLY': 'true',
+            },
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        assert (repaired.returncode != 0) == rejected, repaired.stderr
+        assert not output.exists()
+    state = json.loads(Path(environment['SERVICE_STATE']).read_text())
+    assert (
+        state['calls'][previous_calls:]
+        == [['poetry', 'version', '--short']] * 2
+    )
+    assert 'semantic-release-1.4.8' in git_command(
+        source, 'ls-remote', 'origin', 'refs/notes/*'
+    )
+
+
+@pytest.mark.parametrize(
+    'metadata', ['{"channels":["next"]}', '{"channels":[null],"unknown":true}']
+)
+@typechecked
+def test_deferred_notes_require_default_channel_metadata(
+    recovery: tuple[Path, dict[str, str]], metadata: str
+) -> None:
+    """
+    title: Refuse to defer metadata beyond stable default-channel membership.
+    parameters:
+      recovery: Local tagged remote and simulated publication services.
+      metadata: Metadata that must be retained before package publication.
+    """
+    source, environment = recovery
+    git_command(
+        source,
+        'notes',
+        '--ref=semantic-release-1.4.8',
+        'add',
+        '-m',
+        metadata,
+        '1.4.8',
+    )
+    result = subprocess.run(
+        [
+            'bash',
+            str(SCRIPTS / 'resume-release.sh'),
+            '1.4.8',
+            '--allow-missing-notes',
+        ],
+        cwd=source,
+        env=environment,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode != 0
+    assert 'Only default-channel metadata may be deferred' in result.stderr
+    state = json.loads(Path(environment['SERVICE_STATE']).read_text())
+    assert not state['uploads'] and not state['release']
+    assert not Path(environment['GITHUB_OUTPUT']).exists()
+
+
+@pytest.mark.parametrize(
+    ('tag', 'options'),
+    [
+        ('1.4.8-rc.1', ['--allow-missing-notes']),
+        ('1.4.8', ['--allow-missing-notes', '--notes-only']),
+        ('1.4.8', ['--unknown-option']),
+    ],
+)
+@typechecked
+def test_recovery_rejects_unsupported_modes(
+    recovery: tuple[Path, dict[str, str]], tag: str, options: list[str]
+) -> None:
+    """
+    title: Reject prerelease overrides and ambiguous recovery modes.
+    parameters:
+      recovery: Local tagged remote and simulated publication services.
+      tag: Tag supplied for recovery.
+      options: Unsupported or conflicting recovery options.
+    """
+    source, environment = recovery
+    result = subprocess.run(
+        ['bash', str(SCRIPTS / 'resume-release.sh'), tag, *options],
+        cwd=source,
+        env=environment,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode != 0
+    state = json.loads(Path(environment['SERVICE_STATE']).read_text())
+    assert state['calls'] == []
+    assert not Path(environment['GITHUB_OUTPUT']).exists()
 
 
 @typechecked
@@ -275,18 +481,24 @@ def test_recovery_rejects_invalid_tags(
     assert not list(Path(environment['RUNNER_TEMP']).iterdir())
 
 
+@pytest.mark.parametrize('defer_notes', [False, True])
 @typechecked
 def test_recovery_does_not_mark_failed_publication_successful(
-    recovery: tuple[Path, dict[str, str]],
+    recovery: tuple[Path, dict[str, str]], defer_notes: bool
 ) -> None:
     """
     title: Keep documentation gated when package publication fails.
     parameters:
       recovery: Local tagged remote and simulated publication services.
+      defer_notes: Whether notes repair was deferred before publication failed.
     """
     source, environment = recovery
+    options = []
+    if defer_notes:
+        reject_notes(source)
+        options = ['--allow-missing-notes']
     result = subprocess.run(
-        ['bash', str(SCRIPTS / 'resume-release.sh'), '1.4.8'],
+        ['bash', str(SCRIPTS / 'resume-release.sh'), '1.4.8', *options],
         cwd=source,
         env={**environment, 'PUBLISH_STATUS': '4'},
         capture_output=True,
@@ -296,5 +508,10 @@ def test_recovery_does_not_mark_failed_publication_successful(
     assert result.returncode == 4
     state = json.loads(Path(environment['SERVICE_STATE']).read_text())
     assert not state['release']
-    assert not Path(environment['GITHUB_OUTPUT']).exists()
-    assert not list(Path(environment['RUNNER_TEMP']).iterdir())
+    output = Path(environment['GITHUB_OUTPUT'])
+    assert not output.exists() or 'source_ref=' not in output.read_text()
+    record = Path(environment['RUNNER_TEMP']) / 'doukimd-release-notes.json'
+    assert record.exists() == defer_notes
+    if defer_notes:
+        assert output.read_text() == 'notes_pending=true\n'
+    assert not list(Path(environment['RUNNER_TEMP']).glob('doukimd-release.*'))
