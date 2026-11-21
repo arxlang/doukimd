@@ -2,9 +2,29 @@ name: Release
 
 on:
   workflow_dispatch:
+    inputs:
+      resume_tag:
+        description: Existing stable tag to finish publishing after a failed release
+        required: false
+        default: ""
+        type: string
+      allow_missing_notes:
+        description: Allow stable-tag recovery to defer a failed Git-notes push
+        required: false
+        default: false
+        type: boolean
+      repair_notes_only:
+        description: Repair Git notes for resume_tag without publishing packages
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
 
 jobs:
   release:
@@ -12,12 +32,20 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     outputs:
-      source_ref: ${{ steps.release.outputs.source_ref }}
+      source_ref: ${{ steps.release.outputs.source_ref || steps.resume.outputs.source_ref }}
     permissions:
       contents: write
       issues: write
       pull-requests: write
     steps:
+      - name: Validate recovery options
+        if: >-
+          (inputs.resume_tag == '' &&
+          (inputs.allow_missing_notes || inputs.repair_notes_only)) ||
+          (inputs.allow_missing_notes && inputs.repair_notes_only)
+        run: |
+          echo '::error::Recovery options require resume_tag; notes-only repair cannot defer notes.'
+          exit 1
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -30,15 +58,45 @@ jobs:
       - run: python -m pip install poetry==2.2.1
       - run: poetry install
       - run: poetry run makim tests.unit
+      - name: Retry failed release notes pushes
+        run: |
+          echo "DOUKIMD_RELEASE_GIT=$(command -v git)" >> "$GITHUB_ENV"
+          echo "$GITHUB_WORKSPACE/.github/scripts/release-bin" >> "$GITHUB_PATH"
       - name: Configure package publication
+        if: inputs.repair_notes_only != true
         env:
           PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
         run: poetry config pypi-token.pypi "$PYPI_TOKEN"
       - name: Publish semantic release
+        if: inputs.resume_tag == ''
         id: release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: poetry run makim release.ci
+      - name: Resume publication of an existing release tag
+        if: inputs.resume_tag != ''
+        id: resume
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RESUME_TAG: ${{ inputs.resume_tag }}
+          ALLOW_MISSING_NOTES: ${{ inputs.allow_missing_notes }}
+          REPAIR_NOTES_ONLY: ${{ inputs.repair_notes_only }}
+        run: |
+          args=("$RESUME_TAG")
+          if [[ "$ALLOW_MISSING_NOTES" == true ]]; then
+            args+=(--allow-missing-notes)
+          fi
+          if [[ "$REPAIR_NOTES_ONLY" == true ]]; then
+            args+=(--notes-only)
+          fi
+          bash .github/scripts/resume-release.sh "${args[@]}"
+      - name: Preserve deferred release metadata
+        if: always() && steps.resume.outputs.notes_pending == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: deferred-release-notes-${{ inputs.resume_tag }}
+          path: ${{ runner.temp }}/doukimd-release-notes.json
+          if-no-files-found: error
 
   documentation:
     needs: release

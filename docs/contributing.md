@@ -62,6 +62,29 @@ startup and disk publication, rather than a CI timing guarantee.
 
 ## Publish the documentation
 
+Run **Release** manually from upstream `main` to publish a package. Git-notes
+pushes retry up to three times, and release runs are serialized. If a failed
+run has already pushed its version tag, run **Release** again with `resume_tag`
+set to that version (for example, `1.4.8`). Recovery validates that the tag
+belongs to `main` and matches the package version, repairs its channel metadata,
+and builds the tagged source. It skips existing PyPI files and GitHub assets,
+then deploys documentation only after publication succeeds. Leave `resume_tag`
+empty for a new semantic release.
+
+Recovery stops before package publication if Git notes cannot be pushed. For
+an existing stable tag on `main`, explicitly enable `allow_missing_notes` to
+continue after a failed notes push. This option accepts only default-channel
+metadata (`{"channels":[null]}`); invalid tags, other metadata, and notes-fetch
+failures still stop recovery. A warning and workflow summary identify the
+pending repair, and the `deferred-release-notes-<tag>` artifact preserves the
+tag, commit, notes ref, and expected metadata, even if publication later fails.
+
+To repair notes separately, run **Release** with the same `resume_tag` and
+`repair_notes_only: true`, leaving `allow_missing_notes` disabled. This mode
+pushes notes without publishing packages or deploying documentation. Both
+options require `resume_tag` and cannot be combined. New semantic releases
+always require successful notes pushes.
+
 After a successful package release, the **Release** workflow calls the
 **Documentation** workflow with the exact release commit. The site is built
 after publication, so its version badge and changelog match the released

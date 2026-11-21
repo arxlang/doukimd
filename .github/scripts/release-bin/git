@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -u
+
+# Retry only the idempotent notes push. Retrying semantic-release itself after
+# tag creation would skip the unpublished version.
+if [[ "${1:-}" != push || "${!#}" != refs/notes/semantic-release-* ]]; then
+  exec "$DOUKIMD_RELEASE_GIT" "$@"
+fi
+
+for attempt in 1 2 3; do
+  if "$DOUKIMD_RELEASE_GIT" "$@"; then
+    exit 0
+  else
+    status=$?
+  fi
+  if [[ "$attempt" != 3 ]]; then
+    printf 'Retrying release notes push after failure (%s/3).\n' "$attempt" >&2
+    sleep "$((attempt * 2))"
+  fi
+done
+exit "$status"
