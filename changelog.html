@@ -28,7 +28,7 @@
       <a class="site-brand" href="index.html">
         <span class="brand-mark" aria-hidden="true">D</span>
         <span class="brand-name">DoukiMD</span>
-        <span class="version badge rounded-pill">1.4.7</span>
+        <span class="version badge rounded-pill">1.4.8</span>
       </a>
       
       <nav class="site-navbar" aria-label="Primary">
@@ -187,6 +187,8 @@
               <li><a href="api/python/doukimd.build.MANIFEST.html"><span class="nav-label">MANIFEST</span><span class="api-kind api-kind--attribute">attribute</span></a></li>
               
               <li><a href="api/python/doukimd.build.build_site.html"><span class="nav-label">build_site</span><span class="api-kind api-kind--function">function</span></a></li>
+              
+              <li><a href="api/python/doukimd.build.check_site.html"><span class="nav-label">check_site</span><span class="api-kind api-kind--function">function</span></a></li>
               
               <li><a href="api/python/doukimd.build.compile_site.html"><span class="nav-label">compile_site</span><span class="api-kind api-kind--function">function</span></a></li>
               
@@ -446,6 +448,18 @@
           
           
           <details class="api-module" name="doukimd-api-sidebar-3">
+            <summary><span class="nav-label">output</span></summary>
+            <ul class="api-members">
+              <li class="api-overview"><a href="api/python/doukimd.output.html" aria-label="output module overview">Module overview</a></li>
+              
+              <li><a href="api/python/doukimd.output.PublishedFiles.html"><span class="nav-label">PublishedFiles</span><span class="api-kind api-kind--class">class</span></a></li>
+              
+            </ul>
+          </details>
+        
+          
+          
+          <details class="api-module" name="doukimd-api-sidebar-3">
             <summary><span class="nav-label">plugins</span></summary>
             <ul class="api-members">
               <li class="api-overview"><a href="api/python/doukimd.plugins.html" aria-label="plugins module overview">Module overview</a></li>
@@ -536,38 +550,43 @@
         
         <h1 id="release-notes">Release Notes</h1>
 <hr />
-<h2 id="1-4-7-https-github-com-arxlang-doukimd-compare-1-4-6-1-4-7-2026-11-20"><a href="https://github.com/arxlang/doukimd/compare/1.4.6...1.4.7">1.4.7</a> (2026-11-20)</h2>
+<h2 id="1-4-8-https-github-com-arxlang-doukimd-compare-1-4-7-1-4-8-2026-11-20"><a href="https://github.com/arxlang/doukimd/compare/1.4.7...1.4.8">1.4.8</a> (2026-11-20)</h2>
 <h3 id="bug-fixes">Bug Fixes</h3>
+<ul>
+<li><strong>perf:</strong> Improve usage of the data in memory (<a href="https://github.com/arxlang/doukimd/issues/23">#23</a>) (<a href="https://github.com/arxlang/doukimd/commit/64c56e40927cd1b57b9329d85993efafd1fd0eb0">64c56e4</a>)</li>
+</ul>
+<h2 id="1-4-7-https-github-com-arxlang-doukimd-compare-1-4-6-1-4-7-2026-11-20"><a href="https://github.com/arxlang/doukimd/compare/1.4.6...1.4.7">1.4.7</a> (2026-11-20)</h2>
+<h3 id="bug-fixes-1">Bug Fixes</h3>
 <ul>
 <li><strong>api:</strong> resolve re-exports across configured source graphs (<a href="https://github.com/arxlang/doukimd/issues/22">#22</a>) (<a href="https://github.com/arxlang/doukimd/commit/63c2727c40aef043459b0c269195600f53cf2440">63c2727</a>)</li>
 </ul>
 <h2 id="1-4-6-https-github-com-arxlang-doukimd-compare-1-4-5-1-4-6-2026-11-20"><a href="https://github.com/arxlang/doukimd/compare/1.4.5...1.4.6">1.4.6</a> (2026-11-20)</h2>
-<h3 id="bug-fixes-1">Bug Fixes</h3>
+<h3 id="bug-fixes-2">Bug Fixes</h3>
 <ul>
 <li><strong>api:</strong> inherit annotations for value-only overrides (<a href="https://github.com/arxlang/doukimd/issues/21">#21</a>) (<a href="https://github.com/arxlang/doukimd/commit/f9a840fac804c6e833fb988e615c65ad21064bd0">f9a840f</a>)</li>
 </ul>
 <h2 id="1-4-5-https-github-com-arxlang-doukimd-compare-1-4-4-1-4-5-2026-11-20"><a href="https://github.com/arxlang/doukimd/compare/1.4.4...1.4.5">1.4.5</a> (2026-11-20)</h2>
-<h3 id="bug-fixes-2">Bug Fixes</h3>
+<h3 id="bug-fixes-3">Bug Fixes</h3>
 <ul>
 <li><strong>api:</strong> enrich inherited class field annotations (<a href="https://github.com/arxlang/doukimd/issues/20">#20</a>) (<a href="https://github.com/arxlang/doukimd/commit/b1c2477ed38996642e9851abfc05b0d4a86405f3">b1c2477</a>)</li>
 </ul>
 <h2 id="1-4-4-https-github-com-arxlang-doukimd-compare-1-4-3-1-4-4-2026-11-20"><a href="https://github.com/arxlang/doukimd/compare/1.4.3...1.4.4">1.4.4</a> (2026-11-20)</h2>
-<h3 id="bug-fixes-3">Bug Fixes</h3>
+<h3 id="bug-fixes-4">Bug Fixes</h3>
 <ul>
 <li><strong>api:</strong> enrich annotated module attributes (<a href="https://github.com/arxlang/doukimd/issues/19">#19</a>) (<a href="https://github.com/arxlang/doukimd/commit/97055420d8e2245e39df80aab2d73ce9f1f0c705">9705542</a>)</li>
 </ul>
 <h2 id="1-4-3-https-github-com-arxlang-doukimd-compare-1-4-2-1-4-3-2026-11-20"><a href="https://github.com/arxlang/doukimd/compare/1.4.2...1.4.3">1.4.3</a> (2026-11-20)</h2>
-<h3 id="bug-fixes-4">Bug Fixes</h3>
+<h3 id="bug-fixes-5">Bug Fixes</h3>
 <ul>
 <li>Remove support for Python 3.10 (<a href="https://github.com/arxlang/doukimd/issues/18">#18</a>) (<a href="https://github.com/arxlang/doukimd/commit/57427a5ee25fb43363c59b64032ba73a2977eafe">57427a5</a>)</li>
 </ul>
 <h2 id="1-4-2-https-github-com-arxlang-doukimd-compare-1-4-1-1-4-2-2026-11-02"><a href="https://github.com/arxlang/doukimd/compare/1.4.1...1.4.2">1.4.2</a> (2026-11-02)</h2>
-<h3 id="bug-fixes-5">Bug Fixes</h3>
+<h3 id="bug-fixes-6">Bug Fixes</h3>
 <ul>
 <li>cache API navigation fragments and pin Douki 0.13.0 (<a href="https://github.com/arxlang/doukimd/issues/16">#16</a>) (<a href="https://github.com/arxlang/doukimd/commit/12f31dbe1784eb22650654ceca8e857615a68fe9">12f31db</a>)</li>
 </ul>
 <h2 id="1-4-1-https-github-com-arxlang-doukimd-compare-1-4-0-1-4-1-2026-10-30"><a href="https://github.com/arxlang/doukimd/compare/1.4.0...1.4.1">1.4.1</a> (2026-10-30)</h2>
-<h3 id="bug-fixes-6">Bug Fixes</h3>
+<h3 id="bug-fixes-7">Bug Fixes</h3>
 <ul>
 <li>preserve annotations for Python 3.14 dispatch (<a href="https://github.com/arxlang/doukimd/issues/15">#15</a>) (<a href="https://github.com/arxlang/doukimd/commit/a74281adf353a0b4cb63c594bd0be53baa80d70f">a74281a</a>)</li>
 </ul>
@@ -591,7 +610,7 @@
 <li>replace sidebar trees with full-width accordion groups (<a href="https://github.com/arxlang/doukimd/issues/11">#11</a>) (<a href="https://github.com/arxlang/doukimd/commit/75cde6f6b187b4e59214a634e9720cd131352bbc">75cde6f</a>)</li>
 </ul>
 <h2 id="1-1-1-https-github-com-arxlang-doukimd-compare-1-1-0-1-1-1-2026-10-30"><a href="https://github.com/arxlang/doukimd/compare/1.1.0...1.1.1">1.1.1</a> (2026-10-30)</h2>
-<h3 id="bug-fixes-7">Bug Fixes</h3>
+<h3 id="bug-fixes-8">Bug Fixes</h3>
 <ul>
 <li>rebuild and publish docs after package releases (<a href="https://github.com/arxlang/doukimd/issues/9">#9</a>) (<a href="https://github.com/arxlang/doukimd/commit/c45c26de685122c6ee379da8c1a95f29e65bf79d">c45c26d</a>)</li>
 <li>remove the duplicate floating API menu (<a href="https://github.com/arxlang/doukimd/issues/10">#10</a>) (<a href="https://github.com/arxlang/doukimd/commit/5196076738f117f0d4d095931a0627cbd13107a5">5196076</a>)</li>
@@ -602,7 +621,7 @@
 <li>render saved notebooks and add local documentation search (<a href="https://github.com/arxlang/doukimd/issues/8">#8</a>) (<a href="https://github.com/arxlang/doukimd/commit/d9b25f98eaa0fab832c26d5b3b408f968ef586cd">d9b25f9</a>)</li>
 </ul>
 <h1 id="1-0-0-2026-10-30">1.0.0 (2026-10-30)</h1>
-<h3 id="bug-fixes-8">Bug Fixes</h3>
+<h3 id="bug-fixes-9">Bug Fixes</h3>
 <ul>
 <li>publish documentation to gh-pages on manual runs (<a href="https://github.com/arxlang/doukimd/issues/2">#2</a>) (<a href="https://github.com/arxlang/doukimd/commit/061ef73dc7cd6aaf000064df8e4b9340729c44be">061ef73</a>), closes <a href="https://github.com/arxlang/doukimd/issues/pages">#pages</a></li>
 </ul>
@@ -625,33 +644,37 @@
           <strong>On this page</strong>
           <ul>
             
-            <li class="toc-h2"><a href="#1-4-7-https-github-com-arxlang-doukimd-compare-1-4-6-1-4-7-2026-11-20">1.4.7 (2026-11-20)</a></li>
+            <li class="toc-h2"><a href="#1-4-8-https-github-com-arxlang-doukimd-compare-1-4-7-1-4-8-2026-11-20">1.4.8 (2026-11-20)</a></li>
             
             <li class="toc-h3"><a href="#bug-fixes">Bug Fixes</a></li>
             
-            <li class="toc-h2"><a href="#1-4-6-https-github-com-arxlang-doukimd-compare-1-4-5-1-4-6-2026-11-20">1.4.6 (2026-11-20)</a></li>
+            <li class="toc-h2"><a href="#1-4-7-https-github-com-arxlang-doukimd-compare-1-4-6-1-4-7-2026-11-20">1.4.7 (2026-11-20)</a></li>
             
             <li class="toc-h3"><a href="#bug-fixes-1">Bug Fixes</a></li>
             
-            <li class="toc-h2"><a href="#1-4-5-https-github-com-arxlang-doukimd-compare-1-4-4-1-4-5-2026-11-20">1.4.5 (2026-11-20)</a></li>
+            <li class="toc-h2"><a href="#1-4-6-https-github-com-arxlang-doukimd-compare-1-4-5-1-4-6-2026-11-20">1.4.6 (2026-11-20)</a></li>
             
             <li class="toc-h3"><a href="#bug-fixes-2">Bug Fixes</a></li>
             
-            <li class="toc-h2"><a href="#1-4-4-https-github-com-arxlang-doukimd-compare-1-4-3-1-4-4-2026-11-20">1.4.4 (2026-11-20)</a></li>
+            <li class="toc-h2"><a href="#1-4-5-https-github-com-arxlang-doukimd-compare-1-4-4-1-4-5-2026-11-20">1.4.5 (2026-11-20)</a></li>
             
             <li class="toc-h3"><a href="#bug-fixes-3">Bug Fixes</a></li>
             
-            <li class="toc-h2"><a href="#1-4-3-https-github-com-arxlang-doukimd-compare-1-4-2-1-4-3-2026-11-20">1.4.3 (2026-11-20)</a></li>
+            <li class="toc-h2"><a href="#1-4-4-https-github-com-arxlang-doukimd-compare-1-4-3-1-4-4-2026-11-20">1.4.4 (2026-11-20)</a></li>
             
             <li class="toc-h3"><a href="#bug-fixes-4">Bug Fixes</a></li>
             
-            <li class="toc-h2"><a href="#1-4-2-https-github-com-arxlang-doukimd-compare-1-4-1-1-4-2-2026-11-02">1.4.2 (2026-11-02)</a></li>
+            <li class="toc-h2"><a href="#1-4-3-https-github-com-arxlang-doukimd-compare-1-4-2-1-4-3-2026-11-20">1.4.3 (2026-11-20)</a></li>
             
             <li class="toc-h3"><a href="#bug-fixes-5">Bug Fixes</a></li>
             
-            <li class="toc-h2"><a href="#1-4-1-https-github-com-arxlang-doukimd-compare-1-4-0-1-4-1-2026-10-30">1.4.1 (2026-10-30)</a></li>
+            <li class="toc-h2"><a href="#1-4-2-https-github-com-arxlang-doukimd-compare-1-4-1-1-4-2-2026-11-02">1.4.2 (2026-11-02)</a></li>
             
             <li class="toc-h3"><a href="#bug-fixes-6">Bug Fixes</a></li>
+            
+            <li class="toc-h2"><a href="#1-4-1-https-github-com-arxlang-doukimd-compare-1-4-0-1-4-1-2026-10-30">1.4.1 (2026-10-30)</a></li>
+            
+            <li class="toc-h3"><a href="#bug-fixes-7">Bug Fixes</a></li>
             
             <li class="toc-h3"><a href="#performance-improvements">Performance Improvements</a></li>
             
@@ -663,11 +686,11 @@
             
             <li class="toc-h2"><a href="#1-1-1-https-github-com-arxlang-doukimd-compare-1-1-0-1-1-1-2026-10-30">1.1.1 (2026-10-30)</a></li>
             
-            <li class="toc-h3"><a href="#bug-fixes-7">Bug Fixes</a></li>
+            <li class="toc-h3"><a href="#bug-fixes-8">Bug Fixes</a></li>
             
             <li class="toc-h3"><a href="#features-3">Features</a></li>
             
-            <li class="toc-h3"><a href="#bug-fixes-8">Bug Fixes</a></li>
+            <li class="toc-h3"><a href="#bug-fixes-9">Bug Fixes</a></li>
             
             <li class="toc-h3"><a href="#features-4">Features</a></li>
             

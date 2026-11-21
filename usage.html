@@ -28,7 +28,7 @@
       <a class="site-brand" href="index.html">
         <span class="brand-mark" aria-hidden="true">D</span>
         <span class="brand-name">DoukiMD</span>
-        <span class="version badge rounded-pill">1.4.7</span>
+        <span class="version badge rounded-pill">1.4.8</span>
       </a>
       
       <nav class="site-navbar" aria-label="Primary">
@@ -187,6 +187,8 @@
               <li><a href="api/python/doukimd.build.MANIFEST.html"><span class="nav-label">MANIFEST</span><span class="api-kind api-kind--attribute">attribute</span></a></li>
               
               <li><a href="api/python/doukimd.build.build_site.html"><span class="nav-label">build_site</span><span class="api-kind api-kind--function">function</span></a></li>
+              
+              <li><a href="api/python/doukimd.build.check_site.html"><span class="nav-label">check_site</span><span class="api-kind api-kind--function">function</span></a></li>
               
               <li><a href="api/python/doukimd.build.compile_site.html"><span class="nav-label">compile_site</span><span class="api-kind api-kind--function">function</span></a></li>
               
@@ -446,6 +448,18 @@
           
           
           <details class="api-module" name="doukimd-api-sidebar-3">
+            <summary><span class="nav-label">output</span></summary>
+            <ul class="api-members">
+              <li class="api-overview"><a href="api/python/doukimd.output.html" aria-label="output module overview">Module overview</a></li>
+              
+              <li><a href="api/python/doukimd.output.PublishedFiles.html"><span class="nav-label">PublishedFiles</span><span class="api-kind api-kind--class">class</span></a></li>
+              
+            </ul>
+          </details>
+        
+          
+          
+          <details class="api-module" name="doukimd-api-sidebar-3">
             <summary><span class="nav-label">plugins</span></summary>
             <ul class="api-members">
               <li class="api-overview"><a href="api/python/doukimd.plugins.html" aria-label="plugins module overview">Module overview</a></li>
@@ -536,9 +550,14 @@
         
         <h1 id="authoring-and-configuration">Authoring and configuration</h1>
 <p>Run <code>doukimd build --config doukimd.yaml</code> or <code>doukimd check</code>. The latter
-compiles and validates without writing output. Paths are relative to the
-configuration file; directory traversal and paths escaping the project are
-rejected.</p>
+renders and validates every page, then discards the generated output. Builds
+write each rendered page to temporary storage beside the output directory and
+publish the complete site only after all pages and artifacts succeed. A failed
+render or staging write leaves the previous site intact. Allow disk space for
+both the previous site and its replacement; generated HTML is not retained in
+memory.</p>
+<p>Paths are relative to the configuration file; directory traversal and paths
+escaping the project are rejected.</p>
 <p>See the runnable project under <code>examples/basic</code>.</p>
 <h2 id="markdown-and-metadata">Markdown and metadata</h2>
 <p>Markdown and <code>.ipynb</code> pages under <code>docs/</code> become HTML at the same relative
