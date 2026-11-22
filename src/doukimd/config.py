@@ -38,6 +38,18 @@ class UniqueLoader(yaml.SafeLoader):
         returns:
           description: Mapping whose keys have been checked for duplicates.
         """
+        seen: set[str] = set()
+        for key_node, _ in node.value:
+            if key_node.tag == 'tag:yaml.org,2002:merge':
+                continue
+            key = self.construct_object(key_node, deep=deep)
+            if not isinstance(key, str):
+                raise BuildError(
+                    'metadata', 'YAML mapping keys must be strings'
+                )
+            if key in seen:
+                raise BuildError('metadata', f'Duplicate YAML key: {key}')
+            seen.add(key)
         self.flatten_mapping(node)
         result: dict[object, object] = {}
         for key_node, value_node in node.value:
@@ -46,8 +58,6 @@ class UniqueLoader(yaml.SafeLoader):
                 raise BuildError(
                     'metadata', 'YAML mapping keys must be strings'
                 )
-            if key in result:
-                raise BuildError('metadata', f'Duplicate YAML key: {key}')
             result[key] = self.construct_object(value_node, deep=deep)
         return result
 

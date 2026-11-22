@@ -148,3 +148,116 @@ def test_runtime_checks_all_collection_items() -> None:
         read_yaml(42, Path('test.yaml'))  # type: ignore[arg-type]
     with pytest.raises(ValidationError):
         Page('index.html', 42, '', PageSettings())  # type: ignore[arg-type]
+
+
+@typechecked
+def test_yaml_merge_key_with_override(tmp_path: Path) -> None:
+    """
+    title: Allow explicit keys to override merged anchor defaults.
+    parameters:
+      tmp_path:
+        description: Temporary directory provided by pytest.
+    """
+    text = 'base: &b\n  a: 1\n  b: 2\nderived:\n  <<: *b\n  a: 99\n'
+    result = read_yaml(text, tmp_path / 'merge.yaml')
+    assert result == {'base': {'a': 1, 'b': 2}, 'derived': {'a': 99, 'b': 2}}
+
+
+@typechecked
+def test_yaml_merge_key_without_override(tmp_path: Path) -> None:
+    """
+    title: Allow merge keys without explicit overrides.
+    parameters:
+      tmp_path:
+        description: Temporary directory provided by pytest.
+    """
+    text = 'base: &b\n  a: 1\nderived:\n  <<: *b\n  c: 3\n'
+    result = read_yaml(text, tmp_path / 'merge.yaml')
+    assert result == {'base': {'a': 1}, 'derived': {'a': 1, 'c': 3}}
+
+
+@typechecked
+def test_yaml_real_duplicate_key_rejected(tmp_path: Path) -> None:
+    """
+    title: Reject explicit duplicate keys in plain mapping.
+    parameters:
+      tmp_path:
+        description: Temporary directory provided by pytest.
+    """
+    text = 'x:\n  a: 1\n  a: 2\n'
+    with pytest.raises(BuildError, match='Duplicate YAML key: a'):
+        read_yaml(text, tmp_path / 'dup.yaml')
+
+
+@typechecked
+def test_yaml_duplicate_next_to_merge_key_rejected(tmp_path: Path) -> None:
+    """
+    title: Reject explicit duplicate keys written alongside a merge key.
+    parameters:
+      tmp_path:
+        description: Temporary directory provided by pytest.
+    """
+    text = 'base: &b\n  x: 0\nderived:\n  <<: *b\n  a: 1\n  a: 2\n'
+    with pytest.raises(BuildError, match='Duplicate YAML key: a'):
+        read_yaml(text, tmp_path / 'dup_merge.yaml')
+
+
+@typechecked
+def test_yaml_merge_list_precedence(tmp_path: Path) -> None:
+    """
+    title: Preserve PyYAML precedence when merging a list of anchors.
+    parameters:
+      tmp_path:
+        description: Temporary directory provided by pytest.
+    """
+    text = (
+        'first: &first\n'
+        '  key: from_first\n'
+        '  shared: first_val\n'
+        'second: &second\n'
+        '  key: from_second\n'
+        '  shared: second_val\n'
+        'derived:\n'
+        '  <<: [*first, *second]\n'
+        '  own: explicit\n'
+    )
+    result = read_yaml(text, tmp_path / 'merge_list.yaml')
+    assert result['derived'] == {
+        'key': 'from_first',
+        'shared': 'first_val',
+        'own': 'explicit',
+    }
+
+
+@typechecked
+def test_yaml_nested_mapping_merge_override(tmp_path: Path) -> None:
+    """
+    title: Allow merge key overrides in nested mappings.
+    parameters:
+      tmp_path:
+        description: Temporary directory provided by pytest.
+    """
+    text = (
+        'parent:\n'
+        '  defaults: &d\n'
+        '    item: 1\n'
+        '    mode: auto\n'
+        '  custom:\n'
+        '    <<: *d\n'
+        '    item: 42\n'
+    )
+    result = read_yaml(text, tmp_path / 'nested.yaml')
+    assert result['parent']['custom'] == {'item': 42, 'mode': 'auto'}
+
+
+@typechecked
+def test_yaml_non_string_key_rejected(tmp_path: Path) -> None:
+    """
+    title: Reject non-string keys in explicit and merged mappings.
+    parameters:
+      tmp_path:
+        description: Temporary directory provided by pytest.
+    """
+    text_explicit = '1: int_key\n'
+    with pytest.raises(BuildError, match='YAML mapping keys must be strings'):
+        read_yaml(text_explicit, tmp_path / 'non_str.yaml')

@@ -20,6 +20,7 @@ path. Optional YAML
 front matter accepts `title`, `render` (`markdown` or `jinja`), and `meta`,
 plus the page controls described below.
 Unknown keys, duplicate keys, invalid types, and malformed YAML are errors.
+YAML merge keys (`<<`) may override merged mapping defaults.
 
 Enable Jinja with `render: jinja`. Templates receive `site`, `project`,
 `page`, `data`, `api`, `plugins`, and `build`. Project configuration and
