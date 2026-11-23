@@ -20,7 +20,6 @@ path. Optional YAML
 front matter accepts `title`, `render` (`markdown` or `jinja`), and `meta`,
 plus the page controls described below.
 Unknown keys, duplicate keys, invalid types, and malformed YAML are errors.
-YAML merge keys (`<<`) may override merged mapping defaults.
 
 Enable Jinja with `render: jinja`. Templates receive `site`, `project`,
 `page`, `data`, `api`, `plugins`, and `build`. Project configuration and
@@ -42,6 +41,7 @@ Required settings are `site.title` and `project.name`. Defaults are
 `schema_version: 1`, `docs_dir: docs`, `output_dir: build`, and
 `includes_dir: includes`. Data is a mapping of names to YAML mapping files.
 `project.version` is optional. `api.generate_pages` defaults to true.
+YAML merge keys (`<<`) may override merged mapping defaults.
 
 An API source has `language: python`, a project-relative `root`, and
 `modules` containing import paths. Configured modules and their declared
