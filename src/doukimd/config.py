@@ -26,7 +26,10 @@ class UniqueLoader(yaml.SafeLoader):
 
     @typechecked
     def _validate_merge_node(
-        self, node: yaml.Node, deep: bool = False
+        self,
+        node: yaml.Node,
+        deep: bool = False,
+        visited: set[int] | None = None,
     ) -> None:
         """
         title: Validate merged mapping nodes for duplicate keys.
@@ -35,7 +38,14 @@ class UniqueLoader(yaml.SafeLoader):
             description: Source declaration or parsed document node to process.
           deep:
             description: Whether to process nested mapping values.
+          visited:
+            description: Identity set of visited nodes to prevent recursion.
         """
+        if visited is None:
+            visited = set()
+        if id(node) in visited:
+            return
+        visited.add(id(node))
         if isinstance(node, yaml.MappingNode):
             seen: set[object] = set()
             for key_node, value_node in node.value:
@@ -43,7 +53,9 @@ class UniqueLoader(yaml.SafeLoader):
                     if '<<' in seen:
                         raise BuildError('metadata', 'Duplicate YAML key: <<')
                     seen.add('<<')
-                    self._validate_merge_node(value_node, deep=deep)
+                    self._validate_merge_node(
+                        value_node, deep=deep, visited=visited
+                    )
                     continue
                 if key_node.tag == 'tag:yaml.org,2002:value':
                     key_node.tag = 'tag:yaml.org,2002:str'
@@ -53,7 +65,7 @@ class UniqueLoader(yaml.SafeLoader):
                 seen.add(key)
         if isinstance(node, yaml.SequenceNode):
             for subnode in node.value:
-                self._validate_merge_node(subnode, deep=deep)
+                self._validate_merge_node(subnode, deep=deep, visited=visited)
 
     @typechecked
     def construct_mapping(
@@ -71,12 +83,15 @@ class UniqueLoader(yaml.SafeLoader):
         """
         seen: set[str] = set()
         has_merge = False
+        visited: set[int] = {id(node)}
         for key_node, value_node in node.value:
             if key_node.tag == 'tag:yaml.org,2002:merge':
                 if has_merge:
                     raise BuildError('metadata', 'Duplicate YAML key: <<')
                 has_merge = True
-                self._validate_merge_node(value_node, deep=deep)
+                self._validate_merge_node(
+                    value_node, deep=deep, visited=visited
+                )
                 continue
             if key_node.tag == 'tag:yaml.org,2002:value':
                 key_node.tag = 'tag:yaml.org,2002:str'

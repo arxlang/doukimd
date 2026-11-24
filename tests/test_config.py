@@ -7,11 +7,18 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
+import yaml
 
 from pydantic import ValidationError
 from typeguard import TypeCheckError
 
-from doukimd.config import load_config, load_data, project_path, read_yaml
+from doukimd.config import (
+    UniqueLoader,
+    load_config,
+    load_data,
+    project_path,
+    read_yaml,
+)
 from doukimd.errors import BuildError
 from doukimd.models import Config, Page, PageSettings
 from doukimd.runtime import typechecked
@@ -319,6 +326,43 @@ def test_yaml_nested_mapping_merge_override(tmp_path: Path) -> None:
     )
     result = read_yaml(text, tmp_path / 'nested.yaml')
     assert result['parent']['custom'] == {'item': 42, 'mode': 'auto'}
+
+
+@typechecked
+def test_yaml_self_referential_merge_alias(tmp_path: Path) -> None:
+    """
+    title: Allow self-referential merge aliases without recursion.
+    parameters:
+      tmp_path:
+        description: Temporary directory provided by pytest.
+    """
+    text = 'a: &a\n  <<: *a\n'
+    result = read_yaml(text, tmp_path / 'self_ref.yaml')
+    assert result == {'a': {}}
+
+
+@typechecked
+def test_yaml_merge_list_repeated_anchor(tmp_path: Path) -> None:
+    """
+    title: Allow repeating the same anchor in a merge sequence.
+    parameters:
+      tmp_path:
+        description: Temporary directory provided by pytest.
+    """
+    text = 'a: &a\n  x: 1\nderived:\n  <<: [*a, *a]\n'
+    result = read_yaml(text, tmp_path / 'repeat_anchor.yaml')
+    assert result == {'a': {'x': 1}, 'derived': {'x': 1}}
+
+
+@typechecked
+def test_yaml_validate_merge_node_default_visited() -> None:
+    """
+    title: Validate merge node when visited parameter is omitted.
+    """
+    loader = UniqueLoader('')
+    node = yaml.compose('a: 1\n')
+    assert isinstance(node, yaml.Node)
+    loader._validate_merge_node(node)
 
 
 @typechecked
