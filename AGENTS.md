@@ -16,7 +16,7 @@
   YAML and Pydantic models. Configuration paths must stay inside the project.
 - **Static collection:** `collection.py` and `api.py` use Griffe to collect
   Python without importing user source. Validate aliases, exports, inherited
-  inherited class field annotations, callable variants, and Douki 0.14+
+  class field annotations, callable variants, and Douki 0.14+
   annotation-first documentation.
 - **Content/rendering:** `content.py`, `notebooks.py`,
   `notebook_models.py`, `notebook_rendering.py`, `markdown.py`, and `html.py`
