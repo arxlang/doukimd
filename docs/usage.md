@@ -41,6 +41,7 @@ Required settings are `site.title` and `project.name`. Defaults are
 `schema_version: 1`, `docs_dir: docs`, `output_dir: build`, and
 `includes_dir: includes`. Data is a mapping of names to YAML mapping files.
 `project.version` is optional. `api.generate_pages` defaults to true.
+YAML merge keys (`<<`) may override merged mapping defaults.
 
 An API source has `language: python`, a project-relative `root`, and
 `modules` containing import paths. Configured modules and their declared
